@@ -43,4 +43,3 @@ assets/
 tmp/
 brain/
 *.bat
-app_config.json

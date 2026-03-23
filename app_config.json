@@ -1,0 +1,9 @@
+{
+  "app_name": "Drop Down",
+  "package_name": "com.dropdown.app",
+  "local_url": "http://localhost:8000",
+  "android_local_url": "http://10.0.2.2:8000",
+  "prod_url": "https://myschoolpharmacy-production.up.railway.app",
+  "theme_color": "deepPurple",
+  "use_dark_mode": true
+}
