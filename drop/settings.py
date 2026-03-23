@@ -50,6 +50,7 @@ CSRF_TRUSTED_ORIGINS = [
     f"https://{host}" for host in ALLOWED_HOSTS if host != "*"
 ] + [
     "https://*.railway.app",
+    "https://*.onrender.com",
 ]
 
 

@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: drop-down-store
+    env: docker
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: DEBUG
+        value: "True"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: drop-down-db
+          property: connectionString
+
+databases:
+  - name: drop-down-db
+    plan: free
