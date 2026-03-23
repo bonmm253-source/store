@@ -1,0 +1,17 @@
+services:
+  web:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=drop.settings
+      - DEBUG=True
+    # Using sqlite3 inside the container for now as requested by project structure
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             uvicorn drop.asgi:application --host 0.0.0.0 --port 8000"

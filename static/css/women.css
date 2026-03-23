@@ -1,0 +1,171 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  scroll-behavior: smooth;
+}
+.my_image1{
+  display: flex;
+  
+  flex: 1 1 auto;
+  min-width: 0; /* allow flex children to shrink and avoid overflow */
+}
+
+.second{
+ border: 1px solid brown;
+  background-color: white;
+  border-radius: 10px;
+  box-sizing: 1px solid blue;
+  width: 450px;
+  margin-top: 100px;
+
+}
+html, body { overflow-x: hidden; }
+body {
+  margin: 0;
+  padding: 10px 12px; /* gentle page padding to avoid touching edges */
+  background-color: white;
+  width: 100%;
+  position: relative;
+}
+
+p {
+  color: rgb(231, 143, 28);
+  font-weight: 500;
+  padding-inline: 20px;
+  font-size: smaller;
+  text-align: center;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+nav {
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+background-color: rgb(231, 143, 28);
+  color:white;
+  font-family: Arial, sans-serif;
+  border-radius: 5px;
+    position: fixed;
+  ul {
+    gap: 10px;
+  }
+  li {
+    list-style: none;
+  }
+}
+
+a {
+  color:white;
+  text-decoration: none;
+}
+
+ul {
+  display: flex;
+}
+.container{
+  width: 100%;
+  max-width: 1200px; /* center content and prevent overflow */
+  margin: 0 auto;
+  padding: 0 8px;
+}
+
+/* Jumia-style search + filters for women.html */
+.jumia-search-filter{padding:14px 20px;background:#fff;border-bottom:1px solid #eee;display:flex;justify-content:center;gap:12px}
+.jumia-search-filter{display:none}
+.jumia-filters .search-form{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.jumia-filters .search-form select,.jumia-filters .search-form input{padding:10px;border:1px solid #ddd;border-radius:4px}
+.jumia-filters .search-form button{background:#e78f1c;color:#fff;border:none;padding:10px 14px;border-radius:4px}
+
+.collection-wrap{display:flex;gap:18px;padding:18px 0}
+.collection-wrap{max-width:1200px;margin:0 auto;padding:0 12px;box-sizing:border-box}
+.jumia-filters{width:260px;border:1px solid #eee;padding:12px;border-radius:6px;background:#fff;flex-shrink:0}
+.jumia-filters .filter-group{margin-bottom:12px}
+.jumia-filters label{display:block;margin:6px 0}
+.apply-filters{background:#e78f1c;color:#fff;border:none;padding:8px 12px;border-radius:4px;cursor:pointer}
+
+@media (max-width:800px){
+  .collection-wrap{flex-direction:column;padding:12px}
+  .jumia-filters{width:100%}
+}
+
+/* Ensure search and filters appear below any fixed header by default spacing */
+body {
+  --site-header-height: 0px;
+}
+.jumia-search-filter,
+.collection-wrap{margin-top:0}
+
+/* If there's a fixed header (.site-header) present, add spacing so content is not hidden */
+.site-header + .jumia-search-filter,
+.site-header + .collection-wrap{
+  margin-top: 0;
+}
+
+/* Header and topbar */
+.site-header .topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:12px 20px;
+  background:#fff;
+  border-bottom:1px solid #eee;
+}
+.logo a{font-size:22px;color:#e78f1c;font-weight:700;text-decoration:none}
+.search-form{flex:1;max-width:700px;display:flex;gap:8px}
+.search-form input{flex:1;padding:10px;border:1px solid #ddd;border-radius:4px}
+.search-form button{background:#e78f1c;color:#fff;border:none;padding:10px 14px;border-radius:4px;cursor:pointer}
+.top-nav{display:flex;align-items:center;gap:12px}
+.top-nav .link{color:#333;text-decoration:none}
+.top-nav .cart img{width:28px}
+
+/* mobile menu button */
+.mobile-menu-btn{display:none;background:transparent;border:none;font-size:22px;cursor:pointer}
+
+/* Mega menu */
+.mega{position:absolute;background:#fff;border:1px solid #eee;padding:12px;display:flex;gap:20px;box-shadow:0 6px 18px rgba(0,0,0,0.08)}
+.mega.hidden{display:none}
+.mega .col a{display:block;color:#333;text-decoration:none;margin-top:6px}
+
+/* Carousel */
+.promo-carousel{position:relative;height:220px;overflow:hidden}
+.promo-carousel .slide{position:absolute;inset:0;opacity:0;transition:opacity .6s}
+.promo-carousel .slide.active{opacity:1}
+.promo-carousel img{width:100%;height:100%;object-fit:cover}
+
+/* Collection layout */
+.collection{display:flex;gap:20px;padding:20px}
+.filters{width:240px;border:1px solid #eee;padding:12px;border-radius:6px}
+.container.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px}
+.shoe{background:#fff;border:1px solid #eee;padding:12px;border-radius:6px;display:flex;flex-direction:column;align-items:center}
+.shoe img{width:100%;max-width:100%;height:180px;object-fit:cover;border-radius:4px;display:block}
+.divshoe h3{font-size:16px;color:#222;margin:8px 0}
+.naira{color:#e78f1c;font-weight:700}
+.add-to-cart-btn{background:#e78f1c;color:#fff;border:none;padding:8px 12px;border-radius:4px;cursor:pointer;margin-top:8px}
+
+/* Small screens */
+@media (max-width:800px){
+  .mobile-menu-btn{display:block}
+  .topbar{padding:10px}
+  .search-form{order:3;width:100%;margin-top:8px}
+  .search-form input{padding:10px}
+  .top-nav{display:none;position:fixed;top:56px;right:0;background:#fff;flex-direction:column;padding:14px;gap:10px;width:240px;height:calc(100% - 56px);overflow:auto;box-shadow:-6px 0 18px rgba(0,0,0,0.08);z-index:60}
+  body.nav-open .top-nav{display:flex}
+  .mega{position:static;box-shadow:none;display:flex;flex-wrap:wrap}
+  .promo-carousel{height:160px}
+  .collection{flex-direction:column}
+  .filters{width:100%;order:1;margin-bottom:12px}
+  .container.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .shoe img{height:140px}
+  .divshoe h3{font-size:14px}
+  .add-to-cart-btn{padding:7px 10px;font-size:14px}
+}
+
+/* Large screens tweaks */
+@media (min-width:1200px){
+  .promo-carousel{height:340px}
+  .container.grid{grid-template-columns:repeat(4,1fr)}
+}

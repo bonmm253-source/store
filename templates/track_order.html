@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Place & Track Order | MyStore{% endblock %}
+
+{% block content %}
+<div class="page-container" style="max-width: 800px; margin: 40px auto; padding: 20px;">
+    <h1 style="color: var(--jumia-dark); margin-bottom: 20px;">Place & Track Order</h1>
+
+    <div
+        style="background: white; border-radius: 8px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 30px;">
+        <h2 style="display: flex; align-items: center; gap: 10px;">
+            <span class="material-icons-outlined" style="color: var(--jumia-orange);">local_shipping</span>
+            Track Your Order
+        </h2>
+        <p style="color: var(--jumia-light-text); font-size: 14px; margin-top: 5px;">Enter your Order ID and Email/Phone
+            Number to see the status of your shipment.</p>
+
+        <form style="margin-top: 25px;">
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 8px;">Order ID</label>
+                <input type="text" placeholder="e.g., ORD-12345"
+                    style="width: 100%; padding: 12px; border: 1px solid var(--jumia-border); border-radius: 4px; box-sizing: border-box;"
+                    required>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 8px;">Email or Phone Number</label>
+                <input type="text" placeholder="Enter details used during checkout"
+                    style="width: 100%; padding: 12px; border: 1px solid var(--jumia-border); border-radius: 4px; box-sizing: border-box;"
+                    required>
+            </div>
+
+            <button type="button" class="btn-primary" style="width: 100%;"
+                onclick="alert('Order Tracking module is being integrated. Please check your Dashboard for current Order statuses.')">TRACK
+                MY ORDER</button>
+        </form>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+        <h2>How to Place an Order</h2>
+        <ol style="color: var(--jumia-text); line-height: 1.8; margin-top: 15px; padding-left: 20px;">
+            <li>Browse the catalog or use the Search bar to find your desired item.</li>
+            <li>Select the product and click on "Add to Cart".</li>
+            <li>Click the Cart icon at the top right, then click "Checkout".</li>
+            <li>Enter your delivery address and choose a payment method.</li>
+            <li>Review your order and click "Confirm Order". You will immediately receive a confirmation email!</li>
+        </ol>
+
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="{% url 'home' %}" class="btn-primary"
+                style="display: inline-block; padding: 12px 25px; text-decoration: none;">START SHOPPING</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

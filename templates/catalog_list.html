@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Category List | MyStore{% endblock %}
+
+{% block content %}
+<div class="card" style="padding: 20px;">
+    <div
+        style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--jumia-border); padding-bottom: 15px; margin-bottom: 20px;">
+        <h2 style="font-size: 20px; font-weight: 500; margin: 0;">Products Listing</h2>
+        <a href="{% url 'home' %}" class="btn-primary"
+            style="text-decoration: none; padding: 8px 16px; width: auto; font-size: 14px; border-radius: 4px;">&larr;
+            Back to Menu</a>
+    </div>
+
+    <div style="display:none;" id="csrf-form">
+        {% csrf_token %}
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px;">
+        {% for shoe in shoes %}
+        <div
+            style="background: white; border: 1px solid var(--jumia-border); border-radius: 4px; padding: 10px; position: relative;">
+            <a href="{% url 'product_detail' 'shoe' shoe.id %}"
+                style="display: block; transition: 0.2s; text-decoration: none; color: inherit;">
+                {% if shoe.discount_price %}
+                <div
+                    style="position: absolute; top: 10px; right: 10px; background: #f6ebd8; color: var(--jumia-orange); padding: 2px 6px; font-size: 12px; font-weight: bold; border-radius: 2px;">
+                    SALE</div>
+                {% endif %}
+                {% if shoe.image %}
+                <img src="{{ shoe.image.url }}"
+                    style="width: 100%; height: 180px; object-fit: cover; border-radius: 4px; margin-bottom: 10px;">
+                {% else %}
+                <div style="width: 100%; height: 180px; background: #eee; margin-bottom:10px;"></div>
+                {% endif %}
+                <div
+                    style="color: var(--jumia-text); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 5px;">
+                    {{ shoe.name }}</div>
+                <div style="font-size: 16px; font-weight: bold; color: var(--jumia-dark);">
+                    <span>$</span><span>{{ shoe.discount_price|default:shoe.price }}</span>
+                </div>
+            </a>
+            <div
+                style="display: flex; gap: 8px; justify-content: center; align-items: center; margin-top: 10px; flex-wrap: wrap;">
+                <button class="qty-decrease" data-shoe-id="shoe_{{ shoe.id }}"
+                    style="background-color: var(--jumia-orange); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px;">−</button>
+                <span class="qty-display" data-shoe-id="shoe_{{ shoe.id }}"
+                    style="min-width: 20px; text-align: center; font-weight: bold; font-size: 14px;">0</span>
+                <button class="qty-increase" data-shoe-id="shoe_{{ shoe.id }}"
+                    style="background-color: var(--jumia-orange); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px;">+</button>
+                <button class="add-to-cart-btn btn-primary" data-shoe-id="shoe_{{ shoe.id }}"
+                    data-shoe-image="{% if shoe.image %}{{ shoe.image.url }}{% endif %}"
+                    data-shoe-name="{{ shoe.name|escapejs }}" data-shoe-brand="{{ shoe.brand|default:''|escapejs }}"
+                    data-shoe-price="{{ shoe.discount_price|default:shoe.price }}"
+                    style="flex: 1; padding: 8px 4px; font-size: 13px;">Add (<span
+                        class="qty-indicator">0</span>)</button>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% for watch in watchs %} <!-- In case we use this layout for watch queries too -->
+        <div
+            style="background: white; border: 1px solid var(--jumia-border); border-radius: 4px; padding: 10px; position: relative;">
+            <a href="{% url 'product_detail' 'watch' watch.id %}"
+                style="display: block; transition: 0.2s; text-decoration: none; color: inherit;">
+                {% if watch.discount_price %}
+                <div
+                    style="position: absolute; top: 10px; right: 10px; background: #f6ebd8; color: var(--jumia-orange); padding: 2px 6px; font-size: 12px; font-weight: bold; border-radius: 2px;">
+                    SALE</div>
+                {% endif %}
+                {% if watch.image %}
+                <img src="{{ watch.image.url }}"
+                    style="width: 100%; height: 180px; object-fit: cover; border-radius: 4px; margin-bottom: 10px;">
+                {% else %}
+                <div style="width: 100%; height: 180px; background: #eee; margin-bottom:10px;"></div>
+                {% endif %}
+                <div
+                    style="color: var(--jumia-text); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 5px;">
+                    {{ watch.name }}</div>
+                <div style="font-size: 16px; font-weight: bold; color: var(--jumia-dark);">
+                    <span>$</span><span>{{ watch.discount_price|default:watch.price }}</span>
+                </div>
+            </a>
+            <div
+                style="display: flex; gap: 8px; justify-content: center; align-items: center; margin-top: 10px; flex-wrap: wrap;">
+                <button class="qty-decrease" data-shoe-id="watch_{{ watch.id }}"
+                    style="background-color: var(--jumia-orange); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px;">−</button>
+                <span class="qty-display" data-shoe-id="watch_{{ watch.id }}"
+                    style="min-width: 20px; text-align: center; font-weight: bold; font-size: 14px;">0</span>
+                <button class="qty-increase" data-shoe-id="watch_{{ watch.id }}"
+                    style="background-color: var(--jumia-orange); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px;">+</button>
+                <button class="add-to-cart-btn btn-primary" data-shoe-id="watch_{{ watch.id }}"
+                    data-shoe-image="{% if watch.image %}{{ watch.image.url }}{% endif %}"
+                    data-shoe-name="{{ watch.name|escapejs }}" data-shoe-brand="{{ watch.brand|default:''|escapejs }}"
+                    data-shoe-price="{{ watch.discount_price|default:watch.price }}"
+                    style="flex: 1; padding: 8px 4px; font-size: 13px;">Add (<span
+                        class="qty-indicator">0</span>)</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if not shoes and not watchs %}
+    <div style="text-align: center; padding: 40px; color: var(--jumia-light-text);">
+        <p>No products found in this category.</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    (function () {
+        const quantities = {};
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Default quantities to 1 visually
+            document.querySelectorAll('.qty-display').forEach(el => {
+                const shoeId = el.getAttribute('data-shoe-id');
+                quantities[shoeId] = 1;
+                el.textContent = '1';
+
+                const addBtn = document.querySelector('.add-to-cart-btn[data-shoe-id="' + shoeId + '"]');
+                if (addBtn) {
+                    const ind = addBtn.querySelector('.qty-indicator');
+                    if (ind) ind.textContent = '1';
+                }
+            });
+
+            document.querySelectorAll('.qty-increase').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const shoeId = this.getAttribute('data-shoe-id');
+                    if (quantities[shoeId] < 10) {
+                        quantities[shoeId]++;
+                        document.querySelector('.qty-display[data-shoe-id="' + shoeId + '"]').textContent = quantities[shoeId];
+                        const addBtn = document.querySelector('.add-to-cart-btn[data-shoe-id="' + shoeId + '"]');
+                        if (addBtn) {
+                            const ind = addBtn.querySelector('.qty-indicator');
+                            if (ind) ind.textContent = quantities[shoeId];
+                        }
+                    }
+                });
+            });
+
+            document.querySelectorAll('.qty-decrease').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const shoeId = this.getAttribute('data-shoe-id');
+                    if (quantities[shoeId] > 1) {
+                        quantities[shoeId]--;
+                        document.querySelector('.qty-display[data-shoe-id="' + shoeId + '"]').textContent = quantities[shoeId];
+                        const addBtn = document.querySelector('.add-to-cart-btn[data-shoe-id="' + shoeId + '"]');
+                        if (addBtn) {
+                            const ind = addBtn.querySelector('.qty-indicator');
+                            if (ind) ind.textContent = quantities[shoeId];
+                        }
+                    }
+                });
+            });
+
+            // Handle Add to cart hitting the new django fetch endpoint
+            document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+                btn.addEventListener('click', async function (e) {
+                    e.preventDefault();
+                    const btnId = this.getAttribute('data-shoe-id');
+
+                    const prodType = btnId.split('_')[0];
+                    const prodId = btnId.split('_')[1];
+                    const qty = quantities[btnId] || 1;
+
+                    const formData = new FormData();
+                    formData.append('type', prodType);
+                    formData.append('id', prodId);
+                    formData.append('quantity', qty);
+                    let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+                    if (csrfToken) {
+                        formData.append('csrfmiddlewaretoken', csrfToken.value);
+                    } else {
+                        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                    }
+
+                    try {
+                        const res = await fetch("{% url 'add_to_cart' %}", {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const data = await res.json();
+                        if (data.status === 'success') {
+                            if (typeof updateCartCount === 'function') {
+                                updateCartCount();
+                            }
+                            alert("Successfully added to cart!");
+                        } else {
+                            alert("Failed to add to cart.");
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        alert("An error occurred adding to cart.");
+                    }
+                });
+            });
+
+        });
+    })();
+</script>
+{% endblock %}

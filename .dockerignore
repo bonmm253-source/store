@@ -1,0 +1,25 @@
+# .dockerignore
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+ENV/
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+
+# Git
+.git/
+.gitignore
+
+# VS Code
+.vscode/
+
+# Flutter
+mobile/
+build/

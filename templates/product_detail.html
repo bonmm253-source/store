@@ -1,0 +1,431 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Product Details | MyStore{% endblock %}
+
+{% block head_extra %}
+<style>
+    .detail-layout {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: flex-start;
+    }
+
+    .img-container {
+        flex: 1;
+        min-width: 300px;
+        background: white;
+        border-radius: 4px;
+        padding: 20px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .main-img {
+        width: 100%;
+        height: 400px;
+        object-fit: contain;
+        border-radius: 4px;
+    }
+
+    .info-container {
+        flex: 1;
+        min-width: 300px;
+        background: white;
+        border-radius: 4px;
+        padding: 20px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .prod-brand {
+        font-size: 14px;
+        text-transform: uppercase;
+        color: var(--jumia-light-text);
+        margin-bottom: 5px;
+    }
+
+    .prod-title {
+        font-size: 22px;
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+
+    .prod-rating {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        color: var(--jumia-orange);
+    }
+
+    .prod-rating span.material-icons-outlined {
+        font-size: 16px;
+    }
+
+    .prod-pricing {
+        border-top: 1px solid var(--jumia-border);
+        border-bottom: 1px solid var(--jumia-border);
+        padding: 15px 0;
+        margin-bottom: 20px;
+    }
+
+    .prod-price {
+        font-size: 26px;
+        font-weight: bold;
+    }
+
+    .prod-old-price {
+        font-size: 14px;
+        color: var(--jumia-light-text);
+        text-decoration: line-through;
+    }
+
+    .prod-desc {
+        font-size: 15px;
+        line-height: 1.6;
+        margin-bottom: 25px;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .wishlist-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        border-radius: 4px;
+        border: 1px solid var(--jumia-orange);
+        color: var(--jumia-orange);
+        background: white;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .wishlist-btn:hover {
+        background: #fff4ea;
+    }
+
+    .wishlist-btn.active {
+        background: var(--jumia-orange);
+        color: white;
+    }
+
+    /* Review Section */
+    .reviews-section {
+        background: white;
+        border-radius: 4px;
+        padding: 20px;
+        margin-top: 20px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .review-item {
+        border-bottom: 1px solid var(--jumia-border);
+        padding: 15px 0;
+    }
+
+    .review-item:last-child {
+        border-bottom: none;
+    }
+
+    .leave-review {
+        background: #fdfdfd;
+        border: 1px solid var(--jumia-border);
+        border-radius: 4px;
+        padding: 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .star-selector {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 15px;
+        cursor: pointer;
+    }
+
+    .star-selector .material-icons-outlined {
+        font-size: 28px;
+        color: #ccc;
+    }
+
+    .star-selector .material-icons-outlined.active {
+        color: var(--jumia-orange);
+    }
+
+    .review-textarea {
+        width: 100% !important;
+        padding: 10px;
+        border: 1px solid var(--jumia-border);
+        border-radius: 4px;
+        margin-bottom: 15px;
+        font-family: inherit;
+        resize: vertical;
+        min-height: 80px;
+        box-sizing: border-box;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="detail-layout">
+    <div class="img-container">
+        {% if product.image %}
+        <img class="main-img" src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% else %}
+        <div class="main-img"
+            style="background: #eee; display: flex; align-items: center; justify-content: center; color: #aaa;">No Image
+            Available</div>
+        {% endif %}
+    </div>
+
+    <div class="info-container">
+        <div class="prod-brand">{{ product.brand|default:"MyStore Official" }}</div>
+        <h1 class="prod-title">{{ product.name }}</h1>
+        <div class="prod-rating">
+            {% for i in stars_range %}
+                {% if i <= average_rating %}
+                    <span class="material-icons-outlined">star</span>
+                {% elif i|add:"-0.5" <= average_rating %}
+                    <span class="material-icons-outlined">star_half</span>
+                {% else %}
+                    <span class="material-icons-outlined">star_border</span>
+                {% endif %}
+            {% endfor %}
+            <span style="color: var(--jumia-text); margin-left: 5px;">({{ average_rating|floatformat:1 }} / 5.0 - {{ reviews.count }} Ratings)</span>
+        </div>
+
+        <div class="prod-pricing">
+            <div class="prod-price">${{ product.discount_price|default:product.price }}</div>
+            {% if product.discount_price %}
+            <div class="prod-old-price">${{ product.price }}</div>
+            {% endif %}
+
+            {% if product.stock > 0 %}
+            <div style="font-size: 13px; font-weight: bold; color: green; margin-top: 10px;">In Stock</div>
+            {% else %}
+            <div style="font-size: 13px; font-weight: bold; color: red; margin-top: 10px;">Out of Stock</div>
+            {% endif %}
+        </div>
+
+        <div class="prod-desc">
+            {{ product.description|default:"No description provided for this item." }}
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-primary" id="add-to-cart-btn"
+                style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px;">
+                <span class="material-icons-outlined">shopping_cart</span> ADD TO CART
+            </button>
+            <button class="wishlist-btn {% if in_wishlist %}active{% endif %}" id="wishlist-toggle">
+                <span class="material-icons-outlined">{% if in_wishlist %}favorite{% else %}favorite_border{% endif %}</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="reviews-section">
+    <h3 style="border-bottom: 1px solid var(--jumia-border); padding-bottom: 15px; margin-bottom: 15px;">Verified
+        Customer Feedback</h3>
+
+    {% if user.is_authenticated %}
+    <div class="leave-review">
+        <h4 style="margin-bottom: 10px;">Leave a Review</h4>
+        <div class="star-selector" id="star-selector">
+            {% for i in stars_range %}
+            <span class="material-icons-outlined" data-value="{{ i }}">star_border</span>
+            {% endfor %}
+        </div>
+        <textarea class="review-textarea" id="review-comment" placeholder="Share your experience with this product..."></textarea>
+        <button class="btn-primary" id="submit-review-btn" style="padding: 12px 25px; width: auto;">SUBMIT REVIEW</button>
+    </div>
+    {% else %}
+    <div class="leave-review" style="text-align: center;">
+        <p>Please <a href="{% url 'login' %}" style="color: var(--jumia-orange); font-weight: bold;">Login</a> to leave a review.</p>
+    </div>
+    {% endif %}
+
+    {% for review in reviews %}
+    <div class="review-item">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+            <div style="color: var(--jumia-orange); font-size: 14px;">
+                {% for i in stars_range %}
+                {% if i <= review.rating %}
+                    <span class="material-icons-outlined" style="font-size: 14px;">star</span>
+                {% else %}
+                    <span class="material-icons-outlined" style="font-size: 14px;">star_border</span>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <div style="color: var(--jumia-light-text); font-size: 12px;">{{ review.created_at|date:"d-m-Y" }}</div>
+        </div>
+        <div style="font-weight: 500; font-size: 14px; margin-bottom: 10px;">{{ review.user.username }}</div>
+        <div style="font-size: 14px; color: var(--jumia-text);">{{ review.comment|default:"No comment left by user." }}
+        </div>
+    </div>
+    {% empty %}
+    <div style="text-align: center; color: var(--jumia-light-text); padding: 20px;">
+        There are no reviews yet. Be the first to review this!
+    </div>
+    {% endfor %}
+</div>
+
+<div style="display:none;" id="csrf-form">
+    {% csrf_token %}
+</div>
+
+<script>
+    document.getElementById('add-to-cart-btn').addEventListener('click', function () {
+        const prodId = '{{ product.id }}';
+        const prodType = '{{ prod_type }}';
+        const prodName = '{{ product.name }}';
+        const prodBrand = '{{ product.brand|default:"MyStore Official" }}';
+        const prodPrice = '{{ product.discount_price|default:product.price }}';
+        const prodImage = '{% if product.image %}{{ product.image.url }}{% else %}{% endif %}';
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // Find existing by either shoeId or watchId depending on type
+        const existing = cart.find(item => {
+            if (prodType === 'shoe') return String(item.shoeId) === String(prodId);
+            if (prodType === 'watch') return String(item.watchId) === String(prodId);
+            return false;
+        });
+
+        if (existing) {
+            existing.quantity = Math.min(5, (parseInt(existing.quantity) || 0) + 1);
+        } else {
+            const newItem = {
+                quantity: 1,
+                rating: 0
+            };
+            if (prodType === 'shoe') {
+                newItem.shoeId = prodId;
+                newItem.shoeImage = prodImage;
+                newItem.shoeName = prodName;
+                newItem.shoeBrand = prodBrand;
+                newItem.shoePrice = prodPrice;
+            } else {
+                newItem.watchId = prodId;
+                newItem.watchImage = prodImage;
+                newItem.watchName = prodName;
+                newItem.watchBrand = prodBrand;
+                newItem.watchPrice = prodPrice;
+            }
+            cart.push(newItem);
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        if (typeof updateCartCount === 'function') {
+            updateCartCount();
+        }
+        alert("Successfully added to cart!");
+    });
+
+    document.getElementById('wishlist-toggle').addEventListener('click', async function () {
+        {% if not user.is_authenticated %}
+        window.location.href = "{% url 'login' %}";
+        return;
+        {% endif %}
+
+        const btn = this;
+        const icon = btn.querySelector('span');
+
+        const formData = new FormData();
+        formData.append('type', '{{ prod_type }}');
+        formData.append('id', '{{ product.id }}');
+        let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfToken) {
+            formData.append('csrfmiddlewaretoken', csrfToken.value);
+        } else {
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        }
+
+        try {
+            const res = await fetch("{% url 'toggle_wishlist' %}", {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            if (data.status === 'success') {
+                if (data.added) {
+                    btn.classList.add('active');
+                    icon.innerText = 'favorite';
+                } else {
+                    btn.classList.remove('active');
+                    icon.innerText = 'favorite_border';
+                }
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    });
+
+    {% if user.is_authenticated %}
+    (function() {
+        const stars = document.querySelectorAll('#star-selector span');
+        let selectedRating = 5; // Default
+
+        function updateStars(rating) {
+            stars.forEach(star => {
+                if (parseInt(star.getAttribute('data-value')) <= parseInt(rating)) {
+                    star.innerText = 'star';
+                    star.classList.add('active');
+                } else {
+                    star.innerText = 'star_border';
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = this.getAttribute('data-value');
+                updateStars(selectedRating);
+            });
+        });
+
+        // Initialize default
+        updateStars(selectedRating);
+
+        document.getElementById('submit-review-btn').addEventListener('click', async function() {
+            const comment = document.getElementById('review-comment').value;
+            const csrfTokenEl = document.querySelector('[name=csrfmiddlewaretoken]');
+            const csrfToken = csrfTokenEl ? csrfTokenEl.value : '{{ csrf_token }}';
+
+            try {
+                const res = await fetch("{% url 'add_review' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        type: '{{ prod_type }}',
+                        id: '{{ product.id }}',
+                        rating: selectedRating,
+                        comment: comment
+                    })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    alert("Thank you for your review!");
+                    window.location.reload();
+                } else {
+                    alert("Error: " + (data.message || "Unknown error"));
+                }
+            } catch (e) {
+                console.error(e);
+                alert("An error occurred while submitting your review.");
+            }
+        });
+    })();
+    {% endif %}
+</script>
+{% endblock %}

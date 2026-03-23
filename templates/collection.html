@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Collections | MyStore{% endblock %}
+
+{% block content %}
+<section class="collection">
+  <div class="collection-wrap">
+    <div class="product-grid">
+      {% for shoe in shoes %}
+        <div class="product-card">
+          {% if shoe.image %}
+            <img src="{{ shoe.image.url }}" alt="{{ shoe.name }}">
+          {% else %}
+            <div class="no-image" style="height: 200px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 12px;">No image available</div>
+          {% endif %}
+          <div class="brand">{{ shoe.brand }}</div>
+          <div class="name">{{ shoe.name }}</div>
+          <div class="price-row">
+            {% if shoe.discount_price %}
+              <span class="old-price" style="text-decoration: line-through; color: #888; font-size: 0.9em; margin-right: 8px;">${{ shoe.price }}</span>
+              <span class="current-price" style="color: #e47911; font-weight: bold;">${{ shoe.discount_price }}</span>
+            {% else %}
+              <span class="current-price">${{ shoe.price }}</span>
+            {% endif %}
+          </div>
+          
+          <div class="quantity-controls">
+            <button class="qty-btn qty-decrease" data-shoe-id="{{ shoe.id }}">−</button>
+            <span class="qty-display" data-shoe-id="{{ shoe.id }}">0</span>
+            <button class="qty-btn qty-increase" data-shoe-id="{{ shoe.id }}">+</button>
+          </div>
+
+          <button class="add-btn add-to-cart-btn"
+            data-shoe-id="{{ shoe.id }}"
+            data-shoe-image="{{ shoe.image.url }}"
+            data-shoe-name="{{ shoe.name }}"
+            data-shoe-brand="{{ shoe.brand }}"
+            data-shoe-price="{{ shoe.discount_price|default:shoe.price }}">
+            Add to Cart
+          </button>
+        </div>
+      {% empty %}
+        <p>No products found in this collection.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'cart.js' %}?v=1.1" defer></script>
+{% endblock %}
+

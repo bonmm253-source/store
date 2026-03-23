@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search Results | MyStore{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="card" style="padding: 20px;">
+    <h2
+        style="font-size: 20px; font-weight: 500; border-bottom: 1px solid var(--jumia-border); padding-bottom: 15px; margin-bottom: 20px;">
+        Search results for "{{ query }}"
+    </h2>
+
+    <div class="product-grid">
+        {% for shoe in shoes %}
+        <div class="product-card shoe">
+            <a href="{% url 'product_detail' 'shoe' shoe.id %}" style="text-decoration: none; color: inherit;">
+                {% if shoe.image %}
+                <img src="{{ shoe.image.url }}" class="product-img">
+                {% else %}
+                <div class="product-img" style="background: #eee;"></div>
+                {% endif %}
+                <div class="brand">{{ shoe.brand|default:"" }}</div>
+                <div class="product-name">{{ shoe.name }}</div>
+                <div class="product-price">${{ shoe.discount_price|default:shoe.price }}</div>
+            </a>
+            
+            <div class="quantity-controls">
+                <button class="qty-btn qty-decrease" data-shoe-id="{{ shoe.id }}">−</button>
+                <span class="qty-display" data-shoe-id="{{ shoe.id }}">0</span>
+                <button class="qty-btn qty-increase" data-shoe-id="{{ shoe.id }}">+</button>
+            </div>
+
+            <button class="add-btn add-to-cart-btn"
+                data-shoe-id="{{ shoe.id }}"
+                data-shoe-image="{{ shoe.image.url }}"
+                data-shoe-name="{{ shoe.name }}"
+                data-shoe-brand="{{ shoe.brand }}"
+                data-shoe-price="{{ shoe.discount_price|default:shoe.price }}"
+                data-quantity="0">
+                Add to Cart
+            </button>
+        </div>
+        {% endfor %}
+
+        {% for watch in watches %}
+        <div class="product-card watch">
+            <a href="{% url 'product_detail' 'watch' watch.id %}" style="text-decoration: none; color: inherit;">
+                {% if watch.image %}
+                <img src="{{ watch.image.url }}" class="product-img">
+                {% else %}
+                <div class="product-img" style="background: #eee;"></div>
+                {% endif %}
+                <div class="brand">{{ watch.brand|default:"" }}</div>
+                <div class="product-name">{{ watch.name }}</div>
+                <div class="product-price">${{ watch.discount_price|default:watch.price }}</div>
+            </a>
+
+            <div class="quantity-controls">
+                <button class="qty-btn qty-decrease" data-watch-id="{{ watch.id }}">−</button>
+                <span class="qty-display" data-watch-id="{{ watch.id }}">0</span>
+                <button class="qty-btn qty-increase" data-watch-id="{{ watch.id }}">+</button>
+            </div>
+
+            <button class="add-btn add-to-cart-btn"
+                data-watch-id="{{ watch.id }}"
+                data-watch-image="{{ watch.image.url }}"
+                data-watch-name="{{ watch.name }}"
+                data-watch-brand="{{ watch.brand }}"
+                data-watch-price="{{ watch.discount_price|default:watch.price }}"
+                data-quantity="0">
+                Add to Cart
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if not shoes and not watches %}
+    <div style="text-align: center; padding: 40px; color: var(--jumia-light-text);">
+        <span class="material-icons-outlined" style="font-size: 48px;">search_off</span>
+        <p style="margin-top: 10px;">We couldn't find any matches for "{{ query }}".</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'cart.js' %}?v=1.4" defer></script>
+{% endblock %}

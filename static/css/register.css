@@ -1,0 +1,174 @@
+/* ====== Global Styles ====== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  color: #1a1a1a;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ====== Header ====== */
+header {
+  background: #fff;
+  padding: 15px 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header a {
+  font-weight: 500;
+  color: #0f62fe;
+  text-decoration: none;
+}
+
+header a:hover {
+  text-decoration: underline;
+}
+
+/* ====== Main Form Container ====== */
+main.page {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+div.div {
+  background: #fff;
+  padding: 35px 30px;
+  border-radius: 12px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+div.div:hover {
+  transform: translateY(-2px);
+}
+
+/* ====== Form Styles ====== */
+form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.field {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.field p {
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.field input {
+  padding: 12px 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: border 0.3s ease;
+}
+
+.field input:focus {
+  outline: none;
+  border-color: #0f62fe;
+}
+
+/* ====== Password Toggle Icon ====== */
+.toggle-password img {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+/* ====== Error Messages ====== */
+.field-error div,
+.form-errors p {
+  color: #e53935;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+/* ====== Submit Button ====== */
+.btn {
+  width: 100%;
+  padding: 12px;
+  background: #0f62fe;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+  background: #0353e9;
+  transform: translateY(-1px);
+}
+
+/* ====== Link Under Form ====== */
+form p {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+
+form p a {
+  font-weight: 600;
+}
+
+/* ====== Responsive ====== */
+@media (max-width: 480px) {
+  div.div {
+    padding: 25px 15px;
+    border-radius: 8px;
+  }
+
+  form h2 {
+    font-size: 1.5rem;
+  }
+
+  .field input {
+    font-size: 0.95rem;
+    padding: 10px 12px;
+  }
+
+  .toggle-password {
+    right: 10px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  header div {
+    margin-inline: 0;
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  div.div {
+    padding: 30px 20px;
+  }
+}

@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard | MyStore{% endblock %}
+
+{% block head_extra %}
+<style>
+    .dashboard-layout {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+    }
+
+    .sidebar {
+        width: 250px;
+        background: white;
+        border-radius: 4px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .sidebar a {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 20px;
+        color: var(--jumia-text);
+        border-bottom: 1px solid var(--jumia-border);
+        transition: 0.2s;
+    }
+
+    .sidebar a:hover {
+        background: var(--jumia-gray);
+        color: var(--jumia-orange);
+    }
+
+    .dashboard-content {
+        flex: 1;
+        background: white;
+        border-radius: 4px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+    }
+
+    .dash-header {
+        font-size: 20px;
+        font-weight: 500;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--jumia-border);
+    }
+
+    .order-box {
+        border: 1px solid var(--jumia-border);
+        border-radius: 4px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: var(--jumia-light-text);
+    }
+
+    .order-status {
+        background: #e1f5fe;
+        color: #0288d1;
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-layout {
+            flex-direction: column;
+        }
+
+        .sidebar {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+    <div class="sidebar">
+        <a href="#orders"><span class="material-icons-outlined">inventory_2</span> My Orders</a>
+        <a href="#wishlist"><span class="material-icons-outlined">favorite_border</span> Saved Items</a>
+        <a href="#profile"><span class="material-icons-outlined">manage_accounts</span> Account Details</a>
+        <a href="{% url 'logout' %}" style="color: #d32f2f;"><span class="material-icons-outlined">logout</span>
+            Logout</a>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="dash-header">My Orders</div>
+
+        {% for order in orders %}
+        <div class="order-box">
+            <div class="order-header">
+                <span>Order #{{ order.id }}</span>
+                <span>{{ order.created_at|date:"M d, Y" }}</span>
+            </div>
+
+            <div style="font-size: 15px; font-weight: 500; margin-bottom: 10px;">Total: ${{ order.total }}</div>
+            <div style="margin-bottom: 15px;"><span class="order-status">{{ order.status }}</span></div>
+
+            <div style="font-size: 13px; color: var(--jumia-light-text);">
+                Shipped to: {{ order.delivery_address }}
+            </div>
+        </div>
+        {% empty %}
+        <div style="text-align: center; padding: 30px; color: var(--jumia-light-text);">
+            <span class="material-icons-outlined" style="font-size: 48px;">receipt_long</span>
+            <p style="margin-top: 10px;">You have placed no orders yet.</p>
+        </div>
+        {% endfor %}
+
+        <div class="dash-header" style="margin-top: 40px;" id="wishlist">Saved Items</div>
+        {% if wishlist.shoes.all or wishlist.watches.all %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+            {% for shoe in wishlist.shoes.all %}
+            <a href="{% url 'product_detail' 'shoe' shoe.id %}"
+                style="border: 1px solid var(--jumia-border); padding: 10px; border-radius: 4px; text-decoration: none; color: inherit; text-align: center; display: block; position: relative;">
+                {% if shoe.discount_price %}
+                <div
+                    style="position: absolute; top: 5px; right: 5px; background: #f6ebd8; color: var(--jumia-orange); padding: 2px 4px; font-size: 10px; font-weight: bold; border-radius: 2px;">
+                    SALE</div>
+                {% endif %}
+                {% if shoe.image %}
+                <img src="{{ shoe.image.url }}"
+                    style="width: 100%; height: 120px; object-fit: cover; margin-bottom: 10px; border-radius: 4px;">
+                {% else %}
+                <div style="width: 100%; height: 120px; background: #eee; margin-bottom: 10px; border-radius: 4px;">
+                </div>
+                {% endif %}
+                <div
+                    style="font-size: 13px; margin-bottom: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                    {{ shoe.name }}</div>
+                <div style="font-weight: bold; color: var(--jumia-orange);">${{ shoe.discount_price|default:shoe.price
+                    }}</div>
+                {% if shoe.discount_price %}
+                <div style="font-size: 11px; color: var(--jumia-light-text); text-decoration: line-through;">${{
+                    shoe.price }}</div>
+                {% endif %}
+            </a>
+            {% endfor %}
+            <!-- Watches in Wishlist -->
+            {% for watch in wishlist.watches.all %}
+            <a href="{% url 'product_detail' 'watch' watch.id %}"
+                style="border: 1px solid var(--jumia-border); padding: 10px; border-radius: 4px; text-decoration: none; color: inherit; text-align: center; display: block; position: relative;">
+                {% if watch.discount_price %}
+                <div
+                    style="position: absolute; top: 5px; right: 5px; background: #f6ebd8; color: var(--jumia-orange); padding: 2px 4px; font-size: 10px; font-weight: bold; border-radius: 2px;">
+                    SALE</div>
+                {% endif %}
+                {% if watch.image %}
+                <img src="{{ watch.image.url }}"
+                    style="width: 100%; height: 120px; object-fit: cover; margin-bottom: 10px; border-radius: 4px;">
+                {% else %}
+                <div style="width: 100%; height: 120px; background: #eee; margin-bottom: 10px; border-radius: 4px;">
+                </div>
+                {% endif %}
+                <div
+                    style="font-size: 13px; margin-bottom: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                    {{ watch.name }}</div>
+                <div style="font-weight: bold; color: var(--jumia-orange);">${{ watch.discount_price|default:watch.price
+                    }}</div>
+                {% if watch.discount_price %}
+                <div style="font-size: 11px; color: var(--jumia-light-text); text-decoration: line-through;">${{
+                    watch.price }}</div>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 30px; color: var(--jumia-light-text);">
+            <span class="material-icons-outlined" style="font-size: 48px;">favorite_border</span>
+            <p style="margin-top: 10px;">You haven't saved any items yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

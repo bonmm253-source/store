@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Page</title>
+
+<style>
+
+/* ================= RESET ================= */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  width:90%;
+  max-width:1200px;
+  margin:auto;
+  font-family:Arial, sans-serif;
+  background:#f5f5f5;
+}
+
+/* ================= NAVBAR ================= */
+header{
+  position:sticky;
+  top:0;
+  background:white;
+  z-index:1000;
+  padding:15px 0;
+}
+
+.nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.div0{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.div0 a{
+  text-decoration:none;
+  font-weight:bold;
+  color:rgb(231,143,28);
+  transition:.3s;
+}
+
+.div0 a:hover{
+  color:black;
+}
+
+/* ================= PRODUCT SECTION ================= */
+.section{
+  margin-top:60px;
+  display:flex;
+  gap:60px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+main{
+  max-width:500px;
+  width:100%;
+}
+
+.img{
+  width:100%;
+  border-radius:12px;
+  cursor:pointer;
+  transition:.4s;
+}
+
+.img:hover{
+  transform:scale(1.05);
+}
+
+/* Thumbnails */
+.sectiondiv{
+  display:flex;
+  gap:15px;
+  margin-top:20px;
+  flex-wrap:wrap;
+}
+
+.sectiondiv img{
+  width:100px;
+  height:100px;
+  object-fit:cover;
+  border-radius:10px;
+  cursor:pointer;
+  border:2px solid transparent;
+  transition:.3s;
+}
+
+.sectiondiv img:hover{
+  transform:scale(1.1);
+}
+
+.sectiondiv img.selected{
+  border:2px solid rgb(231,143,28);
+}
+
+/* ================= PRODUCT DETAILS ================= */
+.divsneaker{
+  max-width:500px;
+  width:100%;
+  line-height:28px;
+}
+
+.divsneaker h3{
+  color:rgb(231,143,28);
+  margin-bottom:10px;
+}
+
+.divsneaker h1{
+  margin-bottom:15px;
+}
+
+.divsneaker p{
+  margin-bottom:20px;
+  color:#555;
+}
+
+#price{
+  display:flex;
+  gap:15px;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+#amount{
+  font-size:24px;
+  font-weight:bold;
+}
+
+#discount{
+  background:black;
+  color:white;
+  padding:5px 10px;
+  border-radius:5px;
+}
+
+/* ================= QUANTITY ================= */
+.divimage{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+  margin-top:25px;
+}
+
+.sectionbutton{
+  display:flex;
+  gap:10px;
+}
+
+.sectionbutton button{
+  width:45px;
+  height:45px;
+  border-radius:10px;
+  border:none;
+  background:#eee;
+  font-size:18px;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.sectionbutton button:hover{
+  background:rgb(231,143,28);
+  color:white;
+  transform:scale(1.1);
+}
+
+/* Add to Cart */
+.buttonsection{
+  padding:12px 25px;
+  border:none;
+  border-radius:12px;
+  background:rgb(231,143,28);
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.buttonsection:hover{
+  background:black;
+  transform:translateY(-3px);
+  box-shadow:0 8px 20px rgba(0,0,0,.2);
+}
+
+/* ================= LIGHTBOX ================= */
+.lightbox{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.8);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:2000;
+}
+
+.lightbox img{
+  max-width:90%;
+  max-height:90%;
+  border-radius:10px;
+}
+
+/* ================= CART POPUP ================= */
+.cart-popup{
+  position:fixed;
+  top:20px;
+  right:20px;
+  background:rgb(231,143,28);
+  color:white;
+  padding:15px 25px;
+  border-radius:10px;
+  display:none;
+  animation:fadeIn .5s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(-10px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:992px){
+  .section{
+    flex-direction:column;
+  }
+}
+
+@media(max-width:600px){
+
+  body{
+    width:95%;
+  }
+
+  .nav{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+
+  .sectiondiv img{
+    width:70px;
+    height:70px;
+  }
+
+  .divimage{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .buttonsection{
+    width:100%;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <nav class="nav">
+    <h3>MyStore</h3>
+    <div class="div0">
+      <a href="{% url 'collection' %}">Collection</a>
+      <a href="{% url 'men' %}">Men</a>
+      <a href="{% url 'women' %}">Women</a>
+      <a href="{% url 'wristcollection' %}">Watches</a>
+       <a href="{% url 'home' %}">Home</a>
+    </div>
+  </nav>
+</header>
+
+<section class="section">
+
+  <main>
+    <img class="img" src="/static/images/image-product-1.jpg" alt="">
+    <div class="sectiondiv">
+      <img class="selected" src="/static/images/image-product-1-thumbnail.jpg">
+      <img src="/static/collection/men/images (26).jpeg">
+      <img src="/media/shoes/images_70.jpeg">
+      <img src="/static/collection/women/images (37).jpeg">
+    </div>
+  </main>
+
+  <div class="divsneaker">
+    <h3>SNEAKER COMPANY</h3>
+    <h1>Fall Limited Edition Sneakers</h1>
+    <p>These low-profile sneakers are your perfect casual wear companion.</p>
+
+    <div id="price">
+      <span id="amount">$125.00</span>
+      <span id="discount">50%</span>
+    </div>
+
+    <div class="divimage">
+      <div class="sectionbutton">
+        <button id="decrease">-</button>
+        <button id="quantity">0</button>
+        <button id="increase">+</button>
+      </div>
+
+      <button class="buttonsection" id="addToCart">
+        Add to Cart
+      </button>
+    </div>
+  </div>
+
+</section>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <img src="" id="lightbox-img">
+</div>
+
+<!-- Cart Popup -->
+<div class="cart-popup" id="cartPopup">
+  Item added to cart!
+</div>
+
+<script>
+
+/* Thumbnail Click */
+const mainImage = document.querySelector('.img');
+const thumbnails = document.querySelectorAll('.sectiondiv img');
+
+thumbnails.forEach(thumb=>{
+  thumb.addEventListener('click',()=>{
+    mainImage.src = thumb.src;
+    thumbnails.forEach(t=>t.classList.remove('selected'));
+    thumb.classList.add('selected');
+  });
+});
+
+/* Lightbox */
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+
+mainImage.addEventListener('click',()=>{
+  lightbox.style.display="flex";
+  lightboxImg.src = mainImage.src;
+});
+
+lightbox.addEventListener('click',()=>{
+  lightbox.style.display="none";
+});
+
+/* Quantity Counter */
+let qty = 0;
+const quantity = document.getElementById('quantity');
+
+document.getElementById('increase').onclick=()=>{
+  qty++;
+  quantity.textContent=qty;
+};
+
+document.getElementById('decrease').onclick=()=>{
+  if(qty>0) qty--;
+  quantity.textContent=qty;
+};
+
+/* Add to Cart Popup */
+const popup = document.getElementById('cartPopup');
+
+document.getElementById('addToCart').onclick=()=>{
+  if(qty>0){
+    popup.style.display="block";
+    setTimeout(()=> popup.style.display="none",2000);
+  }
+};
+
+/* Swipe Support */
+let startX=0;
+
+mainImage.addEventListener("touchstart",e=>{
+  startX=e.touches[0].clientX;
+});
+
+mainImage.addEventListener("touchend",e=>{
+  let endX=e.changedTouches[0].clientX;
+  if(startX-endX>50) nextImage();
+  if(endX-startX>50) prevImage();
+});
+
+let current=0;
+
+function nextImage(){
+  current=(current+1)%thumbnails.length;
+  updateImage();
+}
+
+function prevImage(){
+  current=(current-1+thumbnails.length)%thumbnails.length;
+  updateImage();
+}
+
+function updateImage(){
+  mainImage.src=thumbnails[current].src;
+  thumbnails.forEach(t=>t.classList.remove("selected"));
+  thumbnails[current].classList.add("selected");
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,172 @@
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+import json
+from django.core.exceptions import ValidationError
+
+def validate_file_size(file):
+    if file.size > 2*1024*1024:
+        raise ValidationError("File too large")
+
+class User(AbstractUser):
+    email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=20, unique=True, null=True, blank=True)
+
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='shoes_users',
+        blank=True,
+        help_text='The groups this user belongs to.',
+        verbose_name='groups',
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='shoes_user_permissions',
+        blank=True,
+        help_text='Specific permissions for this user.',
+        verbose_name='user permissions',
+    )
+
+    class Meta:
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
+
+    def __str__(self):
+        return self.username
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, null=False)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self): 
+        return self.name
+
+class watch(models.Model):
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='watchs/')
+    brand = models.CharField(max_length=100, null=True, blank=True)
+    description = models.TextField(blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='watchs')
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Flash sale price")
+    stock = models.IntegerField(default=10)
+
+    def __str__(self):
+        return f"{self.brand or ''} {self.name}".strip()
+
+class shoe(models.Model):
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='shoes/')
+    brand = models.CharField(max_length=100, null=True, blank=True)
+    description = models.TextField(blank=True, null=True)
+    # Target audience was originally colliding with category
+    AUDIENCE_CHOICES = [
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+        ('Collections', 'Collections'),
+    ]
+    target_audience = models.CharField(max_length=100, choices=AUDIENCE_CHOICES, default='Collections')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='shoes')
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Flash sale price")
+    stock = models.IntegerField(default=10)
+
+    def __str__(self):
+        return f"{self.brand or ''} {self.name}".strip()
+
+# --- OTP MODEL ---
+class OTP(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"OTP for {self.user.username}"
+
+# --- NEW MODELS ---
+
+class Cart(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    session_key = models.CharField(max_length=40, null=True, blank=True) # for guest users
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Cart {self.id} for {self.user or self.session_key}"
+
+    @property
+    def total_price(self):
+        return sum(item.total_price for item in self.items.all())
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)
+    shoe_item = models.ForeignKey(shoe, on_delete=models.CASCADE, null=True, blank=True)
+    watch_item = models.ForeignKey(watch, on_delete=models.CASCADE, null=True, blank=True)
+    quantity = models.PositiveIntegerField(default=1)
+
+    @property
+    def product(self):
+        return self.shoe_item or self.watch_item
+
+    @property
+    def total_price(self):
+        if self.product:
+            p = self.product.discount_price or self.product.price
+            return p * self.quantity
+        return 0
+
+class Wishlist(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    shoes = models.ManyToManyField(shoe, blank=True)
+    watches = models.ManyToManyField(watch, blank=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s Wishlist"
+
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    shoe_item = models.ForeignKey(shoe, related_name='reviews', on_delete=models.CASCADE, null=True, blank=True)
+    watch_item = models.ForeignKey(watch, related_name='reviews', on_delete=models.CASCADE, null=True, blank=True)
+    rating = models.IntegerField(default=5, choices=[(i, i) for i in range(1, 6)])
+    comment = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        prod = self.shoe_item or self.watch_item
+        return f"Review by {self.user.username} on {prod}"
+
+class Order(models.Model):
+    STATUS_CHOICES = (
+        ('Pending', 'Pending'),
+        ('Processing', 'Processing'),
+        ('Shipped', 'Shipped'),
+        ('Delivered', 'Delivered'),
+        ('Cancelled', 'Cancelled'),
+    )
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    # We will keep items_json for simplicity of snapshotting the items at the time of purchase
+    items_json = models.TextField(help_text='JSON serialized cart items')
+    total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    delivery_address = models.TextField(blank=True)
+    phone = models.CharField(max_length=30, blank=True)
+    complete = models.BooleanField(default=False)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    confirmed_account_number = models.CharField(max_length=20, null=True, blank=True, help_text='Account number user confirmed they paid to')
+    payment_method = models.CharField(max_length=50, default='Bank Transfer')
+
+    @property
+    def items_list(self):
+        try:
+            items = json.loads(self.items_json)
+            for item in items:
+                # Standardize keys to avoid VariableDoesNotExist in templates
+                item['image'] = item.get('shoeImage') or item.get('watchImage') or item.get('image') or ''
+                item['name'] = item.get('shoeName') or item.get('watchName') or item.get('name') or 'Item'
+                item['id'] = item.get('shoeId') or item.get('watchId') or item.get('id')
+                item['type'] = 'shoe' if 'shoeId' in item else 'watch'
+            return items
+        except:
+            return []
+    transaction_id = models.CharField(max_length=100, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order #{self.id} by {self.user or 'guest'} - {self.status}"

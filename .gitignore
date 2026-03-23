@@ -1,0 +1,46 @@
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Python
+.venv/
+venv/
+ENV/
+env/
+
+# Flutter
+mobile/.dart_tool/
+mobile/.packages
+mobile/.pub-cache/
+mobile/.pub/
+mobile/build/
+mobile/ios/.generated/
+mobile/android/.gradle/
+mobile/android/local.properties
+mobile/android/app/src/main/res/mipmap-*
+mobile/android/app/src/main/res/drawable-*
+mobile/windows/flutter/ephemeral/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project Specific
+assets/
+tmp/
+brain/
+*.bat
+app_config.json

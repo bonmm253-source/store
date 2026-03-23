@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}MyStore | Best Deals Online{% endblock %}
+
+{% block head_extra %}
+<style>
+    /* Homepage Specific Layout */
+    .hero-section {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .hero-categories {
+        width: 200px;
+        background: white;
+        border-radius: 4px;
+        padding: 10px 0;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        display: none;
+        /* hidden on small screens */
+    }
+
+    @media (min-width: 900px) {
+        .hero-categories {
+            display: block;
+        }
+    }
+
+    .hero-categories ul li a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 15px;
+        font-size: 13px;
+        color: var(--jumia-text);
+        transition: 0.2s;
+    }
+
+    .hero-categories ul li a:hover {
+        color: var(--jumia-orange);
+        background: var(--jumia-gray);
+        font-weight: 500;
+    }
+
+    .hero-slider {
+        flex: 1;
+        background: var(--jumia-dark);
+        border-radius: 4px;
+        position: relative;
+        overflow: hidden;
+        height: 384px;
+    }
+
+    .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .slide.active {
+        opacity: 1;
+    }
+
+    /* Grids */
+    .section-title {
+        background: #fdfde9;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .section-title h3 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #000;
+        font-size: 18px;
+    }
+
+    .product-grid {
+        background: white;
+        padding: 15px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 15px;
+        border-radius: 0 0 4px 4px;
+    }
+
+    .product-card {
+        display: block;
+        background: white;
+        border-radius: 4px;
+        padding: 10px;
+        transition: box-shadow 0.2s, transform 0.2s;
+        text-align: left;
+        position: relative;
+    }
+
+    .product-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .product-img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    .discount-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #f6ebd8;
+        color: var(--jumia-orange);
+        padding: 2px 6px;
+        font-size: 12px;
+        font-weight: bold;
+        border-radius: 2px;
+    }
+
+    .product-name {
+        font-size: 14px;
+        color: var(--jumia-text);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin-bottom: 5px;
+    }
+
+    .product-price {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--jumia-dark);
+    }
+
+    .product-old-price {
+        font-size: 12px;
+        color: var(--jumia-light-text);
+        text-decoration: line-through;
+        margin-top: 2px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+
+
+    <div class="hero-slider">
+        <!-- Replace with real promo banners -->
+        <div class="slide active"
+            style="background-image: url('https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
+        </div>
+        <div class="slide"
+            style="background-image: url('https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
+        </div>
+    </div>
+</div>
+
+{% if flash_shoes %}
+<div style="margin-bottom: 30px;">
+    <div class="section-title" style="background: var(--jumia-orange); color: white;">
+        <h3 style="color: white;"><span class="material-icons-outlined">flash_on</span> Flash Sales</h3>
+        <span style="font-size: 14px; font-weight: bold;">Time is ticking!</span>
+    </div>
+    <div class="product-grid">
+        {% for shoe in flash_shoes %}
+        <a href="{% url 'product_detail' 'shoe' shoe.id %}" class="product-card">
+            {% if shoe.image %}
+            <img class="product-img" src="{{ shoe.image.url }}" alt="{{ shoe.name }}">
+            {% else %}
+            <div class="product-img" style="background: #eee;"></div>
+            {% endif %}
+
+            <div class="discount-badge">-15%</div>
+            <div class="product-name">{{ shoe.brand|default:"" }} {{ shoe.name }}</div>
+            <div class="product-price">${{ shoe.discount_price|default:shoe.price }}</div>
+            {% if shoe.discount_price %}
+            <div class="product-old-price">${{ shoe.price }}</div>
+            {% endif %}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div style="margin-bottom: 30px;">
+    <div class="section-title">
+        <h3>Top Selling Watches</h3>
+        <a href="{% url 'wristcollection' %}" class="see-all">See All ></a>
+    </div>
+    <div class="product-grid">
+        {% for watch in top_watches|default:flash_shoes %}
+        <a href="{% url 'product_detail' 'watch' watch.id %}" class="product-card">
+            {% if watch.image %}
+            <img class="product-img" src="{{ watch.image.url }}" alt="{{ watch.name }}">
+            {% else %}
+            <div class="product-img" style="background: #eee;"></div>
+            {% endif %}
+
+            {% if watch.discount_price %}
+            <div class="discount-badge">Sale</div>
+            {% endif %}
+            <div class="product-name">{{ watch.brand|default:"" }} {{ watch.name }}</div>
+            <div class="product-price">${{ watch.discount_price|default:watch.price }}</div>
+            {% if watch.discount_price %}
+            <div class="product-old-price">${{ watch.price }}</div>
+            {% endif %}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+{% if men_shoes %}
+<div style="margin-bottom: 30px;">
+    <div class="section-title">
+        <h3>Featured Men's Sneakers</h3>
+        <a href="{% url 'men' %}" class="see-all">See All ></a>
+    </div>
+    <div class="product-grid">
+        {% for shoe in men_shoes %}
+        <a href="{% url 'product_detail' 'shoe' shoe.id %}" class="product-card">
+            {% if shoe.image %}
+            <img class="product-img" src="{{ shoe.image.url }}" alt="{{ shoe.name }}">
+            {% else %}
+            <div class="product-img" style="background: #eee;"></div>
+            {% endif %}
+
+            {% if shoe.discount_price %}
+            <div class="discount-badge">Sale</div>
+            {% endif %}
+            <div class="product-name">{{ shoe.brand|default:"" }} {{ shoe.name }}</div>
+            <div class="product-price">${{ shoe.discount_price|default:shoe.price }}</div>
+            {% if shoe.discount_price %}
+            <div class="product-old-price">${{ shoe.price }}</div>
+            {% endif %}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if women_shoes %}
+<div style="margin-bottom: 30px;">
+    <div class="section-title">
+        <h3>Premium Women's Shoes</h3>
+        <a href="{% url 'women' %}" class="see-all">See All ></a>
+    </div>
+    <div class="product-grid">
+        {% for shoe in women_shoes %}
+        <a href="{% url 'product_detail' 'shoe' shoe.id %}" class="product-card">
+            {% if shoe.image %}
+            <img class="product-img" src="{{ shoe.image.url }}" alt="{{ shoe.name }}">
+            {% else %}
+            <div class="product-img" style="background: #eee;"></div>
+            {% endif %}
+
+            {% if shoe.discount_price %}
+            <div class="discount-badge">Sale</div>
+            {% endif %}
+            <div class="product-name">{{ shoe.brand|default:"" }} {{ shoe.name }}</div>
+            <div class="product-price">${{ shoe.discount_price|default:shoe.price }}</div>
+            {% if shoe.discount_price %}
+            <div class="product-old-price">${{ shoe.price }}</div>
+            {% endif %}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<script>
+    // Simple slider logic
+    let slides = document.querySelectorAll('.slide');
+    let curSlide = 0;
+    if (slides.length > 0) {
+        setInterval(() => {
+            slides[curSlide].classList.remove('active');
+            curSlide = (curSlide + 1) % slides.length;
+            slides[curSlide].classList.add('active');
+        }, 5000);
+    }
+</script>
+{% endblock %}

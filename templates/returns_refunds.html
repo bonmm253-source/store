@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Returns & Refunds Policy | MyStore{% endblock %}
+
+{% block content %}
+<div class="page-container" style="max-width: 900px; margin: 40px auto; padding: 20px;">
+    <h1 style="color: var(--jumia-dark); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+        <span class="material-icons-outlined"
+            style="font-size: 36px; color: var(--jumia-orange);">keyboard_return</span>
+        Returns & Refunds
+    </h1>
+
+    <div style="background: white; border-radius: 8px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+
+        <h2 style="border-bottom: 1px solid var(--jumia-border); padding-bottom: 10px;">Our 15-Day Return Policy</h2>
+        <p style="color: var(--jumia-light-text); line-height: 1.8; margin-top: 20px;">
+            We want you to be completely satisfied with your purchase from MyStore. If you are not happy with your item,
+            you may return it within <strong>15 days</strong> of delivery for a full refund or exchange.
+        </p>
+
+        <div
+            style="background: #e8f5e9; border-left: 4px solid #4caf50; padding: 20px; border-radius: 4px; margin-top: 30px;">
+            <h3 style="color: #2e7d32; margin-top: 0;">Eligibility for Return</h3>
+            <ul style="color: #388e3c; line-height: 1.8; margin-top: 10px; padding-left: 20px;">
+                <li>The item must be unused, unwashed, and in the same condition that you received it.</li>
+                <li>It must be in the original packaging with all tags still attached.</li>
+                <li>Certain items are exempt from returns (e.g., clearance items, intimates, and customized items).</li>
+            </ul>
+        </div>
+
+        <h3 style="margin-top: 40px;">How to Return an Item</h3>
+        <ol style="color: var(--jumia-light-text); line-height: 1.8; margin-top: 15px; padding-left: 20px;">
+            <li>Go to your <a href="{% url 'dashboard' %}" style="color: var(--jumia-orange);">Dashboard</a> and find
+                your order under "Orders".</li>
+            <li>Select "Return Item" next to the product you wish to return.</li>
+            <li>Fill out the quick return form describing the issue (e.g., Wrong Size, Defective, Changed Mind).</li>
+            <li>Print the prepaid shipping label sent to your email and attach it to the package.</li>
+            <li>Drop off the package at any partnered logistics center or request a pickup.</li>
+        </ol>
+
+        <h3 style="margin-top: 40px;">Refund Process</h3>
+        <p style="color: var(--jumia-light-text); line-height: 1.8; margin-top: 15px;">
+            Once your return is received and inspected (typically within 48 hours of reaching our warehouse), we will
+            send you an email to notify you of the approval or rejection of your refund.
+            <br><br>
+            If approved, a credit will automatically be applied to your credit card or original method of payment within
+            <strong>3-7 business days</strong>.
+        </p>
+
+        <div style="margin-top: 40px; text-align: center;">
+            <a href="{% url 'help_center' %}"
+                style="color: var(--jumia-orange); text-decoration: none; font-weight: bold;">Can't find what you're
+                looking for? Visit our Help Center <span class="material-icons-outlined"
+                    style="vertical-align: middle; font-size: 18px;">arrow_forward</span></a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

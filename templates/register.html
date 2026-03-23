@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Account | MyStore{% endblock %}
+
+{% block content %}
+<div class="auth-form">
+  <h2>Create Your Account</h2>
+  <p style="text-align: center; color: var(--jumia-light-text); margin-bottom: 20px; font-size: 14px;">Join MyStore to
+    enjoy exclusive deals and top-tier services.</p>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div
+      style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 13px;">
+      {% for err in form.non_field_errors %}
+      <p>{{ err }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="form-group">
+      <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+      {{ form.username }}
+      {% if form.username.errors %}
+      <div style="color: #e53935; font-size: 12px; margin-top: 5px;">
+        {% for err in form.username.errors %}<div>{{ err }}</div>{% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+      {{ form.email }}
+      {% if form.email.errors %}
+      <div style="color: #e53935; font-size: 12px; margin-top: 5px;">
+        {% for err in form.email.errors %}<div>{{ err }}</div>{% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.phone.id_for_label }}">Phone Number</label>
+      {{ form.phone }}
+      {% if form.phone.errors %}
+      <div style="color: #e53935; font-size: 12px; margin-top: 5px;">
+        {% for err in form.phone.errors %}<div>{{ err }}</div>{% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+      <div style="position: relative; display: flex; align-items: center;">
+        {{ form.password }}
+        <span class="material-icons-outlined toggle-password"
+          style="position: absolute; right: 10px; cursor: pointer; color: #757575; user-select: none;">visibility_off</span>
+      </div>
+      {% if form.password.errors %}
+      <div style="color: #e53935; font-size: 12px; margin-top: 5px;">
+        {% for err in form.password.errors %}<div>{{ err }}</div>{% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.confirm_password.id_for_label }}">{{ form.confirm_password.label }}</label>
+      <div style="position: relative; display: flex; align-items: center;">
+        {{ form.confirm_password }}
+        <span class="material-icons-outlined toggle-password"
+          style="position: absolute; right: 10px; cursor: pointer; color: #757575; user-select: none;">visibility_off</span>
+      </div>
+      {% if form.confirm_password.errors %}
+      <div style="color: #e53935; font-size: 12px; margin-top: 5px;">
+        {% for err in form.confirm_password.errors %}<div>{{ err }}</div>{% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <button type="submit" class="btn-primary">CREATE ACCOUNT</button>
+
+    <div style="text-align: center; margin-top: 20px; font-size: 14px;">
+      Already have an account? <a href="{% url 'login' %}" style="color: var(--jumia-orange); font-weight: bold;">Login
+        Here</a>
+      
+      <div class="social-divider">OR</div>
+
+      {% load socialaccount %}
+      <a href="{% provider_login_url 'google' %}" class="btn-google">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo">
+        <span>Register with Google</span>
+      </a>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.querySelectorAll('.toggle-password').forEach(function (icon) {
+    icon.addEventListener('click', function () {
+      const input = this.previousElementSibling;
+      if (input.type === 'password') {
+        input.type = 'text';
+        this.textContent = 'visibility';
+      } else {
+        input.type = 'password';
+        this.textContent = 'visibility_off';
+      }
+    });
+  });
+</script>
+{% endblock %}

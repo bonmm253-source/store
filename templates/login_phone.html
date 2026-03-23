@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login with Phone | MyStore{% endblock %}
+
+{% block content %}
+<div class="auth-form">
+  <h2>Login via Phone OTP</h2>
+  <p style="text-align: center; color: var(--jumia-light-text); margin-bottom: 20px; font-size: 14px;">Enter your phone
+    number to receive a one-time passcode.</p>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div
+      style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 13px;">
+      {% for err in form.non_field_errors %}
+      <p>{{ err }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="form-group">
+      <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+      {{ form.phone }}
+      {% if form.phone.errors %}
+      <div style="color: #e53935; font-size: 12px; margin-top: 5px;">
+        {% for err in form.phone.errors %}<div>{{ err }}</div>{% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <button type="submit" class="btn-primary">SEND OTP</button>
+
+    <div style="text-align: center; margin-top: 20px; font-size: 14px;">
+      Or <a href="{% url 'login' %}" style="color: var(--jumia-orange); font-weight: bold;">Login with Password</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

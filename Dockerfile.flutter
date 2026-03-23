@@ -1,0 +1,13 @@
+# Dockerfile.flutter to build Android APK without local Flutter installation
+FROM ghcr.io/cirruslabs/flutter:stable
+
+# Create working directory
+WORKDIR /app/mobile
+
+# Accept licenses (done in cirruslabs image, but good to be sure)
+RUN yes | flutter doctor --android-licenses
+
+# Copy the mobile project files (once created)
+# If mobile directory doesn't exist yet, we'll create it via docker run
+# CMD can be set to either build or create
+CMD ["flutter", "build", "apk", "--release"]

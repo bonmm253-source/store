@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Wrist Watches | MyStore{% endblock %}
+
+{% block head_extra %}
+<style>
+  /* Page specific overrides if any */
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="collection">
+  <div class="collection-wrap">
+    <div class="order-nav-wrap">
+      <a href="{% url 'orders' %}" class="order-btn">
+        <span class="material-icons-outlined">shopping_bag</span>
+        View My Orders
+      </a>
+    </div>
+    <div class="product-grid">
+      {% for watch in watchs %}
+        <div class="product-card watch">
+          {% if watch.image %}
+            <img src="{{ watch.image.url }}" alt="{{ watch.name }}">
+          {% else %}
+            <div class="no-image" style="height: 200px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 14px;">No image available</div>
+          {% endif %}
+          <div class="brand">{{ watch.brand }} | {{ watch.category }}</div>
+          <div class="rating" data-type="watch" data-id="{{ watch.id }}">
+            <div class="stars">
+              {% for i in "12345" %}
+                <span class="star" data-value="{{ forloop.counter }}">★</span>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="divshoe">
+            <h3>{{ watch.name }}</h3>
+            {% if watch.discount_price %}
+              <p class="naira">
+                <span style="text-decoration: line-through; color: #888; font-size: 0.9em; margin-right: 8px;">${{ watch.price }}</span>
+                <span style="color: #e47911; font-weight: bold;">${{ watch.discount_price }}</span>
+              </p>
+            {% elif watch.price %}
+              <p class="naira">${{ watch.price }}</p>
+            {% endif %}
+          </div>
+          
+          <div class="quantity-controls">
+            <button class="qty-btn qty-decrease" data-watch-id="{{ watch.id }}">−</button>
+            <span class="qty-display" data-watch-id="{{ watch.id }}">0</span>
+            <button class="qty-btn qty-increase" data-watch-id="{{ watch.id }}">+</button>
+          </div>
+
+          <button class="add-btn add-to-cart-btn"
+            data-watch-id="{{ watch.id }}"
+            data-watch-image="{{ watch.image.url }}"
+            data-watch-name="{{ watch.name }}"
+            data-watch-brand="{{ watch.brand }}"
+            data-watch-price="{{ watch.discount_price|default:watch.price }}">
+            Add to Cart
+          </button>
+        </div>
+      {% empty %}
+        <p>No Wrist Watches found in this category.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function(){
+    // Quantity controls for each watch
+    const quantities = {};
+
+    document.addEventListener('DOMContentLoaded', function(){
+      // Initialize quantities from local storage if exists or set to 0
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      
+      document.querySelectorAll('.qty-display').forEach(el => {
+        const watchId = el.getAttribute('data-watch-id');
+        const existingItem = cart.find(item => String(item.watchId) === String(watchId));
+        quantities[watchId] = existingItem ? existingItem.quantity : 0;
+        el.textContent = quantities[watchId];
+      });
+
+      // Plus button handler
+      document.querySelectorAll('.qty-increase').forEach(btn => {
+        btn.addEventListener('click', function(e){
+          e.preventDefault();
+          const watchId = this.getAttribute('data-watch-id');
+          if (quantities[watchId] < 5) {
+            quantities[watchId]++;
+            document.querySelector('.qty-display[data-watch-id="' + watchId + '"]').textContent = quantities[watchId];
+            
+            const addBtn = document.querySelector('.add-to-cart-btn[data-watch-id="' + watchId + '"]');
+            updateCartWithQuantity(watchId, quantities[watchId], addBtn);
+          }
+        });
+      });
+
+      // Minus button handler
+      document.querySelectorAll('.qty-decrease').forEach(btn => {
+        btn.addEventListener('click', function(e){
+          e.preventDefault();
+          const watchId = this.getAttribute('data-watch-id');
+          if (quantities[watchId] > 0) {
+            quantities[watchId]--;
+            document.querySelector('.qty-display[data-watch-id="' + watchId + '"]').textContent = quantities[watchId];
+            
+            const addBtn = document.querySelector('.add-to-cart-btn[data-watch-id="' + watchId + '"]');
+            updateCartWithQuantity(watchId, quantities[watchId], addBtn);
+          }
+        });
+      });
+
+      function updateCartWithQuantity(watchId, newQty, addBtn) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existing = cart.find(item => String(item.watchId) === String(watchId));
+        
+        if (newQty === 0) {
+          cart = cart.filter(item => String(item.watchId) !== String(watchId));
+        } else if (existing) {
+          existing.quantity = newQty;
+        } else if (newQty > 0) {
+          if (addBtn) {
+            const watchImage = addBtn.getAttribute('data-watch-image') || '';
+            const watchName = addBtn.getAttribute('data-watch-name') || '';
+            const watchBrand = addBtn.getAttribute('data-watch-brand') || '';
+            const watchPrice = addBtn.getAttribute('data-watch-price') || '0';
+            cart.push({ watchId, watchImage, watchName, watchBrand, watchPrice, quantity: newQty, rating: 0 });
+          }
+        }
+        
+        localStorage.setItem('cart', JSON.stringify(cart));
+        if (typeof updateCartCount === 'function') updateCartCount();
+      }
+
+      // --- RATING SYSTEM ---
+      const starContainers = document.querySelectorAll('.rating');
+      starContainers.forEach(container => {
+          const stars = container.querySelectorAll('.star');
+          const prodType = container.getAttribute('data-type');
+          const prodId = container.getAttribute('data-id');
+
+          stars.forEach(star => {
+              star.addEventListener('mouseenter', function() {
+                  const value = parseInt(this.getAttribute('data-value'));
+                  stars.forEach(s => {
+                      if (parseInt(s.getAttribute('data-value')) <= value) {
+                          s.classList.add('hover');
+                      } else {
+                          s.classList.remove('hover');
+                      }
+                  });
+              });
+
+              star.addEventListener('mouseleave', function() {
+                  stars.forEach(s => s.classList.remove('hover'));
+              });
+
+              star.addEventListener('click', async function() {
+                  const rating = parseInt(this.getAttribute('data-value'));
+                  
+                  // Update UI immediately
+                  stars.forEach(s => {
+                      if (parseInt(s.getAttribute('data-value')) <= rating) {
+                          s.classList.add('active');
+                      } else {
+                          s.classList.remove('active');
+                      }
+                  });
+
+                  try {
+                      const response = await fetch("{% url 'add_review' %}", {
+                          method: 'POST',
+                          headers: {
+                              'Content-Type': 'application/json',
+                              'X-CSRFToken': '{{ csrf_token }}',
+                              'X-Requested-With': 'XMLHttpRequest'
+                          },
+                          body: JSON.stringify({ type: prodType, id: prodId, rating: rating })
+                      });
+                      const result = await response.json();
+                      if (result.status !== 'success') console.error('Rating error:', result.message);
+                  } catch (err) { console.error('Rating submission failed:', err); }
+              });
+          });
+      });
+    });
+  })();
+</script>
+{% endblock %}
