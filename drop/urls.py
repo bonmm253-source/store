@@ -19,10 +19,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from web import views
+from django.views.generic.base import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.static import serve
+from django.urls import re_path
 
 urlpatterns = [
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    path('favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'images/favicon-32x32.png')),
     path("admin/", admin.site.urls),
     path("web/", include("web.urls")),
     path("register/", views.register, name="register"),

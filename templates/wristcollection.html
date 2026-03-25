@@ -38,10 +38,10 @@
           </div>
           <div class="price-row">
             {% if watch.discount_price %}
-              <span class="old-price" style="text-decoration: line-through; color: #888; font-size: 0.9em; margin-right: 8px;">${{ watch.price }}</span>
-              <span class="current-price" style="color: #e47911; font-weight: bold;">${{ watch.discount_price }}</span>
+              <span class="old-price" style="text-decoration: line-through; color: #888; font-size: 0.9em; margin-right: 8px;">₦{{ watch.price }}</span>
+              <span class="current-price" style="color: #e47911; font-weight: bold;">₦{{ watch.discount_price }}</span>
             {% else %}
-              <span class="current-price">${{ watch.price }}</span>
+              <span class="current-price">₦{{ watch.price }}</span>
             {% endif %}
           </div>
           

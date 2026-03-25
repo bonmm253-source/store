@@ -155,17 +155,16 @@
             }
 
             container.innerHTML = '';
-            let totalQty = 0, totalUSD = 0;
-            const RATE_NGN_PER_USD = 1500;
+            let totalQty = 0, totalNGN = 0;
 
             cart.forEach((item, index) => {
                 const qty = parseInt(item.quantity || 1, 10);
                 const price = parseFloat(item.watchPrice || item.shoePrice || 0);
-                const imgSrc = item.watchImage || item.shoeImage || "{% static 'images/default.png' %}";
+                const imgSrc = item.watchImage || item.shoeImage || "{% static 'images/1024609.png' %}";
                 const name = item.watchName || item.shoeName || 'Item';
 
                 totalQty += qty;
-                totalUSD += price * qty;
+                totalNGN += price * qty;
 
                 const div = document.createElement('div');
                 div.className = 'order-item';
@@ -182,8 +181,6 @@
                 container.appendChild(div);
             });
 
-            const totalNGN = Math.round(totalUSD * RATE_NGN_PER_USD);
-            document.getElementById('summary-qty').textContent = `Total items: ${totalQty}`;
             document.getElementById('summary-amount').textContent = `Total: ₦${totalNGN.toLocaleString()}`;
         }
 
@@ -262,5 +259,3 @@
     });
 </script>
 {% endblock %}
-</body>
-</html>

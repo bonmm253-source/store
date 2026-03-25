@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="admin-dashboard-container" style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header" style="margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end;">
+        <div>
+            <h1 style="font-size: 28px; font-weight: 800; color: #1a1a1a; margin-bottom: 8px;">Business Overview</h1>
+            <p style="color: #666; font-size: 15px;">Live performance metrics and inventory valuation.</p>
+        </div>
+        <a href="/admin/" style="padding: 10px 20px; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 10px; color: #666; font-size: 13px; font-weight: 700; text-decoration: none; transition: 0.2s; display: flex; align-items: center; gap: 10px;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#fafafa'">
+            <i class="fas fa-cogs"></i> SYSTEM ADMIN
+        </a>
+    </div>
+
+    <!-- Main KPIs -->
+    <div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 40px;">
+        <!-- KPI Card: Total Goods -->
+        <div class="kpi-card" style="background: white; padding: 24px; border-radius: 16px; border: 1px solid #f0f0f0; box-shadow: 0 10px 20px rgba(0,0,0,0.02); transition: 0.3s;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.05)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.02)'">
+            <div style="width: 48px; height: 48px; background: #EDE7F6; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: #673AB7;">
+                <i class="fas fa-boxes fa-lg"></i>
+            </div>
+            <div style="color: #888; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Total Goods Value</div>
+            <div style="font-size: 24px; font-weight: 800; color: #1a1a1a;">₦{{ total_inventory_value|floatformat:2 }}</div>
+            <div style="margin-top: 12px; font-size: 12px; color: #4CAF50;">
+                <i class="fas fa-chart-line"></i> Full Inventory Worth
+            </div>
+        </div>
+
+        <!-- KPI Card: Stock Cost -->
+        <div class="kpi-card" style="background: white; padding: 24px; border-radius: 16px; border: 1px solid #f0f0f0; box-shadow: 0 10px 20px rgba(0,0,0,0.02); transition: 0.3s;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.05)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.02)'">
+            <div style="width: 48px; height: 48px; background: #E0F2F1; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: #00BFA5;">
+                <i class="fas fa-warehouse fa-lg"></i>
+            </div>
+            <div style="color: #888; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Stock Finance (Cost)</div>
+            <div style="font-size: 24px; font-weight: 800; color: #1a1a1a;">₦{{ total_stock_cost_in_inventory|floatformat:2 }}</div>
+            <div style="margin-top: 12px; font-size: 12px; color: #00BFA5;">
+                <i class="fas fa-wallet"></i> Total Amount Invested
+            </div>
+        </div>
+
+        <!-- KPI Card: Revenue -->
+        <div class="kpi-card" style="background: white; padding: 24px; border-radius: 16px; border: 1px solid #f0f0f0; box-shadow: 0 10px 20px rgba(0,0,0,0.02); transition: 0.3s;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.05)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.02)'">
+            <div style="width: 48px; height: 48px; background: #FFF3E0; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: #FF9800;">
+                <i class="fas fa-cash-register fa-lg"></i>
+            </div>
+            <div style="color: #888; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Finance / Amount Sold</div>
+            <div style="font-size: 24px; font-weight: 800; color: #1a1a1a;">₦{{ total_revenue|floatformat:2 }}</div>
+            <div style="margin-top: 12px; font-size: 12px; color: #FF9800;">
+                <i class="fas fa-shopping-bag"></i> Total Revenue Received
+            </div>
+        </div>
+
+        <!-- KPI Card: Net Profit -->
+        <div class="kpi-card" style="background: {% if net_profit >= 0 %}#673AB7{% else %}#D32F2F{% endif %}; padding: 24px; border-radius: 16px; box-shadow: 0 10px 20px rgba(103, 58, 183, 0.2); transition: 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: white;">
+                <i class="fas fa-hand-holding-usd fa-lg"></i>
+            </div>
+            <div style="color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Net Net Profit</div>
+            <div style="font-size: 24px; font-weight: 800; color: white;">₦{{ net_profit|floatformat:2 }}</div>
+            <div style="margin-top: 12px; font-size: 12px; color: rgba(255,255,255,0.8);">
+                <i class="fas fa-cubes"></i> {{ total_units }} Units in Stock
+            </div>
+        </div>
+    </div>
+
+    <!-- Tables Grid -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px;">
+        <!-- Recent Orders Table -->
+        <div style="background: white; border-radius: 16px; border: 1px solid #f0f0f0; box-shadow: 0 10px 20px rgba(0,0,0,0.02); overflow: hidden;">
+            <div style="padding: 24px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 18px; font-weight: 700;">Recent Transactions</h3>
+                <span style="font-size: 12px; color: #673AB7; font-weight: 600; background: #EDE7F6; padding: 4px 12px; border-radius: 20px;">LAST 10 ORDERS</span>
+            </div>
+            <div style="padding: 0;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="background: #fafafa;">
+                            <th style="padding: 16px 24px; font-size: 13px; color: #888; font-weight: 600; border-bottom: 1px solid #f0f0f0;">ORDER</th>
+                            <th style="padding: 16px 24px; font-size: 13px; color: #888; font-weight: 600; border-bottom: 1px solid #f0f0f0;">CUSTOMER</th>
+                            <th style="padding: 16px 24px; font-size: 13px; color: #888; font-weight: 600; border-bottom: 1px solid #f0f0f0;">AMOUNT</th>
+                            <th style="padding: 16px 24px; font-size: 13px; color: #888; font-weight: 600; border-bottom: 1px solid #f0f0f0;">STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in recent_orders %}
+                        <tr style="transition: 0.2s;" onmouseover="this.style.background='#fcfcfc'" onmouseout="this.style.background='transparent'">
+                            <td style="padding: 16px 24px; font-size: 14px; font-weight: 500; border-bottom: 1px solid #f9f9f9;">#{{ order.id }}</td>
+                            <td style="padding: 16px 24px; font-size: 14px; border-bottom: 1px solid #f9f9f9;">{{ order.user.username|default:"Guest" }}</td>
+                            <td style="padding: 16px 24px; font-size: 14px; font-weight: 600; border-bottom: 1px solid #f9f9f9;">₦{{ order.total }}</td>
+                            <td style="padding: 16px 24px; border-bottom: 1px solid #f9f9f9;">
+                                <span style="font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; 
+                                {% if order.status == 'Delivered' or order.status == 'Completed' %} background: #E8F5E9; color: #2E7D32; 
+                                {% elif order.status == 'Cancelled' %} background: #FFEBEE; color: #C62828; 
+                                {% else %} background: #FFF3E0; color: #E65100; {% endif %}">
+                                    {{ order.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" style="padding: 40px; text-align: center; color: #999;">No transactions found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Expenses List -->
+        <div style="background: white; border-radius: 16px; border: 1px solid #f0f0f0; box-shadow: 0 10px 20px rgba(0,0,0,0.02); display: flex; flex-direction: column;">
+            <div style="padding: 24px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 18px; font-weight: 700;">Expenses</h3>
+                <span style="font-size: 12px; color: #D32F2F; font-weight: 700;">₦{{ total_expenses|floatformat:0 }}</span>
+            </div>
+            <div style="padding: 24px; flex-grow: 1;">
+                {% for expense in recent_expenses %}
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #f9f9f9;">
+                    <div>
+                        <div style="font-size: 14px; font-weight: 600; color: #1a1a1a;">{{ expense.description }}</div>
+                        <div style="font-size: 12px; color: #888;">{{ expense.category }} • {{ expense.date|date:"M d" }}</div>
+                    </div>
+                    <div style="font-weight: 700; color: #D32F2F; font-size: 14px;">-₦{{ expense.amount }}</div>
+                </div>
+                {% empty %}
+                <div style="text-align: center; color: #999; padding-top: 40px;">No expenses recorded.</div>
+                {% endfor %}
+            </div>
+            <div style="padding: 24px;">
+                <a href="/admin/web/expense/add/" style="display: block; text-align: center; padding: 12px; background: #f5f5f5; color: #673AB7; border-radius: 10px; font-weight: 700; font-size: 13px; text-decoration: none; transition: 0.2s;" onmouseover="this.style.background='#EDE7F6'" onmouseout="this.style.background='#f5f5f5'">
+                    VIEW ALL EXPENSES
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

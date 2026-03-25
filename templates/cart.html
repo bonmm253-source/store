@@ -153,10 +153,9 @@
                         REMOVE <button type="button"></button>
                     </div>
                     <div style="text-align: right;">
-                        <div class="item-price">${{ item.total_price }}</div>
+                        <div class="item-price">₦{{ item.total_price }}</div>
                         <div style="color: #75757a; font-size: 12px;">
-                            <div style="color: var(--jumia-light-text); font-size: 12px;">Qty: {{ item.quantity }} x ${{
-                                item.product.discount_price|default:item.product.price }}</div>
+                            <div style="color: var(--jumia-light-text); font-size: 12px;">Qty: {{ item.quantity }} x ₦{{ item.product.discount_price|default:item.product.price }}</div>
                         </div>
                     </div>
                 </div>
@@ -192,7 +191,7 @@
 
         <a href="{% url 'pay' %}" class="btn-primary"
             style="text-decoration: none; display: block; text-align: center; border-radius: 4px; padding: 15px;">
-            CHECKOUT (${{ cart.total_price }})
+            CHECKOUT (₦{{ cart.total_price }})
         </a>
     </div>
     {% endif %}

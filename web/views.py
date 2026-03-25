@@ -1,15 +1,18 @@
 import random
+import logging
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
-from .models import User, OTP, shoe, watch, Category, Cart, CartItem, Order, Wishlist, Review
+from django.core.exceptions import PermissionDenied
+from django.db.models import Q, Avg, Sum, F
+from django.contrib.admin.views.decorators import staff_member_required
+from .models import User, OTP, shoe, watch, Category, Cart, CartItem, Order, Wishlist, Review, Expense
 from .forms import RegistrationForm, LoginForm, PhoneLoginForm
-from .tasks import send_otp_email, send_registration_email
-import json
-from django.http import JsonResponse
-from django.db.models import Q, Avg
+from .tasks import send_otp_email, send_registration_email, send_sms_otp
+
+logger = logging.getLogger(__name__)
 
 def generate_otp():
     return str(random.randint(100000, 999999))
@@ -22,7 +25,8 @@ def base(request):
     top_watches = watch.objects.all()[:8]
     men_shoes = shoe.objects.filter(target_audience='Male')[:8]
     women_shoes = shoe.objects.filter(target_audience='Female')[:8]
-    return render(request, 'base_home.html', {
+    
+    context = {
         'categories': categories,
         'featured_shoes': featured_shoes,
         'featured_watches': featured_watches,
@@ -30,7 +34,34 @@ def base(request):
         'top_watches': top_watches,
         'men_shoes': men_shoes,
         'women_shoes': women_shoes,
-    })
+    }
+
+    # Add admin metrics if staff
+    if request.user.is_authenticated and request.user.is_staff:
+        # 1. Inventory Value (Selling)
+        shoe_val = shoe.objects.aggregate(total=Sum(F('price') * F('stock')))['total'] or 0
+        watch_val = watch.objects.aggregate(total=Sum(F('price') * F('stock')))['total'] or 0
+        context['admin_total_goods_value'] = shoe_val + watch_val
+        
+        # 2. Total Collected (Revenue)
+        context['admin_total_revenue'] = Order.objects.filter(complete=True).exclude(status='Cancelled').aggregate(total=Sum('total'))['total'] or 0
+        
+        # 3. Total Expenses
+        total_exp = Expense.objects.aggregate(total=Sum('amount'))['total'] or 0
+        context['admin_total_expenses'] = total_exp
+        
+        # 4. Net Finance
+        context['admin_net_finance'] = context['admin_total_revenue'] - total_exp
+        
+        # 5. Total Units in Stock
+        shoe_units = shoe.objects.aggregate(total=Sum('stock'))['total'] or 0
+        watch_units = watch.objects.aggregate(total=Sum('stock'))['total'] or 0
+        context['admin_total_units'] = shoe_units + watch_units
+        
+        # 6. Admin Reg Form
+        context['admin_reg_form'] = RegistrationForm()
+
+    return render(request, 'base_home.html', context)
 
 def register(request):
     if request.method == "POST":
@@ -54,6 +85,25 @@ def register(request):
     else:
         form = RegistrationForm()
     return render(request, "register.html", {"form": form})
+
+@login_required
+def admin_register_home(request):
+    if not request.user.is_staff:
+        raise PermissionDenied
+    if request.method == "POST":
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data["password"])
+            user.is_staff = True
+            user.is_active = True # Active immediately for admin-created accounts
+            user.save()
+            messages.success(request, f"Admin account '{user.username}' created successfully!")
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    return redirect("home")
 
 def verify_code(request):
     user_id = request.session.get('unverified_user_id')
@@ -86,15 +136,23 @@ def verify_code(request):
     return render(request, "verify.html")
 
 def login_view(request):
-    if request.method == "POST":
-        form = LoginForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect("home")
-    else:
-        form = LoginForm()
-    return render(request, "login.html", {"form": form})
+    try:
+        if request.method == "POST":
+            form = LoginForm(data=request.POST)
+            if form.is_valid():
+                user = form.get_user()
+                login(request, user)
+                return redirect("home")
+            else:
+                logger.warning(f"Login failed for form: {form.errors}")
+        else:
+            form = LoginForm()
+        return render(request, "login.html", {"form": form})
+    except Exception as e:
+        logger.error(f"Error in login_view: {e}", exc_info=True)
+        # In a real app, you might show a generic error page.
+        # Here we re-raise to see it if possible, or it will continue to 500.
+        raise e
 
 def login_with_phone(request):
     if request.method == "POST":
@@ -112,6 +170,12 @@ def login_with_phone(request):
                 if user.email:
                     send_otp_email.delay(user.email, code)
                     messages.success(request, f"A login code has been sent to your registered email.")
+                
+                # Send SMS OTP if user has a phone
+                if user.phone:
+                    from .tasks import send_sms_otp
+                    send_sms_otp.delay(user.phone, code)
+                    messages.success(request, f"A login code has been sent to your phone number: {user.phone}")
                 
                 # Show flash message for development ease (User can see it on the verification page)
                 messages.info(request, f"Development Tip: Your OTP code is {code}")
@@ -274,15 +338,12 @@ def submit_order(request):
                 messages.error(request, "Your cart is empty.")
                 return redirect('cart')
                 
-            total_usd = 0
+            total_ngn = 0
             for item in cart_data:
                 # Check for different property names in localStorage items
                 price = float(item.get('watchPrice') or item.get('shoePrice') or item.get('price') or 0)
                 qty = int(item.get('quantity') or 1)
-                total_usd += price * qty
-            
-            RATE_NGN_PER_USD = 1500
-            total_ngn = round(total_usd * RATE_NGN_PER_USD)
+                total_ngn += price * qty
             
             # Create Order
             order = Order.objects.create(
@@ -376,3 +437,48 @@ def mark_order_paid(request, order_id):
         else:
             messages.warning(request, "This order cannot be marked as paid.")
     return redirect('orders')
+
+@login_required
+def admin_dashboard(request):
+    if not request.user.is_staff:
+        raise PermissionDenied
+    # Calculations
+    # 1. Total Inventory Selling Value
+    shoe_inventory_value = shoe.objects.aggregate(total=Sum(F('price') * F('stock')))['total'] or 0
+    watch_inventory_value = watch.objects.aggregate(total=Sum(F('price') * F('stock')))['total'] or 0
+    total_inventory_value = shoe_inventory_value + watch_inventory_value
+
+    # 2. Total Stock Cost (What you spent to get the stock currently sitting in inventory)
+    shoe_stock_cost = shoe.objects.aggregate(total=Sum(F('cost_price') * F('stock')))['total'] or 0
+    watch_stock_cost = watch.objects.aggregate(total=Sum(F('cost_price') * F('stock')))['total'] or 0
+    total_stock_cost_in_inventory = shoe_stock_cost + watch_stock_cost
+
+    # 3. Total Revenue (Goods Sold)
+    total_revenue = Order.objects.filter(complete=True).exclude(status='Cancelled').aggregate(total=Sum('total'))['total'] or 0
+
+    # 4. Total Expenses (Registered Expenses)
+    total_expenses = Expense.objects.aggregate(total=Sum('amount'))['total'] or 0
+
+    # 5. Total Units in Stock
+    shoe_units = shoe.objects.aggregate(total=Sum('stock'))['total'] or 0
+    watch_units = watch.objects.aggregate(total=Sum('stock'))['total'] or 0
+    total_units = shoe_units + watch_units
+
+    # Summary
+    net_profit = total_revenue - total_expenses
+    
+    # Recent items
+    recent_orders = Order.objects.all().order_by('-created_at')[:10]
+    recent_expenses = Expense.objects.all().order_by('-date')[:10]
+    
+    context = {
+        'total_inventory_value': total_inventory_value,
+        'total_stock_cost_in_inventory': total_stock_cost_in_inventory,
+        'total_revenue': total_revenue,
+        'total_expenses': total_expenses,
+        'net_profit': net_profit,
+        'total_units': total_units,
+        'recent_orders': recent_orders,
+        'recent_expenses': recent_expenses,
+    }
+    return render(request, 'admin_dashboard.html', context)

@@ -201,9 +201,9 @@
         </div>
 
         <div class="prod-pricing">
-            <div class="prod-price">${{ product.discount_price|default:product.price }}</div>
+            <div class="prod-price">₦{{ product.discount_price|default:product.price }}</div>
             {% if product.discount_price %}
-            <div class="prod-old-price">${{ product.price }}</div>
+            <div class="prod-old-price">₦{{ product.price }}</div>
             {% endif %}
 
             {% if product.stock > 0 %}

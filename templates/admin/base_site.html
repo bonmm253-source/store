@@ -1,0 +1,11 @@
+{% extends "admin/base.html" %}
+
+{% block branding %}
+<div id="site-name">
+    <a href="{% url 'admin:index' %}">MyStore Admin</a>
+    <span style="margin: 0 10px; opacity: 0.5;">|</span>
+    <a href="{% url 'admin_dashboard' %}" style="color: #673AB7; font-weight: bold; background: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; text-decoration: none;">VIEW CUSTOM DASHBOARD</a>
+</div>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

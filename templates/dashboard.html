@@ -105,7 +105,7 @@
                 <span>{{ order.created_at|date:"M d, Y" }}</span>
             </div>
 
-            <div style="font-size: 15px; font-weight: 500; margin-bottom: 10px;">Total: ${{ order.total }}</div>
+            <div style="font-size: 15px; font-weight: 500; margin-bottom: 10px;">Total: ₦{{ order.total }}</div>
             <div style="margin-bottom: 15px;"><span class="order-status">{{ order.status }}</span></div>
 
             <div style="font-size: 13px; color: var(--jumia-light-text);">
@@ -140,10 +140,10 @@
                 <div
                     style="font-size: 13px; margin-bottom: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                     {{ shoe.name }}</div>
-                <div style="font-weight: bold; color: var(--jumia-orange);">${{ shoe.discount_price|default:shoe.price
+                <div style="font-weight: bold; color: var(--jumia-orange);">₦{{ shoe.discount_price|default:shoe.price
                     }}</div>
                 {% if shoe.discount_price %}
-                <div style="font-size: 11px; color: var(--jumia-light-text); text-decoration: line-through;">${{
+                <div style="font-size: 11px; color: var(--jumia-light-text); text-decoration: line-through;">₦{{
                     shoe.price }}</div>
                 {% endif %}
             </a>
@@ -167,10 +167,10 @@
                 <div
                     style="font-size: 13px; margin-bottom: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                     {{ watch.name }}</div>
-                <div style="font-weight: bold; color: var(--jumia-orange);">${{ watch.discount_price|default:watch.price
+                <div style="font-weight: bold; color: var(--jumia-orange);">₦{{ watch.discount_price|default:watch.price
                     }}</div>
                 {% if watch.discount_price %}
-                <div style="font-size: 11px; color: var(--jumia-light-text); text-decoration: line-through;">${{
+                <div style="font-size: 11px; color: var(--jumia-light-text); text-decoration: line-through;">₦{{
                     watch.price }}</div>
                 {% endif %}
             </a>

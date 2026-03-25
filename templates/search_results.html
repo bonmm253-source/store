@@ -22,7 +22,7 @@
                 {% endif %}
                 <div class="brand">{{ shoe.brand|default:"" }}</div>
                 <div class="product-name">{{ shoe.name }}</div>
-                <div class="product-price">${{ shoe.discount_price|default:shoe.price }}</div>
+                <div class="product-price">₦{{ shoe.discount_price|default:shoe.price }}</div>
             </a>
             
             <div class="quantity-controls">
@@ -53,7 +53,7 @@
                 {% endif %}
                 <div class="brand">{{ watch.brand|default:"" }}</div>
                 <div class="product-name">{{ watch.name }}</div>
-                <div class="product-price">${{ watch.discount_price|default:watch.price }}</div>
+                <div class="product-price">₦{{ watch.discount_price|default:watch.price }}</div>
             </a>
 
             <div class="quantity-controls">

@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 :: ====================================================
-::   DROP DOWN - DISTRIBUTION BUILDER (V1.2)
+::   DROP DOWN STORE - DISTRIBUTION BUILDER
 :: ====================================================
 
 title Drop Down App Builder
@@ -27,13 +27,20 @@ if %errorlevel% neq 0 (
 )
 
 :: Check Flutter
-flutter --version >nul 2>&1
-if %errorlevel% neq 0 (
-    set "HAS_FLUTTER=0"
-    echo [WARNING] Local Flutter SDK not found in PATH. EXE build will NOT work.
-) else (
+set "FLUTTER_CMD=flutter"
+if exist "%cd%\flutter\bin\flutter.bat" (
     set "HAS_FLUTTER=1"
-    echo [OK] Local Flutter is installed ^(Used for Windows EXE^).
+    set "PATH=%cd%\flutter\bin;%PATH%"
+    echo [OK] Local Flutter found in project root.
+) else (
+    flutter --version >nul 2>&1
+    if %errorlevel% neq 0 (
+        set "HAS_FLUTTER=0"
+        echo [WARNING] Local Flutter SDK not found. EXE build will NOT work.
+    ) else (
+        set "HAS_FLUTTER=1"
+        echo [OK] Local Flutter is installed ^(Used for Windows EXE^).
+    )
 )
 
 :: 2. CREATE PROJECT IF MISSING
@@ -41,7 +48,11 @@ if not exist mobile (
     echo.
     echo [2/4] Initializing Flutter Project 'mobile'...
     if "!HAS_FLUTTER!" == "1" (
-        flutter create --platforms android,windows mobile
+        if exist "%~dp0flutter\bin\flutter.bat" (
+            "%~dp0flutter\bin\flutter.bat" create --platforms android,windows mobile
+        ) else (
+            flutter create --platforms android,windows mobile
+        )
     ) else if "!HAS_DOCKER!" == "1" (
         docker run --rm -v "%cd%":/app -w /app ghcr.io/cirruslabs/flutter:stable sh -c "flutter create --platforms android,windows mobile"
     ) else (
@@ -50,15 +61,16 @@ if not exist mobile (
         exit /b 1
     )
 ) else (
-    echo [2/4] Mobile project already exists. SKIPPING initialization.
+    echo [2/4] Mobile project already exists.
 )
 
 :: 3. APPLY SETTINGS (PATCH)
 echo.
 echo [3/4] Applying App Branding and Logic...
-py scripts/patch_mobile_app.py
+python scripts/patch_mobile_app.py
 if %errorlevel% neq 0 (
-    echo [ERROR] Python patch script failed. Ensure Python ^(py^) is installed.
+    echo [WARNING] Python patch script failed. Trying 'py' command...
+    py scripts/patch_mobile_app.py
 )
 
 :: 4. MENU
@@ -67,10 +79,10 @@ echo.
 echo ====================================================
 echo   SELECT BUILD TARGET
 echo ====================================================
-echo 1^) Build Mobile APK ^(Release^) - Uses Docker
-echo 2^) Build Windows EXE ^(Release^) - Uses Local Flutter + VS
-echo 3^) Build BOTH
-echo 4^) Exit
+echo 1) Build Mobile APK (Release) - Uses Docker
+echo 2) Build Windows EXE (Release) - Uses Local Flutter
+echo 3) Build BOTH
+echo 4) Exit
 echo.
 set /p opt="Choice: "
 
@@ -87,7 +99,7 @@ if "!HAS_DOCKER!" == "0" (
 )
 echo.
 echo [BUILD] Compiling Release APK via Docker...
-docker run --rm -v "%cd%/mobile":/app -w /app ghcr.io/cirruslabs/flutter:stable sh -c "flutter pub add webview_flutter && flutter build apk --release"
+docker run --rm -v "%cd%/mobile":/app -w /app ghcr.io/cirruslabs/flutter:stable sh -c "flutter pub get && flutter pub run flutter_launcher_icons && flutter build apk --release"
 echo.
 echo [SUCCESS] APK Created: mobile\build\app\outputs\flutter-apk\app-release.apk
 if "%opt%"=="3" goto BUILD_WIN
@@ -101,6 +113,8 @@ if "!HAS_FLUTTER!" == "0" (
 echo.
 echo [BUILD] Compiling Windows EXE...
 cd mobile
+flutter pub get
+flutter pub run flutter_launcher_icons
 flutter build windows --release
 cd ..
 echo.
@@ -117,8 +131,6 @@ goto MENU
 
 :END
 echo.
-echo ====================================================
-echo   PROCESS COMPLETED!
-echo ====================================================
+echo ================== PROCESS COMPLETED ==================
 pause
 endlocal

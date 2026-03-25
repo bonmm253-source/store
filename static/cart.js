@@ -286,10 +286,8 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       cart.forEach(function (item) {
         const qty = item.quantity || 1;
-        let priceUSD = parseFloat(item.shoePrice) || 0;
-        let subtotalUSD = priceUSD * qty;
-        let subtotalNGN = subtotalUSD * 1500;
-        totalPriceUSD += subtotalUSD;
+        let priceNGN = parseFloat(item.shoePrice || item.watchPrice || 0);
+        let subtotalNGN = priceNGN * qty;
         totalPrice += subtotalNGN;
         // build a small star display if rating present
         let starHtml = '';
@@ -307,7 +305,7 @@ document.addEventListener("DOMContentLoaded", function () {
             ${starHtml}
           </div>
           <div style="margin-bottom:4px;text-align:right;">
-            <div style="font-weight:bold;color:#222;">$${priceUSD.toFixed(2)} × ${qty}</div>
+            <div style="font-weight:bold;color:#222;">₦${priceNGN.toLocaleString()} × ${qty}</div>
             <div style="color:#4a148c;font-weight:bold;">₦${subtotalNGN.toLocaleString()}</div>
           </div>
         </div>`;

@@ -18,7 +18,7 @@ def patch_file(file_path, search_pattern, replacement, use_regex=False):
                     f.write(new_content)
                 print(f"Patched (Regex): {file_path}")
             else:
-                 print(f"No changes (Same content): {file_path}")
+                print(f"No changes (Same content): {file_path}")
         else:
             print(f"Pattern not found (Regex) in: {file_path}")
     else:
@@ -45,7 +45,7 @@ def main():
             "package_name": "com.dropdown.app",
             "local_url": "http://localhost:8000",
             "android_local_url": "http://10.0.2.2:8000",
-            "prod_url": ""
+            "prod_url": "https://drop-down-store.onrender.com"
         }
 
     APP_NAME = config.get("app_name", "Drop Down")
@@ -65,43 +65,50 @@ def main():
         PC_IP = "10.0.2.2"
 
     ANDROID_LOCAL_URL = config.get("android_local_url", f"http://{PC_IP}:8000")
-    PROD_URL = config.get("prod_url", "")
+    PROD_URL = config.get("prod_url", "https://drop-down-store.onrender.com")
     PACKAGE_ID = config.get("package_name", "com.dropdown.app")
     
     BASE_DIR = os.getcwd()
     MOBILE_DIR = os.path.join(BASE_DIR, "mobile")
     
     if not os.path.exists(MOBILE_DIR):
-        print("Mobile folder not found. Please run 'build_apps.bat' first.")
+        print("Mobile folder not found. Please run 'build_apps.bat' or use docker to create the 'mobile' folder first.")
         return
 
     # -------------------------------------------------
-    # 2. PATCH ANDROID (PACKAGE & NAME)
+    # 2. PATCH ANDROID (PACKAGE, NAME & PERMISSIONS)
     # -------------------------------------------------
     # Manifest updates
     manifest_path = os.path.join(MOBILE_DIR, "android/app/src/main/AndroidManifest.xml")
     if os.path.exists(manifest_path):
         # Permissions
-        permission = '<uses-permission android:name="android.permission.INTERNET" />'
-        if permission not in open(manifest_path).read():
-            patch_file(manifest_path, '<application', f'    {permission}\n    <application')
+        with open(manifest_path, "r") as f:
+            manifest_content = f.read()
+
+        permissions = [
+            '<uses-permission android:name="android.permission.INTERNET" />',
+            '<uses-permission android:name="android.permission.CAMERA" />',
+            '<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />',
+            '<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />'
+        ]
+        
+        for perm in permissions:
+            if perm not in manifest_content:
+                patch_file(manifest_path, '<application', f'    {perm}\n    <application')
         
         # Cleartext traffic
-        if 'android:usesCleartextTraffic="true"' not in open(manifest_path).read():
+        if 'android:usesCleartextTraffic="true"' not in manifest_content:
             patch_file(manifest_path, '<application', '<application\n        android:usesCleartextTraffic="true"')
         
         # App Label
         patch_file(manifest_path, 'android:label="mobile"', f'android:label="{APP_NAME}"')
-        # Also handle potential platform-specific placeholders
         patch_file(manifest_path, 'android:label="Dropdown"', f'android:label="{APP_NAME}"')
 
-    # Update build.gradle for package ID (v4+ style)
+    # Update build.gradle for package ID
     gradle_path = os.path.join(MOBILE_DIR, "android/app/build.gradle")
     if os.path.exists(gradle_path):
-        # Update applicationId
-        patch_file(gradle_path, 'applicationId "com.example.mobile"', f'applicationId "{PACKAGE_ID}"', use_regex=False)
-        # Update namespace for newer Flutter versions
-        patch_file(gradle_path, 'namespace "com.example.mobile"', f'namespace "{PACKAGE_ID}"', use_regex=False)
+        patch_file(gradle_path, 'applicationId "com.example.mobile"', f'applicationId "{PACKAGE_ID}"')
+        patch_file(gradle_path, 'namespace "com.example.mobile"', f'namespace "{PACKAGE_ID}"')
 
     # -------------------------------------------------
     # 3. PATCH PUBSPEC.YAML
@@ -110,6 +117,25 @@ def main():
     if os.path.exists(pubspec_path):
         patch_file(pubspec_path, 'name: mobile', f'name: {APP_NAME.lower().replace(" ", "_")}')
         patch_file(pubspec_path, 'description: "A new Flutter project."', f'description: "{APP_NAME} Mobile App"')
+        
+        # Add common dependencies if missing
+        with open(pubspec_path, "r") as f:
+            pubspec_content = f.read()
+            
+        if 'flutter_launcher_icons:' not in pubspec_content:
+            patch_file(pubspec_path, 'dev_dependencies:', 'dev_dependencies:\n  flutter_launcher_icons: ^0.13.1')
+        
+        # Add icon config if missing
+        icon_config = """
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "../assets/logo.png"
+  min_sdk_android: 21
+"""
+        if 'flutter_launcher_icons:' not in pubspec_content:
+            with open(pubspec_path, "a") as f:
+                f.write(icon_config)
 
     # -------------------------------------------------
     # 4. PATCH LIB/MAIN.DART (UNIVERSAL WEBVIEW)
@@ -117,16 +143,15 @@ def main():
     main_dart_path = os.path.join(MOBILE_DIR, "lib/main.dart")
     
     # Decide which URL to use
-    FINAL_URL = PROD_URL if PROD_URL and "your-production-url" not in PROD_URL else LOCAL_URL
-    USE_PROD = 1 if (PROD_URL and "your-production-url" not in PROD_URL) else 0
+    FINAL_URL = PROD_URL if (PROD_URL and "onrender.com" in PROD_URL) else LOCAL_URL
+    USE_PROD = 1 if ("onrender.com" in FINAL_URL) else 0
 
-    if os.path.exists(os.path.dirname(main_dart_path)):
-        webview_code = f"""import 'dart:io' show Platform;
+    webview_code = f"""import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {{
-  // Ensure Flutter is initialized before running the app
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }}
@@ -142,10 +167,14 @@ class MyApp extends StatelessWidget {{
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.deepPurple,
-          brightness: Brightness.dark,
-          primary: Colors.blueAccent
+          brightness: Brightness.light,
+          primary: const Color(0xFF673AB7),
         ),
         useMaterial3: true,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: Colors.deepPurple,
       ),
       home: const WebViewPage(),
     );
@@ -162,15 +191,15 @@ class WebViewPage extends StatefulWidget {{
 class _WebViewPageState extends State<WebViewPage> {{
   late final WebViewController _controller;
   bool _isLoading = true;
+  double _progress = 0;
+  bool _hasError = false;
 
   @override
   void initState() {{
     super.initState();
     
-    // Determine the base URL
     String initialUrl = '{FINAL_URL}';
     
-    // If not in production, use local IP for Android Emulator
     if ({USE_PROD} == 0) {{
         try {{
           if (Platform.isAndroid) {{
@@ -181,49 +210,96 @@ class _WebViewPageState extends State<WebViewPage> {{
 
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x00000000))
+      ..setBackgroundColor(Colors.white)
       ..setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1")
       ..setNavigationDelegate(
         NavigationDelegate(
-          onProgress: (int progress) {{}},
+          onProgress: (int progress) {{
+            setState(() {{
+              _progress = progress / 100.0;
+            }});
+          }},
           onPageStarted: (String url) => setState(() => _isLoading = true),
           onPageFinished: (String url) => setState(() => _isLoading = false),
           onWebResourceError: (WebResourceError error) {{
              debugPrint("Web error: ${{error.description}}");
+             if (error.isForMainFrame ?? true) {{
+                setState(() => _hasError = true);
+             }}
+          }},
+          onNavigationRequest: (NavigationRequest request) {{
+            if (request.url.startsWith('https://www.youtube.com/')) {{
+              return NavigationDecision.prevent;
+            }}
+            return NavigationDecision.navigate;
           }},
         ),
       )
       ..loadRequest(Uri.parse(initialUrl));
   }}
 
+  Future<void> _refresh() async {{
+    setState(() {{
+      _hasError = false;
+    }});
+    await _controller.reload();
+  }}
+
   @override
   Widget build(BuildContext context) {{
-    // Windows support check
-    bool isWindows = false;
-    try {{ isWindows = Platform.isWindows; }} catch(_) {{}}
+    bool isMobile = false;
+    try {{ isMobile = Platform.isAndroid || Platform.isIOS; }} catch(_) {{}}
 
-    if (isWindows) {{
+    if (!isMobile) {{
+       // Windows / Linux / macOS placeholder with better UI
        return Scaffold(
-         appBar: AppBar(title: const Text('{APP_NAME} Explorer')),
+         appBar: AppBar(
+           title: const Text('{APP_NAME} Desktop'),
+           backgroundColor: Colors.deepPurple,
+           foregroundColor: Colors.white,
+         ),
          body: Center(
-           child: Column(
-             mainAxisAlignment: MainAxisAlignment.center,
-             children: [
-               const Icon(Icons.desktop_windows, size: 64, color: Colors.blueAccent),
-               const SizedBox(height: 16),
-               const Text("Windows View mode enabled.", style: TextStyle(fontSize: 18)),
-               const SizedBox(height: 10),
-               const Text("Click below to open in your system browser:"),
-               const SizedBox(height: 20),
-               ElevatedButton.icon(
-                 onPressed: () {{
-                    // Note: Would use url_launcher here
-                    debugPrint("URL launcher would open: {FINAL_URL}");
-                 }}, 
-                 icon: const Icon(Icons.open_in_browser),
-                 label: const Text("Open App"),
-               )
-             ],
+           child: Container(
+             constraints: const BoxConstraints(maxWidth: 400),
+             padding: const EdgeInsets.all(32),
+             child: Column(
+               mainAxisAlignment: MainAxisAlignment.center,
+               children: [
+                 const Icon(Icons.shop_two_outlined, size: 80, color: Colors.deepPurple),
+                 const SizedBox(height: 24),
+                 Text(
+                   "{APP_NAME}",
+                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+                 ),
+                 const SizedBox(height: 12),
+                 const Text(
+                   "This is the desktop version of the Drop Down Store App.",
+                   textAlign: TextAlign.center,
+                   style: TextStyle(fontSize: 16, color: Colors.grey),
+                 ),
+                 const SizedBox(height: 32),
+                 SizedBox(
+                   width: double.infinity,
+                   child: ElevatedButton.icon(
+                     onPressed: () async {{
+                        final url = Uri.parse('{FINAL_URL}');
+                        if (await canLaunchUrl(url)) {{
+                          await launchUrl(url, mode: LaunchMode.externalApplication);
+                        }}
+                     }}, 
+                     icon: const Icon(Icons.open_in_browser),
+                     label: const Text("LAUNCH STORE IN BROWSER"),
+                     style: ElevatedButton.styleFrom(
+                       padding: const EdgeInsets.symmetric(vertical: 16),
+                       backgroundColor: Colors.deepPurple,
+                       foregroundColor: Colors.white,
+                     ),
+                   ),
+                 ),
+                 const SizedBox(height: 16),
+                 const Text("Note: Native WebView for Windows coming soon.", style: TextStyle(fontSize: 12, color: Colors.grey))
+               ],
+             ),
            ),
          ),
        );
@@ -233,29 +309,61 @@ class _WebViewPageState extends State<WebViewPage> {{
       appBar: AppBar(
         title: const Text('{APP_NAME}'),
         centerTitle: true,
+        backgroundColor: Colors.deepPurple,
+        foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () => _controller.reload(),
+            onPressed: _refresh,
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          WebViewWidget(controller: _controller),
-          if (_isLoading)
-            const Center(child: CircularProgressIndicator()),
+      body: _hasError 
+        ? Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.wifi_off, size: 60, color: Colors.grey),
+                const SizedBox(height: 16),
+                const Text("Unable to connect to the store."),
+                const SizedBox(height: 20),
+                ElevatedButton(onPressed: _refresh, child: const Text("Retry"))
+              ],
+            ),
+          )
+        : Column(
+            children: [
+              if (_isLoading)
+                LinearProgressIndicator(value: _progress, color: Colors.orange),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: _refresh,
+                  child: WebViewWidget(controller: _controller),
+                ),
+              ),
+            ],
+          ),
+      bottomNavigationBar: isMobile ? NavigationBar(
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: "Home"),
+          NavigationDestination(icon: Icon(Icons.shopping_cart), label: "Cart"),
+          NavigationDestination(icon: Icon(Icons.person), label: "Profile"),
         ],
-      ),
+        onDestinationSelected: (idx) {{
+           if (idx == 0) _controller.loadRequest(Uri.parse('{FINAL_URL}'));
+           if (idx == 1) _controller.loadRequest(Uri.parse('{FINAL_URL}/cart/'));
+           if (idx == 2) _controller.loadRequest(Uri.parse('{FINAL_URL}/profile/'));
+        }},
+      ) : null,
     );
   }}
 }}
 """
-        with open(main_dart_path, "w", encoding="utf-8") as f:
-            f.write(webview_code)
-        print(f"Patched and Finalized: {main_dart_path}")
+    with open(main_dart_path, "w", encoding="utf-8") as f:
+        f.write(webview_code)
+    print(f"Patched and Finalized: {main_dart_path}")
 
-    print("\\nAPP SETTINGS APPLIED SUCCESSFULLY!")
+    print("\nAPP SETTINGS APPLIED SUCCESSFULLY!")
 
 if __name__ == "__main__":
     main()

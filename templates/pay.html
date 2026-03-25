@@ -203,17 +203,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     summaryContainer.innerHTML = '';
-    const RATE_NGN_PER_USD = 1500;
-    let totalUSD = 0;
+    let totalNGN = 0;
 
     cart.forEach(item => {
         const qty = parseInt(item.quantity || 1, 10);
         const price = parseFloat(item.watchPrice || item.shoePrice || 0);
         const subtotal = price * qty;
-        totalUSD += subtotal;
+        totalNGN += subtotal;
 
         const name = item.watchName || item.shoeName || 'Product';
-        const imgSrc = item.watchImage || item.shoeImage || "{% static 'images/default.png' %}";
+        const imgSrc = item.watchImage || item.shoeImage || "{% static 'images/1024609.png' %}";
         
         const itemRow = document.createElement('div');
         itemRow.style.display = 'flex';
@@ -232,13 +231,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div style="color: #888; font-size: 12px;">Qty: ${qty}</div>
             </div>
             <div style="font-weight: 700; color: var(--jumia-dark); font-size: 15px;">
-                ₦${Math.round(subtotal * RATE_NGN_PER_USD).toLocaleString()}
+                ₦${subtotal.toLocaleString()}
             </div>
         `;
         summaryContainer.appendChild(itemRow);
     });
 
-    const totalNGN = Math.round(totalUSD * RATE_NGN_PER_USD);
     totalDisplay.textContent = `₦${totalNGN.toLocaleString()}`;
 
     // Payment Selection Toggler

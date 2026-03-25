@@ -7,15 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}MyStore | Online Shopping{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
-    <!-- Material Icons for sleeker SVG replacements -->
+    <!-- PWA -->
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta name="theme-color" content="#673AB7">
+    <link rel="icon" type="image/png" href="{% static 'images/favicon-32x32.png' %}" />
+    <link rel="apple-touch-icon" href="{% static 'images/image-avatar.png' %}">
+    <!-- Material Icons & FontAwesome -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     {% block head_extra %}{% endblock %}
 </head>
 
 <body>
 
     <div class="topbar-ad">
-        🎉 FREE DELIVERY on orders over $50! Shop the Flash Sale now!
+        🎉 FREE DELIVERY on orders over ₦75,000! Shop the Flash Sale now!
     </div>
 
     <header class="site-header">
@@ -61,7 +67,7 @@
                 <div class="dropdown-wrapper">
                     <div class="action-btn">
                         <span class="material-icons-outlined">person</span>
-                        <span>{% if user.is_authenticated %}Hi, {{ user.username }}{% else %}Account{% endif %}</span>
+                        <span>{% if user.is_authenticated %}Hi, {{ user.username }}{% if user.is_staff %} <small class="badge bg-primary" style="font-size: 10px; margin-left: 5px; padding: 2px 6px; border-radius: 4px;">Admin</small>{% endif %}{% else %}Account{% endif %}</span>
                         <span class="material-icons-outlined" style="font-size: 16px;">expand_more</span>
                     </div>
                     <div class="dropdown-menu">
@@ -69,6 +75,11 @@
                         <a href="{% url 'dashboard' %}">My Account</a>
                         <a href="{% url 'dashboard' %}">Orders</a>
                         <a href="{% url 'dashboard' %}">Saved Items</a>
+                        {% if user.is_staff %}
+                        <hr>
+                        <a href="{% url 'admin_dashboard' %}" style="color: var(--jumia-primary); font-weight: bold;">📊 Admin Dashboard</a>
+                        <a href="/admin/" style="color: #673AB7; font-weight: 500;">⚙️ System Admin (Django)</a>
+                        {% endif %}
                         <hr>
                         <a href="{% url 'logout' %}">Logout</a>
                         {% else %}
@@ -156,6 +167,15 @@
     </footer>
 
     <script>
+        // PWA Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('{% static "service-worker.js" %}')
+                    .then(reg => console.log('Service Worker Registered'))
+                    .catch(err => console.log('Service Worker Failed', err));
+            });
+        }
+
         // Global Cart Count Routine (LocalStorage Priority)
         function updateCartCount() {
             try {

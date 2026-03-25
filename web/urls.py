@@ -43,4 +43,6 @@ urlpatterns = [
     path("orders/", views.orders_view, name="orders"),
     path("orders/clear/", views.clear_order_history, name="clear_order_history"),
     path("orders/mark-paid/<int:order_id>/", views.mark_order_paid, name="mark_order_paid"),
+    path("admin-dashboard/", views.admin_dashboard, name="admin_dashboard"),
+    path("admin-register-home/", views.admin_register_home, name="admin_register_home"),
 ]
