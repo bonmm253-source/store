@@ -50,11 +50,11 @@ class _WebViewPageState extends State<WebViewPage> {
   void initState() {
     super.initState();
     
-    // Set this to true for local testing, false for production
-    const bool isLocal = true;
+    // Set this to false for production
+    const bool isLocal = false;
     String initialUrl = isLocal 
         ? (Platform.isAndroid ? 'http://10.0.2.2:8000' : 'http://localhost:8000')
-        : 'https://drop-down-store.onrender.com';
+        : 'https://drop-web.onrender.com';
     
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -130,7 +130,7 @@ class _WebViewPageState extends State<WebViewPage> {
                    width: double.infinity,
                    child: ElevatedButton.icon(
                      onPressed: () async {
-                        final url = Uri.parse('https://drop-down-store.onrender.com');
+                        final url = Uri.parse('https://drop-web.onrender.com');
                         if (await canLaunchUrl(url)) {
                           await launchUrl(url, mode: LaunchMode.externalApplication);
                         }
@@ -200,7 +200,7 @@ class _WebViewPageState extends State<WebViewPage> {
         onDestinationSelected: (idx) {
            String base = isLocal 
                ? (Platform.isAndroid ? 'http://10.0.2.2:8000' : 'http://localhost:8000')
-               : 'https://drop-down-store.onrender.com';
+               : 'https://drop-web.onrender.com';
            if (idx == 0) _controller.loadRequest(Uri.parse(base));
            if (idx == 1) _controller.loadRequest(Uri.parse('$base/cart/'));
            if (idx == 2) _controller.loadRequest(Uri.parse('$base/profile/'));
