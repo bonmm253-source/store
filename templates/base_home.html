@@ -96,19 +96,52 @@
         border-radius: 0 0 4px 4px;
     }
 
+    /* Side-by-side scrollable grid */
+    .product-grid-scroll {
+        background: white;
+        padding: 15px;
+        display: flex;
+        overflow-x: auto;
+        gap: 15px;
+        border-radius: 0 0 4px 4px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--jumia-orange) transparent;
+    }
+
+    .product-grid-scroll::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .product-grid-scroll::-webkit-scrollbar-thumb {
+        background-color: var(--jumia-orange);
+        border-radius: 10px;
+    }
+
+    .product-grid-scroll .product-card {
+        flex: 0 0 180px;
+        overflow: hidden; /* Overflow on the product */
+    }
+
+    /* Product Animation */
     .product-card {
         display: block;
         background: white;
         border-radius: 4px;
         padding: 10px;
-        transition: box-shadow 0.2s, transform 0.2s;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         text-align: left;
         position: relative;
+        animation: fadeIn 0.6s ease-out backwards;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .product-card:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        transform: translateY(-5px);
     }
 
     .product-img {
@@ -175,15 +208,15 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                 <div style="background: #fafafa; padding: 16px; border-radius: 12px; border: 1px solid #f0f0f0;">
                     <div style="font-size: 11px; color: #7B1FA2; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Total Goods</div>
-                    <div style="font-size: 20px; font-weight: 800; color: #1a1a1a;">₦{{ admin_total_goods_value|default:"0" }}</div>
+                    <div style="font-size: 20px; font-weight: 800; color: #1a1a1a;">{% load humanize %}₦{{ admin_total_goods_value|default:0|intcomma }}</div>
                 </div>
                 <div style="background: #fafafa; padding: 16px; border-radius: 12px; border: 1px solid #f0f0f0;">
                     <div style="font-size: 11px; color: #2E7D32; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Finance Sold</div>
-                    <div style="font-size: 20px; font-weight: 800; color: #1a1a1a;">₦{{ admin_total_revenue|default:"0" }}</div>
+                    <div style="font-size: 20px; font-weight: 800; color: #1a1a1a;">₦{{ admin_total_revenue|default:0|intcomma }}</div>
                 </div>
                 <div style="background: #fafafa; padding: 16px; border-radius: 12px; border: 1px solid #f0f0f0;">
                     <div style="font-size: 11px; color: #C62828; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Expenses</div>
-                    <div style="font-size: 20px; font-weight: 800; color: #1a1a1a;">₦{{ admin_total_expenses|default:"0" }}</div>
+                    <div style="font-size: 20px; font-weight: 800; color: #1a1a1a;">₦{{ admin_total_expenses|default:0|intcomma }}</div>
                 </div>
                 <div style="background: #fafafa; padding: 16px; border-radius: 12px; border: 1px solid #f0f0f0;">
                     <div style="font-size: 11px; color: #1976D2; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Items in Stock</div>
@@ -191,7 +224,7 @@
                 </div>
                 <div style="background: #673AB7; padding: 16px; border-radius: 12px; box-shadow: 0 4px 10px rgba(103, 58, 183, 0.2);">
                     <div style="font-size: 11px; color: rgba(255,255,255,0.7); font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Net Net Profit</div>
-                    <div style="font-size: 20px; font-weight: 800; color: white;">₦{{ admin_net_finance|default:"0" }}</div>
+                    <div style="font-size: 20px; font-weight: 800; color: white;">₦{{ admin_net_finance|default:0|intcomma }}</div>
                 </div>
             </div>
         </div>
@@ -240,13 +273,34 @@
     </div>
 </div>
 
+{% if recently_viewed %}
+<div style="margin-bottom: 30px;">
+    <div class="section-title">
+        <h3>Recently Viewed</h3>
+    </div>
+    <div class="product-grid-scroll">
+        {% for rv in recently_viewed %}
+        <a href="{% url 'product_detail' rv.type rv.item.id %}" class="product-card">
+            {% if rv.item.image %}
+            <img class="product-img" src="{{ rv.item.image.url }}" alt="{{ rv.item.name }}">
+            {% else %}
+            <div class="product-img" style="background: #eee;"></div>
+            {% endif %}
+            <div class="product-name">{{ rv.item.brand|default:"" }} {{ rv.item.name }}</div>
+            <div class="product-price">₦{{ rv.item.discount_price|default:rv.item.price|floatformat:0 }}</div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
 {% if flash_shoes %}
 <div style="margin-bottom: 30px;">
     <div class="section-title" style="background: var(--jumia-orange); color: white;">
         <h3 style="color: white;"><span class="material-icons-outlined">flash_on</span> Flash Sales</h3>
         <span style="font-size: 14px; font-weight: bold;">Time is ticking!</span>
     </div>
-    <div class="product-grid">
+    <div class="product-grid-scroll">
         {% for shoe in flash_shoes %}
         <a href="{% url 'product_detail' 'shoe' shoe.id %}" class="product-card">
             {% if shoe.image %}
@@ -255,11 +309,11 @@
             <div class="product-img" style="background: #eee;"></div>
             {% endif %}
 
-            <div class="discount-badge">-15%</div>
+            <div class="discount-badge">Flash Sale</div>
             <div class="product-name">{{ shoe.brand|default:"" }} {{ shoe.name }}</div>
-            <div class="product-price">₦{{ shoe.discount_price|default:shoe.price }}</div>
+            <div class="product-price">₦{{ shoe.discount_price|default:shoe.price|floatformat:0 }}</div>
             {% if shoe.discount_price %}
-            <div class="product-old-price">₦{{ shoe.price }}</div>
+            <div class="product-old-price">₦{{ shoe.price|floatformat:0 }}</div>
             {% endif %}
         </a>
         {% endfor %}
@@ -272,7 +326,7 @@
         <h3>Top Selling Watches</h3>
         <a href="{% url 'wristcollection' %}" class="see-all">See All ></a>
     </div>
-    <div class="product-grid">
+    <div class="product-grid-scroll">
         {% for watch in top_watches|default:flash_shoes %}
         <a href="{% url 'product_detail' 'watch' watch.id %}" class="product-card">
             {% if watch.image %}
@@ -300,7 +354,7 @@
         <h3>Featured Men's Sneakers</h3>
         <a href="{% url 'men' %}" class="see-all">See All ></a>
     </div>
-    <div class="product-grid">
+    <div class="product-grid-scroll">
         {% for shoe in men_shoes %}
         <a href="{% url 'product_detail' 'shoe' shoe.id %}" class="product-card">
             {% if shoe.image %}
@@ -313,9 +367,9 @@
             <div class="discount-badge">Sale</div>
             {% endif %}
             <div class="product-name">{{ shoe.brand|default:"" }} {{ shoe.name }}</div>
-            <div class="product-price">${{ shoe.discount_price|default:shoe.price }}</div>
+            <div class="product-price">₦{{ shoe.discount_price|default:shoe.price|floatformat:0 }}</div>
             {% if shoe.discount_price %}
-            <div class="product-old-price">${{ shoe.price }}</div>
+            <div class="product-old-price">₦{{ shoe.price|floatformat:0 }}</div>
             {% endif %}
         </a>
         {% endfor %}
@@ -329,7 +383,7 @@
         <h3>Premium Women's Shoes</h3>
         <a href="{% url 'women' %}" class="see-all">See All ></a>
     </div>
-    <div class="product-grid">
+    <div class="product-grid-scroll">
         {% for shoe in women_shoes %}
         <a href="{% url 'product_detail' 'shoe' shoe.id %}" class="product-card">
             {% if shoe.image %}
@@ -342,9 +396,9 @@
             <div class="discount-badge">Sale</div>
             {% endif %}
             <div class="product-name">{{ shoe.brand|default:"" }} {{ shoe.name }}</div>
-            <div class="product-price">${{ shoe.discount_price|default:shoe.price }}</div>
+            <div class="product-price">₦{{ shoe.discount_price|default:shoe.price|floatformat:0 }}</div>
             {% if shoe.discount_price %}
-            <div class="product-old-price">${{ shoe.price }}</div>
+            <div class="product-old-price">₦{{ shoe.price|floatformat:0 }}</div>
             {% endif %}
         </a>
         {% endfor %}

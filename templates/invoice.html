@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Invoice #{{ order.id }}</title>
+    <style>
+        @page {
+            size: a4 portrait;
+            margin: 2cm;
+        }
+        body { font-family: 'Helvetica', 'Arial', sans-serif; font-size: 12px; color: #333; }
+        .invoice-header { border-bottom: 2px solid #673AB7; padding-bottom: 20px; margin-bottom: 30px; }
+        .company-info { float: left; }
+        .invoice-info { text-align: right; }
+        .clear { clear: both; }
+        .customer-info { margin-bottom: 30px; }
+        .items-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        .items-table th { background: #673AB7; color: white; padding: 10px; text-align: left; }
+        .items-table td { padding: 10px; border-bottom: 1px solid #eee; }
+        .total-section { text-align: right; font-size: 14px; font-weight: bold; }
+        .footer { position: absolute; bottom: 0; width: 100%; text-align: center; font-size: 10px; color: #999; border-top: 1px solid #eee; padding-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="invoice-header">
+        <div class="company-info">
+            <h1 style="color: #673AB7; margin: 0;">MyStore</h1>
+            <p style="margin: 5px 0;">123 Fashion Ave, Lagos, Nigeria<br>support@mystore.com | +234 800 MYSTORE</p>
+        </div>
+        <div class="invoice-info">
+            <h2 style="margin: 0;">INVOICE</h2>
+            <p style="margin: 5px 0;">Order ID: #{{ order.id }}<br>Date: {{ order.created_at|date:"M d, Y" }}<br>Status: {{ order.status }}</p>
+        </div>
+        <div class="clear"></div>
+    </div>
+
+    <div class="customer-info">
+        <h3 style="border-bottom: 1px solid #eee; padding-bottom: 5px;">Bill To:</h3>
+        <p style="margin: 5px 0;"><strong>{{ user.get_full_name|default:user.username }}</strong></p>
+        <p style="margin: 5px 0;">{{ order.delivery_address }}</p>
+        <p style="margin: 5px 0;">Phone: {{ order.phone }}</p>
+    </div>
+
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Item Description</th>
+                <th style="text-align: center;">Qty</th>
+                <th style="text-align: right;">Unit Price</th>
+                <th style="text-align: right;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td style="text-align: center;">{{ item.quantity }}</td>
+                <td style="text-align: right;">₦{{ item.price|floatformat:2 }}</td>
+                <td style="text-align: right;">₦{{ item.price|multiply:item.quantity|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total-section">
+        <p>Subtotal: ₦{{ order.total|floatformat:2 }}</p>
+        <p style="font-size: 18px; color: #673AB7;">Grand Total: ₦{{ order.total|floatformat:2 }}</p>
+    </div>
+
+    <div style="margin-top: 50px; font-size: 11px; color: #666;">
+        <p><strong>Payment Method:</strong> {{ order.payment_method }}</p>
+        {% if order.transaction_id %}
+        <p><strong>Transaction ID:</strong> {{ order.transaction_id }}</p>
+        {% endif %}
+    </div>
+
+    <div class="footer">
+        Thank you for your business! This is a computer-generated invoice.
+    </div>
+</body>
+</html>

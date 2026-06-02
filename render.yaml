@@ -1,13 +1,54 @@
 services:
+  # 1. Django Web Service
   - type: web
-    name: drop-down-store
+    name: drop-web
     env: docker
-    plan: free
-    healthCheckPath: /
+    plan: free # Change to 'starter' or higher for production
+    region: ohio
+    healthCheckPath: /ht/
     envVars:
       - key: DEBUG
-        value: "True"
+        value: "False"
       - key: SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
-        sync: false # User will provide this in the dashboard if the blueprint fails
+        fromDatabase:
+          name: drop-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: drop-redis
+          property: connectionString
+      - key: DJANGO_SETTINGS_MODULE
+        value: drop.settings
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
+      - key: DJANGO_LOG_LEVEL
+        value: INFO
+
+  # 2. Celery Worker (Handles background tasks like emails)
+  - type: worker
+    name: drop-worker
+    env: docker
+    dockerCommand: celery -A drop worker -l info
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: drop-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: drop-redis
+          property: connectionString
+
+  # 3. Redis (For Cache and Channels)
+  - type: redis
+    name: drop-redis
+    ipAllowList: [] # Only allow internal connections
+
+# 4. PostgreSQL Database
+databases:
+  - name: drop-db
+    plan: free # Change to 'standard' for production backups

@@ -169,6 +169,80 @@
         min-height: 80px;
         box-sizing: border-box;
     }
+
+    /* Related Products Styles */
+    .section-title {
+        background: #fdfde9;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 4px 4px 0 0;
+        margin-top: 30px;
+    }
+
+    .product-grid-scroll {
+        background: white;
+        padding: 15px;
+        display: flex;
+        overflow-x: auto;
+        gap: 15px;
+        border-radius: 0 0 4px 4px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--jumia-orange) transparent;
+        margin-bottom: 30px;
+    }
+
+    .product-grid-scroll::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .product-grid-scroll::-webkit-scrollbar-thumb {
+        background-color: var(--jumia-orange);
+        border-radius: 10px;
+    }
+
+    .product-card {
+        flex: 0 0 180px;
+        display: block;
+        background: white;
+        border-radius: 4px;
+        padding: 10px;
+        transition: all 0.3s ease;
+        text-align: left;
+        position: relative;
+        text-decoration: none;
+        color: inherit;
+        border: 1px solid #eee;
+    }
+
+    .product-card:hover {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transform: translateY(-3px);
+    }
+
+    .product-img-sm {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-bottom: 8px;
+    }
+
+    .product-name-sm {
+        font-size: 13px;
+        color: var(--jumia-text);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin-bottom: 4px;
+    }
+
+    .product-price-sm {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--jumia-dark);
+    }
 </style>
 {% endblock %}
 
@@ -207,9 +281,16 @@
             {% endif %}
 
             {% if product.stock > 0 %}
-            <div style="font-size: 13px; font-weight: bold; color: green; margin-top: 10px;">In Stock</div>
+                {% if product.stock <= low_stock_threshold %}
+                    <div style="font-size: 13px; font-weight: bold; color: #d32f2f; margin-top: 10px; display: flex; align-items: center; gap: 5px;">
+                        <span class="material-icons-outlined" style="font-size: 18px;">warning</span>
+                        Only {{ product.stock }} left in stock!
+                    </div>
+                {% else %}
+                    <div style="font-size: 13px; font-weight: bold; color: green; margin-top: 10px;">In Stock</div>
+                {% endif %}
             {% else %}
-            <div style="font-size: 13px; font-weight: bold; color: red; margin-top: 10px;">Out of Stock</div>
+                <div style="font-size: 13px; font-weight: bold; color: red; margin-top: 10px;">Out of Stock</div>
             {% endif %}
         </div>
 
@@ -274,6 +355,25 @@
     </div>
     {% endfor %}
 </div>
+
+{% if related_products %}
+<div class="section-title">
+    <h3 style="margin:0;">Customers also viewed</h3>
+</div>
+<div class="product-grid-scroll">
+    {% for related in related_products %}
+    <a href="{% url 'product_detail' prod_type related.id %}" class="product-card">
+        {% if related.image %}
+        <img class="product-img-sm" src="{{ related.image.url }}" alt="{{ related.name }}">
+        {% else %}
+        <div class="product-img-sm" style="background: #eee;"></div>
+        {% endif %}
+        <div class="product-name-sm">{{ related.brand|default:"" }} {{ related.name }}</div>
+        <div class="product-price-sm">₦{{ related.discount_price|default:related.price|floatformat:0 }}</div>
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
 
 <div style="display:none;" id="csrf-form">
     {% csrf_token %}

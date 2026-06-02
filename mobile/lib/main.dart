@@ -50,16 +50,12 @@ class _WebViewPageState extends State<WebViewPage> {
   void initState() {
     super.initState();
     
-    String initialUrl = 'https://drop-down-store.onrender.com';
+    // Set this to true for local testing, false for production
+    const bool isLocal = true;
+    String initialUrl = isLocal 
+        ? (Platform.isAndroid ? 'http://10.0.2.2:8000' : 'http://localhost:8000')
+        : 'https://drop-down-store.onrender.com';
     
-    if (1 == 0) {
-        try {
-          if (Platform.isAndroid) {
-            initialUrl = 'http://10.0.2.2:8000';
-          }
-        } catch (_) {}
-    }
-
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(Colors.white)
@@ -202,9 +198,12 @@ class _WebViewPageState extends State<WebViewPage> {
           NavigationDestination(icon: Icon(Icons.person), label: "Profile"),
         ],
         onDestinationSelected: (idx) {
-           if (idx == 0) _controller.loadRequest(Uri.parse('https://drop-down-store.onrender.com'));
-           if (idx == 1) _controller.loadRequest(Uri.parse('https://drop-down-store.onrender.com/cart/'));
-           if (idx == 2) _controller.loadRequest(Uri.parse('https://drop-down-store.onrender.com/profile/'));
+           String base = isLocal 
+               ? (Platform.isAndroid ? 'http://10.0.2.2:8000' : 'http://localhost:8000')
+               : 'https://drop-down-store.onrender.com';
+           if (idx == 0) _controller.loadRequest(Uri.parse(base));
+           if (idx == 1) _controller.loadRequest(Uri.parse('$base/cart/'));
+           if (idx == 2) _controller.loadRequest(Uri.parse('$base/profile/'));
         },
       ) : null,
     );

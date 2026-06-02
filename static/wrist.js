@@ -243,7 +243,7 @@ document.addEventListener("DOMContentLoaded", function () {
             ${starHtml}
           </div>
           <div style="margin-bottom:4px;text-align:right;">
-            <div style="font-weight:bold;color:#222;">$${priceUSD.toFixed(2)} × ${qty}</div>
+            <div style="font-weight:bold;color:#222;">₦${priceNGN.toLocaleString()} × ${qty}</div>
             <div style="color:#4a148c;font-weight:bold;">₦${subtotalNGN.toLocaleString()}</div>
           </div>
         </div>`;

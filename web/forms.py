@@ -21,6 +21,24 @@ class RegistrationForm(forms.ModelForm):
         return cleaned_data
 
 
+class ProfileUpdateForm(forms.ModelForm):
+    new_password = forms.CharField(widget=forms.PasswordInput, required=False, label="New Password")
+    confirm_password = forms.CharField(widget=forms.PasswordInput, required=False, label="Confirm Password")
+
+    class Meta:
+        model = User
+        fields = ["username", "email", "phone"]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("new_password")
+        confirm_password = cleaned_data.get("confirm_password")
+        if password or confirm_password:
+            if password != confirm_password:
+                self.add_error("confirm_password", "Passwords do not match")
+        return cleaned_data
+
+
 class LoginForm(AuthenticationForm):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)

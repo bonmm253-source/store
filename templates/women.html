@@ -40,11 +40,11 @@
             <h3>{{ shoe.name }}</h3>
             {% if shoe.discount_price %}
               <p class="naira">
-                <span style="text-decoration: line-through; color: #888; font-size: 0.9em; margin-right: 5px;">₦{{ shoe.price|floatformat:2 }}</span>
-                <span style="color: #e47911; font-weight: bold;">₦{{ shoe.discount_price|floatformat:2 }}</span>
+                <span style="text-decoration: line-through; color: #888; font-size: 0.9em; margin-right: 5px;">₦{{ shoe.price|floatformat:0 }}</span>
+                <span style="color: #e47911; font-weight: bold;">₦{{ shoe.discount_price|floatformat:0 }}</span>
               </p>
             {% elif shoe.price %}
-              <p class="naira">₦{{ shoe.price }}</p>
+              <p class="naira">₦{{ shoe.price|floatformat:0 }}</p>
             {% endif %}
           </div>
           

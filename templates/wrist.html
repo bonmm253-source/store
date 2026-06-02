@@ -38,11 +38,11 @@
             <h3>{{ watch.name }}</h3>
             {% if watch.discount_price %}
               <p class="naira">
-                <span style="text-decoration: line-through; color: #888; font-size: 0.9em; margin-right: 8px;">${{ watch.price }}</span>
-                <span style="color: #e47911; font-weight: bold;">${{ watch.discount_price }}</span>
+                <span style="text-decoration: line-through; color: #888; font-size: 0.9em; margin-right: 8px;">₦{{ watch.price }}</span>
+                <span style="color: #e47911; font-weight: bold;">₦{{ watch.discount_price }}</span>
               </p>
             {% elif watch.price %}
-              <p class="naira">${{ watch.price }}</p>
+              <p class="naira">₦{{ watch.price }}</p>
             {% endif %}
           </div>
           

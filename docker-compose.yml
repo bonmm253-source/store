@@ -1,4 +1,18 @@
 services:
+  db:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
   web:
     build: .
     volumes:
@@ -9,9 +23,51 @@ services:
       - .env
     environment:
       - DJANGO_SETTINGS_MODULE=drop.settings
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+      - REDIS_URL=redis://redis:6379/0
       - DEBUG=True
-    # Using sqlite3 inside the container for now as requested by project structure
+    depends_on:
+      - db
+      - redis
     command: >
       sh -c "python manage.py migrate &&
              python manage.py collectstatic --noinput &&
-             uvicorn drop.asgi:application --host 0.0.0.0 --port 8000"
+             gunicorn drop.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000"
+
+  celery:
+    build: .
+    command: celery -A drop worker -l info
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - db
+    restart: always
+
+  flower:
+    build: .
+    command: celery -A drop flower --port=5555
+    ports:
+      - "5555:5555"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - celery
+    restart: always
+
+  nginx:
+    image: nginx:1.25-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./staticfiles:/app/staticfiles
+      - ./media:/app/media
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:

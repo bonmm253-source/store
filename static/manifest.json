@@ -1,16 +1,28 @@
 {
-  "name": "Drop Down Store",
-  "short_name": "Drop Down",
-  "description": "Premium Shoe and Watch Store",
+  "name": "MyStore | Premium Shopping",
+  "short_name": "MyStore",
+  "description": "Your favorite premium shoe and watch store.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#673AB7",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "/static/images/favicon-32x32.png",
       "sizes": "32x32",
       "type": "image/png"
+    },
+    {
+        "src": "/static/images/image-avatar.png",
+        "sizes": "192x192",
+        "type": "image/png"
+    },
+    {
+        "src": "/static/images/image-avatar.png",
+        "sizes": "512x512",
+        "type": "image/png"
     }
-  ]
+  ],
+  "categories": ["shopping", "lifestyle"]
 }

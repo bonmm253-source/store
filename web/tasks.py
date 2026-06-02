@@ -1,10 +1,51 @@
 from celery import shared_task
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from django.conf import settings
 from django.utils import timezone
 import logging
+import json
 
 logger = logging.getLogger(__name__)
+
+# ... (rest of imports)
+
+@shared_task(bind=True, max_retries=3)
+def send_order_receipt_email(self, order_id):
+    from .models import Order
+    try:
+        order = Order.objects.select_related('user').get(id=order_id)
+        if not order.user or not order.user.email:
+            return f"No email for order #{order_id}"
+
+        # Standardize items for the template
+        items = order.items_list
+
+        context = {
+            'order': order,
+            'user': order.user,
+            'items': items,
+            'site_url': 'https://mystore.com' # In real app, use Site.objects.get_current().domain
+        }
+
+        html_content = render_to_string('emails/order_receipt.html', context)
+        text_content = strip_tags(html_content)
+
+        subject = f'Order Confirmation - #{order.id} (MyStore)'
+        email = EmailMultiAlternatives(
+            subject,
+            text_content,
+            settings.DEFAULT_FROM_EMAIL,
+            [order.user.email]
+        )
+        email.attach_alternative(html_content, "text/html")
+        email.send()
+
+        return f"HTML receipt sent to {order.user.email} for #{order_id}"
+    except Exception as exc:
+        logger.error(f"Failed to send HTML receipt for #{order_id}: {exc}")
+        raise self.retry(exc=exc, countdown=300)
 
 @shared_task(bind=True, max_retries=3)
 def send_registration_email(self, user_email, username):

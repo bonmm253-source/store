@@ -104,38 +104,17 @@
 
         <div id="card-details-section" style="display: none;">
             <h3 style="margin: 30px 0 20px; font-size: 18px; border-bottom: 1px solid var(--jumia-border); padding-bottom: 10px;">
-                5. Card Details (ATM Card)</h3>
-            <div style="background: #fbfbfb; border: 1px solid var(--jumia-border); padding: 25px; border-radius: 8px; margin-bottom: 30px;">
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <label style="color: var(--jumia-dark); margin: 0;">Card Number</label>
-                        <div style="display: flex; gap: 12px; align-items: center; background: #fff; padding: 6px 12px; border-radius: 6px; border: 1px solid #ddd; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/1200px-Visa_Inc._logo.svg.png" alt="Visa" style="height: 16px; width: auto; display: inline-block;">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1200px-Mastercard-logo.svg.png" alt="Mastercard" style="height: 22px; width: auto; display: inline-block;">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Verve_Logo.svg/1200px-Verve_Logo.svg.png" alt="Verve" style="height: 16px; width: auto; display: inline-block;">
-                        </div>
-                    </div>
-                    <input type="text" id="card_number" name="card_number" placeholder="0000 0000 0000 0000 (Visa, Mastercard, Verve)" maxlength="19"
-                        autocomplete="cc-number" inputmode="numeric"
-                        style="width: 100%; padding: 12px; border: 1px solid var(--jumia-border); border-radius: 4px; font-size: 16px; letter-spacing: 2px;">
+                5. Secure Card Payment</h3>
+            <div style="background: #fbfbfb; border: 1px solid var(--jumia-border); padding: 25px; border-radius: 8px; margin-bottom: 30px; text-align: center;">
+                <p style="font-size: 14px; color: #666; margin-bottom: 20px;">You will be redirected to <strong>Paystack</strong> to securely complete your payment.</p>
+                <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 15px;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/1200px-Visa_Inc._logo.svg.png" alt="Visa" style="height: 20px;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1200px-Mastercard-logo.svg.png" alt="Mastercard" style="height: 25px;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Verve_Logo.svg/1200px-Verve_Logo.svg.png" alt="Verve" style="height: 20px;">
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div class="form-group">
-                        <label style="color: var(--jumia-dark);">Expiry Date</label>
-                        <input type="text" id="expiry_date" name="expiry_date" placeholder="MM/YY" maxlength="5"
-                            autocomplete="cc-exp" inputmode="numeric"
-                            style="width: 100%; padding: 12px; border: 1px solid var(--jumia-border); border-radius: 4px; font-size: 14px;">
-                    </div>
-                    <div class="form-group">
-                        <label style="color: var(--jumia-dark);">CVV</label>
-                        <input type="password" id="cvv" name="cvv" placeholder="123" maxlength="3"
-                            autocomplete="cc-csc" inputmode="numeric"
-                            style="width: 100%; padding: 12px; border: 1px solid var(--jumia-border); border-radius: 4px; font-size: 14px;">
-                    </div>
-                </div>
-                <div style="margin-top: 15px; display: flex; align-items: center; gap: 10px; color: #28a745; font-size: 12px; font-weight: 600;">
+                <div style="color: #28a745; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 5px;">
                     <span class="material-icons-outlined" style="font-size: 16px;">lock</span>
-                    Payment is secured with 256-bit encryption
+                    Secured by Paystack
                 </div>
             </div>
         </div>
@@ -161,7 +140,11 @@
         </div>
 
         <input type="hidden" name="cart_json" id="cart_json_input">
-        <button type="submit" class="btn-primary" style="font-size: 18px; height: 50px; width: 100%;">I HAVE PAID - SUBMIT ORDER</button>
+        <div style="display: flex; justify-content: center; margin-top: 40px; padding-bottom: 20px;">
+            <button type="submit" class="btn-primary" style="font-size: 16px; height: 54px; width: auto; min-width: 300px; padding: 0 40px; border-radius: 50px; box-shadow: 0 10px 20px rgba(246, 139, 30, 0.25); text-transform: uppercase; letter-spacing: 1px;">
+                I HAVE PAID - SUBMIT ORDER
+            </button>
+        </div>
     </form>
 </div>
 {% endblock %}
@@ -189,8 +172,69 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     syncCart();
 
-    form.addEventListener('submit', function() {
-        syncCart();
+    form.addEventListener('submit', function(e) {
+        const paymentMethod = form.querySelector('input[name="payment_method"]:checked').value;
+
+        if (paymentMethod === 'Card Payment') {
+            e.preventDefault();
+            syncCart();
+
+            // 1. Submit Order via AJAX
+            const formData = new FormData(form);
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'INITIALIZING PAYMENT...';
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // 2. Initiate Payment to get Access Code
+                    return fetch(`/payment/initiate/${data.order_id}/`, {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+                } else {
+                    throw new Error(data.message || 'Order submission failed');
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // 3. Open Paystack Inline
+                    const handler = PaystackPop.setup({
+                        key: '{{ PAYSTACK_PUBLIC_KEY }}',
+                        email: '{{ user.email }}',
+                        amount: totalNGN * 100,
+                        access_code: data.access_code,
+                        onClose: function() {
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = 'PAY WITH CARD - SUBMIT ORDER';
+                            alert('Transaction was not completed.');
+                        },
+                        callback: function(response) {
+                            // 4. Redirect to verification URL
+                            window.location.href = `/payment/verify/?reference=${response.reference}`;
+                        }
+                    });
+                    handler.openIframe();
+                } else {
+                    throw new Error(data.message || 'Payment initialization failed');
+                }
+            })
+            .catch(error => {
+                alert(error.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'PAY WITH CARD - SUBMIT ORDER';
+            });
+        } else {
+            syncCart();
+        }
     });
 
     if (cart.length === 0) {
@@ -265,9 +309,6 @@ document.addEventListener('DOMContentLoaded', function() {
             submitBtn.textContent = 'I HAVE PAID - SUBMIT ORDER';
         } else if (method === 'Card Payment') {
             cardSection.style.display = 'block';
-            cardNum.required = true;
-            expiry.required = true;
-            cvv.required = true;
             submitBtn.textContent = 'PAY WITH CARD - SUBMIT ORDER';
         } else {
             podSection.style.display = 'block';
@@ -276,4 +317,4 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 </script>
-{% endblock %}
+{% endblock %}

@@ -53,6 +53,22 @@
                         {% if order.payment_method == "Bank Transfer" and order.confirmed_account_number %}
                         <p style="margin: 2px 0; color: #888; font-size: 11px;">(Paid to: {{ order.confirmed_account_number }})</p>
                         {% endif %}
+                        {% if order.status == "Pending" and order.payment_method == "Card Payment" %}
+                        <a href="{% url 'initiate_payment' order.id %}"
+                            style="background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-top: 10px;">
+                            <span class="material-icons-outlined" style="font-size: 16px;">payment</span>
+                            Pay Now
+                        </a>
+                        {% endif %}
+
+                        {% if order.complete or order.status == "Paid" %}
+                        <a href="{% url 'download_invoice' order.id %}"
+                            style="background: #673AB7; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-top: 10px;">
+                            <span class="material-icons-outlined" style="font-size: 16px;">file_download</span>
+                            Download Invoice
+                        </a>
+                        {% endif %}
+
                         {% if order.status == "Processing" %}
                         <form action="{% url 'mark_order_paid' order.id %}" method="POST" style="margin-top: 10px;">
                             {% csrf_token %}

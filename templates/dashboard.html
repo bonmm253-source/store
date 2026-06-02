@@ -96,6 +96,14 @@
     </div>
 
     <div class="dashboard-content">
+        {% if messages %}
+        {% for message in messages %}
+        <div style="background: {% if message.tags == 'success' %}#E8F5E9{% elif message.tags == 'error' %}#FFEBEE{% else %}#E3F2FD{% endif %}; border-left: 4px solid {% if message.tags == 'success' %}#4CAF50{% elif message.tags == 'error' %}#F44336{% else %}#2196F3{% endif %}; padding: 15px; margin-bottom: 20px; border-radius: 4px; color: {% if message.tags == 'success' %}#2E7D32{% elif message.tags == 'error' %}#C62828{% else %}#1565C0{% endif %}; font-size: 14px; font-weight: 500;">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
         <div class="dash-header">My Orders</div>
 
         {% for order in orders %}
@@ -182,6 +190,54 @@
             <p style="margin-top: 10px;">You haven't saved any items yet.</p>
         </div>
         {% endif %}
+    </div>
+
+        <div class="dash-header" style="margin-top: 40px;" id="profile">Account Details</div>
+        <form method="post" action="{% url 'update_dashboard_settings' %}" style="display: grid; gap: 20px;">
+            {% csrf_token %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">Username</label>
+                    {{ profile_form.username }}
+                    {% if profile_form.username.errors %}
+                    <div style="color: #d32f2f; font-size: 12px; margin-top: 6px;">{{ profile_form.username.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">Email</label>
+                    {{ profile_form.email }}
+                    {% if profile_form.email.errors %}
+                    <div style="color: #d32f2f; font-size: 12px; margin-top: 6px;">{{ profile_form.email.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">Phone</label>
+                    {{ profile_form.phone }}
+                    {% if profile_form.phone.errors %}
+                    <div style="color: #d32f2f; font-size: 12px; margin-top: 6px;">{{ profile_form.phone.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">New Password</label>
+                    {{ profile_form.new_password }}
+                    {% if profile_form.new_password.errors %}
+                    <div style="color: #d32f2f; font-size: 12px; margin-top: 6px;">{{ profile_form.new_password.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">Confirm Password</label>
+                    {{ profile_form.confirm_password }}
+                    {% if profile_form.confirm_password.errors %}
+                    <div style="color: #d32f2f; font-size: 12px; margin-top: 6px;">{{ profile_form.confirm_password.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <button type="submit" style="width: max-content; padding: 12px 24px; background: #673AB7; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer;">Save Settings</button>
+        </form>
     </div>
 </div>
 {% endblock %}

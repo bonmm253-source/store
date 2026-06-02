@@ -1,25 +1,23 @@
-# .dockerignore
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-.venv/
-env/
-venv/
-ENV/
-
-# Django
-db.sqlite3
-media/
-staticfiles/
-
-# Git
-.git/
+.git
 .gitignore
-
-# VS Code
-.vscode/
-
-# Flutter
-mobile/
-build/
+.vscode
+.idea
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.db.sqlite3
+db.sqlite3
+.venv
+venv
+env
+.env
+static
+staticfiles
+media
+node_modules
+README.md
+docker-compose.yml
+.github
+Dockerfile
+render.yaml

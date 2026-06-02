@@ -1,5 +1,52 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
+
+{% block head_extra %}
+<style>
+    @media (max-width: 768px) {
+        .admin-dashboard-container {
+            padding: 0 15px;
+            margin: 20px auto;
+        }
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        .dashboard-header h1 {
+            font-size: 20px;
+        }
+        .dashboard-header a {
+            width: 100%;
+            justify-content: center;
+        }
+        .kpi-grid {
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+        .kpi-card {
+            padding: 16px;
+        }
+        .kpi-card > div:nth-child(2) {
+            font-size: 11px;
+        }
+        .kpi-card > div:nth-child(3) {
+            font-size: 18px;
+        }
+        [style*="grid-template-columns: 2fr 1fr"] {
+            grid-template-columns: 1fr;
+        }
+        table {
+            font-size: 12px;
+        }
+        table th,
+        table td {
+            padding: 10px 12px;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="admin-dashboard-container" style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
@@ -14,6 +61,28 @@
         </a>
     </div>
 
+    <!-- Low Stock Alerts -->
+    {% if low_stock_shoes or low_stock_watches %}
+    <div style="background: #FFF9C4; border: 1px solid #FBC02D; padding: 15px 24px; border-radius: 12px; margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
+        <i class="fas fa-exclamation-circle" style="color: #F57F17; font-size: 20px;"></i>
+        <div style="flex: 1;">
+            <strong style="color: #F57F17;">Stock Warning:</strong>
+            Some items are running low (5 or fewer units).
+            {% for s in low_stock_shoes %}<span style="font-size: 13px; background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 4px; margin-left: 5px;">{{ s.name }} ({{ s.stock }})</span>{% endfor %}
+            {% for w in low_stock_watches %}<span style="font-size: 13px; background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 4px; margin-left: 5px;">{{ w.name }} ({{ w.stock }})</span>{% endfor %}
+        </div>
+        <a href="/admin/web/shoe/" style="color: #F57F17; font-weight: 700; font-size: 13px; text-decoration: underline;">Restock Now</a>
+    </div>
+    {% endif %}
+
+    <!-- Charts Section -->
+    <div style="display: grid; grid-template-columns: 1fr; gap: 30px; margin-bottom: 40px;">
+        <div style="background: white; padding: 24px; border-radius: 16px; border: 1px solid #f0f0f0; box-shadow: 0 10px 20px rgba(0,0,0,0.02);">
+            <h3 style="margin: 0 0 20px 0; font-size: 18px; font-weight: 700;">Revenue vs Expenses (Last 7 Days)</h3>
+            <canvas id="businessChart" height="100"></canvas>
+        </div>
+    </div>
+
     <!-- Main KPIs -->
     <div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 40px;">
         <!-- KPI Card: Total Goods -->
@@ -22,7 +91,7 @@
                 <i class="fas fa-boxes fa-lg"></i>
             </div>
             <div style="color: #888; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Total Goods Value</div>
-            <div style="font-size: 24px; font-weight: 800; color: #1a1a1a;">₦{{ total_inventory_value|floatformat:2 }}</div>
+            <div style="font-size: 24px; font-weight: 800; color: #1a1a1a;">₦{{ total_inventory_value|floatformat:1 }}</div>
             <div style="margin-top: 12px; font-size: 12px; color: #4CAF50;">
                 <i class="fas fa-chart-line"></i> Full Inventory Worth
             </div>
@@ -34,7 +103,7 @@
                 <i class="fas fa-warehouse fa-lg"></i>
             </div>
             <div style="color: #888; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Stock Finance (Cost)</div>
-            <div style="font-size: 24px; font-weight: 800; color: #1a1a1a;">₦{{ total_stock_cost_in_inventory|floatformat:2 }}</div>
+            <div style="font-size: 24px; font-weight: 800; color: #1a1a1a;">₦{{ total_stock_cost_in_inventory|floatformat:1 }}</div>
             <div style="margin-top: 12px; font-size: 12px; color: #00BFA5;">
                 <i class="fas fa-wallet"></i> Total Amount Invested
             </div>
@@ -46,9 +115,33 @@
                 <i class="fas fa-cash-register fa-lg"></i>
             </div>
             <div style="color: #888; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Finance / Amount Sold</div>
-            <div style="font-size: 24px; font-weight: 800; color: #1a1a1a;">₦{{ total_revenue|floatformat:2 }}</div>
+            <div style="font-size: 24px; font-weight: 800; color: #1a1a1a;">₦{{ total_revenue|floatformat:1 }}</div>
             <div style="margin-top: 12px; font-size: 12px; color: #FF9800;">
                 <i class="fas fa-shopping-bag"></i> Total Revenue Received
+            </div>
+        </div>
+
+        <!-- KPI Card: Total Sales -->
+        <div class="kpi-card" style="background: white; padding: 24px; border-radius: 16px; border: 1px solid #f0f0f0; box-shadow: 0 10px 20px rgba(0,0,0,0.02); transition: 0.3s;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.05)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.02)'">
+            <div style="width: 48px; height: 48px; background: #E8F5E9; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: #2E7D32;">
+                <i class="fas fa-chart-bar fa-lg"></i>
+            </div>
+            <div style="color: #888; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">All Sales</div>
+            <div style="font-size: 24px; font-weight: 800; color: #1a1a1a;">{{ total_sales_count }}</div>
+            <div style="margin-top: 12px; font-size: 12px; color: #2E7D32;">
+                <i class="fas fa-shopping-cart"></i> Completed Orders
+            </div>
+        </div>
+
+        <!-- KPI Card: Out of Stock -->
+        <div class="kpi-card" style="background: white; padding: 24px; border-radius: 16px; border: 1px solid #f0f0f0; box-shadow: 0 10px 20px rgba(0,0,0,0.02); transition: 0.3s;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.05)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.02)'">
+            <div style="width: 48px; height: 48px; background: #FFEBEE; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: #C62828;">
+                <i class="fas fa-exclamation-triangle fa-lg"></i>
+            </div>
+            <div style="color: #888; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Out of Stock</div>
+            <div style="font-size: 24px; font-weight: 800; color: #1a1a1a;">{{ out_of_stock_count }}</div>
+            <div style="margin-top: 12px; font-size: 12px; color: #C62828;">
+                <i class="fas fa-box-open"></i> SKUs with zero stock
             </div>
         </div>
 
@@ -58,7 +151,7 @@
                 <i class="fas fa-hand-holding-usd fa-lg"></i>
             </div>
             <div style="color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Net Net Profit</div>
-            <div style="font-size: 24px; font-weight: 800; color: white;">₦{{ net_profit|floatformat:2 }}</div>
+            <div style="font-size: 24px; font-weight: 800; color: white;">₦{{ net_profit|floatformat:1 }}</div>
             <div style="margin-top: 12px; font-size: 12px; color: rgba(255,255,255,0.8);">
                 <i class="fas fa-cubes"></i> {{ total_units }} Units in Stock
             </div>
@@ -88,7 +181,7 @@
                         <tr style="transition: 0.2s;" onmouseover="this.style.background='#fcfcfc'" onmouseout="this.style.background='transparent'">
                             <td style="padding: 16px 24px; font-size: 14px; font-weight: 500; border-bottom: 1px solid #f9f9f9;">#{{ order.id }}</td>
                             <td style="padding: 16px 24px; font-size: 14px; border-bottom: 1px solid #f9f9f9;">{{ order.user.username|default:"Guest" }}</td>
-                            <td style="padding: 16px 24px; font-size: 14px; font-weight: 600; border-bottom: 1px solid #f9f9f9;">₦{{ order.total }}</td>
+                            <td style="padding: 16px 24px; font-size: 14px; font-weight: 600; border-bottom: 1px solid #f9f9f9;">₦{{ order.total|floatformat:1 }}</td>
                             <td style="padding: 16px 24px; border-bottom: 1px solid #f9f9f9;">
                                 <span style="font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; 
                                 {% if order.status == 'Delivered' or order.status == 'Completed' %} background: #E8F5E9; color: #2E7D32; 
@@ -110,7 +203,7 @@
         <div style="background: white; border-radius: 16px; border: 1px solid #f0f0f0; box-shadow: 0 10px 20px rgba(0,0,0,0.02); display: flex; flex-direction: column;">
             <div style="padding: 24px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
                 <h3 style="margin: 0; font-size: 18px; font-weight: 700;">Expenses</h3>
-                <span style="font-size: 12px; color: #D32F2F; font-weight: 700;">₦{{ total_expenses|floatformat:0 }}</span>
+                    <span style="font-size: 12px; color: #D32F2F; font-weight: 700;">₦{{ total_expenses|floatformat:1 }}</span>
             </div>
             <div style="padding: 24px; flex-grow: 1;">
                 {% for expense in recent_expenses %}
@@ -119,7 +212,7 @@
                         <div style="font-size: 14px; font-weight: 600; color: #1a1a1a;">{{ expense.description }}</div>
                         <div style="font-size: 12px; color: #888;">{{ expense.category }} • {{ expense.date|date:"M d" }}</div>
                     </div>
-                    <div style="font-weight: 700; color: #D32F2F; font-size: 14px;">-₦{{ expense.amount }}</div>
+                    <div style="font-weight: 700; color: #D32F2F; font-size: 14px;">-₦{{ expense.amount|floatformat:1 }}</div>
                 </div>
                 {% empty %}
                 <div style="text-align: center; color: #999; padding-top: 40px;">No expenses recorded.</div>
@@ -133,4 +226,41 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('businessChart').getContext('2d');
+    const businessChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ chart_labels|safe }},
+            datasets: [{
+                label: 'Revenue',
+                data: {{ chart_revenue|safe }},
+                borderColor: '#673AB7',
+                backgroundColor: 'rgba(103, 58, 183, 0.1)',
+                fill: true,
+                tension: 0.4
+            }, {
+                label: 'Expenses',
+                data: {{ chart_expenses|safe }},
+                borderColor: '#D32F2F',
+                backgroundColor: 'rgba(211, 47, 47, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
 {% endblock %}

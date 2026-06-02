@@ -22,3 +22,15 @@ django-allauth
 PyJWT
 cryptography
 python3-openid
+django-redis
+channels-redis
+paystack-python
+xhtml2pdf
+django-cloudinary-storage
+cloudinary
+sentry-sdk
+django-csp
+django-security
+django-health-check
+django-redis
+flower

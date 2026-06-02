@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register Admin Account | MyStore{% endblock %}
+
+{% block content %}
+<div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #673AB7 0%, #512DA8 100%); padding: 20px;">
+    <div style="width: 100%; max-width: 500px; background: white; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden;">
+        
+        <!-- Header -->
+        <div style="background: linear-gradient(135deg, #673AB7 0%, #512DA8 100%); color: white; padding: 40px 24px; text-align: center;">
+            <div style="font-size: 48px; margin-bottom: 12px;">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <h1 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 800;">Register New Admin</h1>
+            <p style="margin: 0; color: rgba(255,255,255,0.8); font-size: 14px;">Create a staff account</p>
+        </div>
+
+        <!-- Form -->
+        <div style="padding: 40px 24px;">
+            
+            {% if messages %}
+                {% for message in messages %}
+                    <div style="padding: 12px 16px; margin-bottom: 20px; border-radius: 8px; {% if message.tags %}background: {% if 'error' in message.tags %}#FFEBEE; color: #C62828;{% elif 'success' in message.tags %}#E8F5E9; color: #2E7D32;{% else %}#FFF3E0; color: #E65100;{% endif %}{% else %}background: #E3F2FD; color: #1565C0;{% endif %} font-size: 14px; font-weight: 500;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                <!-- Username -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #1a1a1a;">Username</label>
+                    <input type="text" name="username" placeholder="Choose a username" required style="width: 100%; padding: 14px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; transition: 0.3s; box-sizing: border-box;" onfocus="this.style.borderColor='#673AB7'; this.style.boxShadow='0 0 0 3px rgba(103, 58, 183, 0.1)'" onblur="this.style.borderColor='#e0e0e0'; this.style.boxShadow='none'">
+                    {% if form.username.errors %}
+                        <div style="color: #C62828; font-size: 12px; margin-top: 4px;">{{ form.username.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Email -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #1a1a1a;">Email Address</label>
+                    <input type="email" name="email" placeholder="Admin email" required style="width: 100%; padding: 14px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; transition: 0.3s; box-sizing: border-box;" onfocus="this.style.borderColor='#673AB7'; this.style.boxShadow='0 0 0 3px rgba(103, 58, 183, 0.1)'" onblur="this.style.borderColor='#e0e0e0'; this.style.boxShadow='none'">
+                    {% if form.email.errors %}
+                        <div style="color: #C62828; font-size: 12px; margin-top: 4px;">{{ form.email.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Phone -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #1a1a1a;">Phone Number</label>
+                    <input type="tel" name="phone" placeholder="Contact number" style="width: 100%; padding: 14px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; transition: 0.3s; box-sizing: border-box;" onfocus="this.style.borderColor='#673AB7'; this.style.boxShadow='0 0 0 3px rgba(103, 58, 183, 0.1)'" onblur="this.style.borderColor='#e0e0e0'; this.style.boxShadow='none'">
+                    {% if form.phone.errors %}
+                        <div style="color: #C62828; font-size: 12px; margin-top: 4px;">{{ form.phone.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Password -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #1a1a1a;">Password</label>
+                    <input type="password" name="password" placeholder="Create a secure password" required style="width: 100%; padding: 14px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; transition: 0.3s; box-sizing: border-box;" onfocus="this.style.borderColor='#673AB7'; this.style.boxShadow='0 0 0 3px rgba(103, 58, 183, 0.1)'" onblur="this.style.borderColor='#e0e0e0'; this.style.boxShadow='none'">
+                    {% if form.password.errors %}
+                        <div style="color: #C62828; font-size: 12px; margin-top: 4px;">{{ form.password.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                {% if form.non_field_errors %}
+                    <div style="background: #FFEBEE; color: #C62828; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 13px;">
+                        {% for error in form.non_field_errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Submit Button -->
+                <button type="submit" style="width: 100%; padding: 14px; background: linear-gradient(135deg, #673AB7 0%, #512DA8 100%); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px rgba(103, 58, 183, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                    CREATE ADMIN ACCOUNT
+                </button>
+            </form>
+
+            <!-- Back Link -->
+            <div style="margin-top: 24px; text-align: center;">
+                <a href="{% url 'admin_dashboard' %}" style="color: #673AB7; text-decoration: none; font-weight: 600; font-size: 14px;">← Back to Dashboard</a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="background: #fafafa; padding: 20px 24px; text-align: center; border-top: 1px solid #e0e0e0;">
+            <p style="margin: 0; font-size: 13px; color: #888;">This action requires staff privileges</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

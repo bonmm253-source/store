@@ -38,7 +38,7 @@
                     style="color: var(--jumia-text); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 5px;">
                     {{ shoe.name }}</div>
                 <div style="font-size: 16px; font-weight: bold; color: var(--jumia-dark);">
-                    <span>$</span><span>{{ shoe.discount_price|default:shoe.price }}</span>
+                    <span>₦</span><span>{{ shoe.discount_price|default:shoe.price|floatformat:0 }}</span>
                 </div>
             </a>
             <div
@@ -79,7 +79,7 @@
                     style="color: var(--jumia-text); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 5px;">
                     {{ watch.name }}</div>
                 <div style="font-size: 16px; font-weight: bold; color: var(--jumia-dark);">
-                    <span>$</span><span>{{ watch.discount_price|default:watch.price }}</span>
+                    <span>₦</span><span>{{ watch.discount_price|default:watch.price|floatformat:0 }}</span>
                 </div>
             </a>
             <div
