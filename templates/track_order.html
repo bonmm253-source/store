@@ -15,24 +15,48 @@
         <p style="color: var(--jumia-light-text); font-size: 14px; margin-top: 5px;">Enter your Order ID and Email/Phone
             Number to see the status of your shipment.</p>
 
-        <form style="margin-top: 25px;">
+        <form style="margin-top: 25px;" method="GET">
             <div style="margin-bottom: 20px;">
                 <label style="display: block; font-weight: bold; margin-bottom: 8px;">Order ID</label>
-                <input type="text" placeholder="e.g., ORD-12345"
+                <input type="text" name="order_id" placeholder="e.g., ORD-12345" value="{{ request.GET.order_id|default:'' }}"
                     style="width: 100%; padding: 12px; border: 1px solid var(--jumia-border); border-radius: 4px; box-sizing: border-box;"
                     required>
             </div>
             <div style="margin-bottom: 20px;">
                 <label style="display: block; font-weight: bold; margin-bottom: 8px;">Email or Phone Number</label>
-                <input type="text" placeholder="Enter details used during checkout"
+                <input type="text" name="contact" placeholder="Enter details used during checkout" value="{{ request.GET.contact|default:'' }}"
                     style="width: 100%; padding: 12px; border: 1px solid var(--jumia-border); border-radius: 4px; box-sizing: border-box;"
                     required>
             </div>
 
-            <button type="button" class="btn-primary" style="width: 100%;"
-                onclick="alert('Order Tracking module is being integrated. Please check your Dashboard for current Order statuses.')">TRACK
-                MY ORDER</button>
+            <button type="submit" class="btn-primary" style="width: 100%;">TRACK MY ORDER</button>
         </form>
+
+        {% if searched %}
+        <div style="margin-top: 30px; padding: 20px; border-radius: 8px; background: #f9f9f9; border: 1px solid var(--jumia-border);">
+            {% if order_status %}
+                <h3 style="margin-top: 0; color: var(--jumia-dark);">Order Status: <span style="color: var(--jumia-orange);">{{ order_status }}</span></h3>
+                <p style="font-size: 14px; color: var(--jumia-light-text);">
+                    {% if order_status == 'Pending' %}
+                        Your order has been received and is waiting for payment confirmation.
+                    {% elif order_status == 'Paid' or order_status == 'Processing' %}
+                        We have received your payment and are currently preparing your items for shipment.
+                    {% elif order_status == 'Shipped' %}
+                        Your order is on its way! It should arrive at your delivery address soon.
+                    {% elif order_status == 'Delivered' %}
+                        Your order has been successfully delivered. Thank you for shopping with us!
+                    {% else %}
+                        Status update: {{ order_status }}
+                    {% endif %}
+                </p>
+            {% elif error_msg %}
+                <div style="color: #d32f2f; font-weight: 500;">
+                    <span class="material-icons-outlined" style="vertical-align: middle; font-size: 20px;">error_outline</span>
+                    {{ error_msg }}
+                </div>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
 
     <div style="background: white; border-radius: 8px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">

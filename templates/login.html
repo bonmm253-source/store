@@ -170,6 +170,19 @@
 
             <button type="submit" class="btn-premium">Sign In</button>
 
+            <!-- Social Login Divider -->
+            <div style="display: flex; align-items: center; text-align: center; margin: 25px 0; color: #aaa; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                <div style="flex: 1; height: 1px; background: #eee; margin-right: 15px;"></div>
+                OR CONTINUE WITH
+                <div style="flex: 1; height: 1px; background: #eee; margin-left: 15px;"></div>
+            </div>
+
+            {% load socialaccount %}
+            <a href="{% provider_login_url 'google' %}" style="display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 14px; background: white; border: 1px solid #e0e0e0; border-radius: 10px; color: #444; font-weight: 700; font-size: 14px; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#f9f9f9'; this.style.borderColor='#ccc'" onmouseout="this.style.background='white'; this.style.borderColor='#e0e0e0'">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" style="width: 18px;">
+                Sign in with Google
+            </a>
+
             <div class="auth-footer">
                 <div>Don't have an account? <a href="{% url 'register' %}">Create one</a></div>
                 <div style="margin-top: 8px;">

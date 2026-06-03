@@ -6,6 +6,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}MyStore | Online Shopping{% endblock %}</title>
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title" content="{% block og_title %}MyStore | Premium Shoe & Watch Store{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Shop the best collection of premium sneakers and wristwatches at MyStore.{% endblock %}">
+    <meta property="og:image" content="{% static 'images/image-avatar.png' %}">
+
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     <!-- PWA -->
     <link rel="manifest" href="{% static 'manifest.json' %}">
@@ -177,7 +185,27 @@
         {% block content %}{% endblock %}
     </main>
 
+    <!-- Back to Top Button -->
+    <button id="back-to-top" style="position: fixed; bottom: 30px; left: 30px; width: 45px; height: 45px; border-radius: 50%; background: var(--jumia-orange); color: white; border: none; cursor: pointer; display: none; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); align-items: center; justify-content: center;">
+        <span class="material-icons-outlined">arrow_upward</span>
+    </button>
+
     <footer class="site-footer">
+        <!-- Newsletter Section -->
+        <div style="background: rgba(255,255,255,0.05); padding: 40px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 40px;">
+            <div style="max-width: var(--max-width); margin: auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 30px;">
+                <div style="flex: 1; min-width: 300px;">
+                    <h4 style="color: white; font-size: 18px; margin-bottom: 10px; text-transform: none;">New to MyStore?</h4>
+                    <p style="color: #ccc; font-size: 14px; margin: 0;">Subscribe to our newsletter to get updates on our latest offers!</p>
+                </div>
+                <form id="newsletter-form" style="flex: 1; min-width: 300px; display: flex; gap: 10px;">
+                    {% csrf_token %}
+                    <input type="email" name="email" id="newsletter-email" placeholder="Enter E-mail Address" required style="flex: 1; padding: 14px; border-radius: 4px; border: none; font-size: 14px;">
+                    <button type="submit" style="background: var(--jumia-orange); color: white; border: none; padding: 0 30px; border-radius: 4px; font-weight: 700; cursor: pointer; transition: 0.3s;" onmouseover="this.style.background='#e07b14'" onmouseout="this.style.background='var(--jumia-orange)'">SUBMIT</button>
+                </form>
+            </div>
+        </div>
+
         <div class="footer-grid">
             <div class="footer-col">
                 <h4>Let Us Help You</h4>
@@ -194,8 +222,8 @@
                     <li><a href="#">About Us</a></li>
                     <li><a href="#">Careers</a></li>
                     <li><a href="#">Express Delivery</a></li>
-                    <li><a href="#">Terms and Conditions</a></li>
-                    <li><a href="#">Privacy Notice</a></li>
+                    <li><a href="{% url 'terms_privacy' %}">Terms and Conditions</a></li>
+                    <li><a href="{% url 'terms_privacy' %}">Privacy Notice</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -394,6 +422,57 @@
                 }
             });
         }
+
+        // Newsletter Logic
+        const newsletterForm = document.getElementById('newsletter-form');
+        if (newsletterForm) {
+            newsletterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('newsletter-email').value;
+                const submitBtn = this.querySelector('button');
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = '...';
+
+                fetch("{% url 'subscribe_newsletter' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ email: email })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert(data.message);
+                        newsletterForm.reset();
+                    } else {
+                        alert('Something went wrong. Please try again.');
+                    }
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'SUBMIT';
+                })
+                .catch(err => {
+                    console.error(err);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'SUBMIT';
+                });
+            });
+        }
+
+        // Back to Top Logic
+        const backToTopBtn = document.getElementById('back-to-top');
+        window.onscroll = function() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                backToTopBtn.style.display = "flex";
+            } else {
+                backToTopBtn.style.display = "none";
+            }
+        };
+        backToTopBtn.onclick = function() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        };
 
         // Run on every page load
         document.addEventListener("DOMContentLoaded", updateCartCount);

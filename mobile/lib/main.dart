@@ -203,7 +203,7 @@ class _WebViewPageState extends State<WebViewPage> {
                : 'https://drop-web.onrender.com';
            if (idx == 0) _controller.loadRequest(Uri.parse(base));
            if (idx == 1) _controller.loadRequest(Uri.parse('$base/cart/'));
-           if (idx == 2) _controller.loadRequest(Uri.parse('$base/profile/'));
+           if (idx == 2) _controller.loadRequest(Uri.parse('$base/dashboard/'));
         },
       ) : null,
     );

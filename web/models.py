@@ -173,6 +173,17 @@ class Order(models.Model):
     def __str__(self):
         return f"Order #{self.id} by {self.user or 'guest'} - {self.status}"
 
+    def save(self, *args, **kwargs):
+        if self.pk:
+            try:
+                old_order = Order.objects.get(pk=self.pk)
+                if old_order.status != self.status:
+                    from .tasks import send_order_status_update
+                    send_order_status_update.delay(self.id, self.status)
+            except Order.DoesNotExist:
+                pass
+        super().save(*args, **kwargs)
+
 class Expense(models.Model):
     CATEGORY_CHOICES = [
         ('Stock', 'Stock Purchase'),
@@ -189,3 +200,13 @@ class Expense(models.Model):
 
     def __str__(self):
         return f"{self.description} - ₦{self.amount}"
+
+class ContactMessage(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    subject = models.CharField(max_length=200)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Message from {self.name} - {self.subject}"

@@ -12,16 +12,60 @@
 
 {% block content %}
 {% csrf_token %}
-<section class="collection">
-  <div class="collection-wrap">
-    <div class="order-nav-wrap">
-      <a href="{% url 'orders' %}" class="order-btn">
-        <span class="material-icons-outlined">shopping_bag</span>
-        View My Orders
-      </a>
-    </div>
-    <div class="product-grid">
-      {% for shoe in shoes %}
+<div style="display: flex; gap: 30px; align-items: flex-start; max-width: var(--max-width); margin: auto;">
+  <!-- Sidebar Filters -->
+  <aside style="width: 250px; flex-shrink: 0; background: white; padding: 20px; border-radius: 12px; border: 1px solid #eee; position: sticky; top: 100px;">
+    <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Filters</h3>
+
+    <form method="GET" action="{% url 'men' %}">
+      <!-- Category Filter -->
+      <div style="margin-bottom: 25px;">
+        <h4 style="font-size: 13px; font-weight: 700; color: #888; margin-bottom: 12px; text-transform: uppercase;">Category</h4>
+        <select name="category" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ddd; font-size: 14px;">
+          <option value="">All Categories</option>
+          {% for cat in categories %}
+          <option value="{{ cat.name }}" {% if selected_category == cat.name %}selected{% endif %}>{{ cat.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Brand Filter -->
+      <div style="margin-bottom: 25px;">
+        <h4 style="font-size: 13px; font-weight: 700; color: #888; margin-bottom: 12px; text-transform: uppercase;">Brand</h4>
+        <select name="brand" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ddd; font-size: 14px;">
+          <option value="">All Brands</option>
+          {% for b in brands %}
+          {% if b %}<option value="{{ b }}" {% if selected_brand == b %}selected{% endif %}>{{ b }}</option>{% endif %}
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Price Filter -->
+      <div style="margin-bottom: 25px;">
+        <h4 style="font-size: 13px; font-weight: 700; color: #888; margin-bottom: 12px; text-transform: uppercase;">Price Range (₦)</h4>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <input type="number" name="min_price" value="{{ min_price }}" placeholder="Min" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+          <span>-</span>
+          <input type="number" name="max_price" value="{{ max_price }}" placeholder="Max" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary" style="padding: 10px; font-size: 14px;">APPLY FILTERS</button>
+      <a href="{% url 'men' %}" style="display: block; text-align: center; margin-top: 15px; font-size: 12px; color: #888; text-decoration: underline;">Clear All</a>
+    </form>
+  </aside>
+
+  <!-- Product List -->
+  <section class="collection" style="flex: 1;">
+    <div class="collection-wrap">
+      <div class="order-nav-wrap" style="padding: 0;">
+        <a href="{% url 'orders' %}" class="order-btn">
+          <span class="material-icons-outlined">shopping_bag</span>
+          View My Orders
+        </a>
+      </div>
+      <div class="product-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+        {% for shoe in shoes %}
         <div class="product-card shoe">
           {% if shoe.image %}
             <img src="{{ shoe.image.url }}" alt="{{ shoe.name }}">
@@ -68,8 +112,8 @@
         <p>No shoes found in this category.</p>
       {% endfor %}
     </div>
-  </div>
-</section>
+  </section>
+</div>
 {% endblock %}
 
 {% block scripts %}

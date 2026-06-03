@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Product Details | MyStore{% endblock %}
+{% block title %}{{ product.name }} | MyStore{% endblock %}
+
+{% block og_title %}{{ product.name }} - Only on MyStore{% endblock %}
+{% block og_description %}{{ product.description|truncatewords:20 }}{% endblock %}
 
 {% block head_extra %}
 <style>

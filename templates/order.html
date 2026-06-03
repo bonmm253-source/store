@@ -270,6 +270,14 @@
             });
         });
 
+        // --- CLEAR CART LOGIC ---
+        {% if clear_cart %}
+        localStorage.removeItem('cart');
+        if (typeof updateCartCount === 'function') updateCartCount();
+        cart = [];
+        renderDraftItems();
+        {% endif %}
+
         // Ensure cart count is synced
         if (typeof updateCartCount === 'function') updateCartCount();
     });

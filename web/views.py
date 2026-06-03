@@ -15,16 +15,45 @@ from django.db.models import Q, Avg, Sum, F
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse, HttpResponse
 from django.template.loader import get_template
+from datetime import datetime, timedelta
 from xhtml2pdf import pisa
 import io
-from .models import User, OTP, shoe, watch, Category, Cart, CartItem, Order, Wishlist, Review, Expense
-from .forms import RegistrationForm, LoginForm, PhoneLoginForm, ProfileUpdateForm
-from .tasks import send_otp_email, send_registration_email, send_sms_otp
+from .models import User, OTP, shoe, watch, Category, Cart, CartItem, Order, Wishlist, Review, Expense, ContactMessage
+from .forms import RegistrationForm, LoginForm, PhoneLoginForm, ProfileUpdateForm, ContactForm
+from .tasks import send_otp_email, send_registration_email, send_sms_otp, send_contact_email
 
 logger = logging.getLogger(__name__)
 
 def generate_otp():
     return str(random.randint(100000, 999999))
+
+def decrement_stock(items_json):
+    """Helper to decrement stock and trigger alerts if low"""
+    from .tasks import send_low_stock_alert
+    try:
+        items = json.loads(items_json)
+        for item in items:
+            qty = int(item.get('quantity', 1))
+            product = None
+            ptype = ""
+
+            if 'shoeId' in item:
+                product = shoe.objects.filter(id=item['shoeId']).first()
+                ptype = "shoe"
+            elif 'watchId' in item:
+                product = watch.objects.filter(id=item['watchId']).first()
+                ptype = "watch"
+
+            if product:
+                product.stock = F('stock') - qty
+                product.save()
+                product.refresh_from_db()
+
+                # Check for low stock alert
+                if product.stock <= 5:
+                    send_low_stock_alert.delay(ptype, product.id, product.stock)
+    except Exception as e:
+        logger.error(f"Error reducing stock: {e}")
 
 def base(request):
     categories = Category.objects.all()
@@ -58,6 +87,7 @@ def base(request):
         'women_shoes': women_shoes,
         'recently_viewed': recently_viewed_items,
         'free_shipping_threshold': 50000, # Example threshold in Naira
+        'flash_sale_end': (timezone.now() + timedelta(days=2)).isoformat(), # 2 days from now
     }
 
     # Add admin metrics if staff
@@ -287,22 +317,70 @@ def admin_register(request):
 def men(request):
     category_filter = request.GET.get('category', '')
     query = request.GET.get('q', '')
+    min_price = request.GET.get('min_price', '')
+    max_price = request.GET.get('max_price', '')
+    brand_filter = request.GET.get('brand', '')
+
     shoes = shoe.objects.filter(target_audience='Male')
+
     if category_filter:
-        shoes = shoes.filter(category__name__icontains=category_filter)
+        shoes = shoes.filter(category__name=category_filter)
     if query:
         shoes = shoes.filter(Q(name__icontains=query) | Q(brand__icontains=query))
-    return render(request, 'men.html', {'shoes': shoes})
+    if min_price:
+        shoes = shoes.filter(price__gte=min_price)
+    if max_price:
+        shoes = shoes.filter(price__lte=max_price)
+    if brand_filter:
+        shoes = shoes.filter(brand=brand_filter)
+
+    brands = shoe.objects.filter(target_audience='Male').values_list('brand', flat=True).distinct()
+    categories = Category.objects.filter(shoes__target_audience='Male').distinct()
+
+    context = {
+        'shoes': shoes,
+        'brands': brands,
+        'categories': categories,
+        'selected_category': category_filter,
+        'selected_brand': brand_filter,
+        'min_price': min_price,
+        'max_price': max_price,
+    }
+    return render(request, 'men.html', context)
 
 def women(request):
     category_filter = request.GET.get('category', '')
     query = request.GET.get('q', '')
+    min_price = request.GET.get('min_price', '')
+    max_price = request.GET.get('max_price', '')
+    brand_filter = request.GET.get('brand', '')
+
     shoes = shoe.objects.filter(target_audience='Female')
+
     if category_filter:
-        shoes = shoes.filter(category__name__icontains=category_filter)
+        shoes = shoes.filter(category__name=category_filter)
     if query:
         shoes = shoes.filter(Q(name__icontains=query) | Q(brand__icontains=query))
-    return render(request, 'women.html', {'shoes': shoes})
+    if min_price:
+        shoes = shoes.filter(price__gte=min_price)
+    if max_price:
+        shoes = shoes.filter(price__lte=max_price)
+    if brand_filter:
+        shoes = shoes.filter(brand=brand_filter)
+
+    brands = shoe.objects.filter(target_audience='Female').values_list('brand', flat=True).distinct()
+    categories = Category.objects.filter(shoes__target_audience='Female').distinct()
+
+    context = {
+        'shoes': shoes,
+        'brands': brands,
+        'categories': categories,
+        'selected_category': category_filter,
+        'selected_brand': brand_filter,
+        'min_price': min_price,
+        'max_price': max_price,
+    }
+    return render(request, 'women.html', context)
 
 def wrist(request):
     watches = watch.objects.all()
@@ -311,10 +389,15 @@ def wrist(request):
 @login_required
 def orders_view(request):
     if request.user.is_authenticated:
-        orders = Order.objects.filter(user=request.user)
+        orders = Order.objects.filter(user=request.user).order_by('-created_at')
     else:
         orders = []
-    return render(request, 'order.html', {'orders': orders})
+
+    clear_cart = request.session.pop('clear_local_cart', False)
+    return render(request, 'order.html', {
+        'orders': orders,
+        'clear_cart': clear_cart
+    })
 
 def collection(request):
     shoes = shoe.objects.filter(target_audience='Collections')
@@ -343,6 +426,15 @@ def product_detail(request, prod_type, pk):
     else:
         related_products = watch.objects.filter(category=product.category).exclude(pk=product.pk)[:4]
 
+    # Wishlist Logic
+    in_wishlist = False
+    if request.user.is_authenticated:
+        wishlist, _ = Wishlist.objects.get_or_create(user=request.user)
+        if prod_type == 'shoe':
+            in_wishlist = wishlist.shoes.filter(id=product.id).exists()
+        else:
+            in_wishlist = wishlist.watches.filter(id=product.id).exists()
+
     context = {
         'product': product,
         'prod_type': prod_type,
@@ -351,6 +443,7 @@ def product_detail(request, prod_type, pk):
         'stars_range': range(1, 6),
         'related_products': related_products,
         'low_stock_threshold': 5,
+        'in_wishlist': in_wishlist,
     }
     return render(request, 'product_detail.html', context)
 
@@ -589,13 +682,21 @@ def submit_order(request):
                 confirmed_account_number=confirmed_acc if payment_method == 'Bank Transfer' else None
             )
 
+            # Clear Database Cart
+            Cart.objects.filter(user=request.user).delete()
+            if not request.user.is_authenticated:
+                session_key = request.session.session_key
+                if session_key:
+                    Cart.objects.filter(session_key=session_key).delete()
+
             # If AJAX request, return JSON for Inline Payment
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'status': 'success',
                     'order_id': order.id,
                     'total': float(total_ngn),
-                    'payment_method': payment_method
+                    'payment_method': payment_method,
+                    'clear_cart': True
                 })
 
             # If Card Payment selected, redirect to Paystack
@@ -621,7 +722,9 @@ def submit_order(request):
                 }
             )
 
-            messages.success(request, f"Order #{order.id} submitted successfully!")
+            messages.success(request, f"Order #{order.id} submitted successfully! Your cart has been cleared.")
+            # Set a session flag to clear local storage cart
+            request.session['clear_local_cart'] = True
             return redirect('orders')
             
         except Exception as e:
@@ -630,7 +733,31 @@ def submit_order(request):
             
     return redirect('cart')
 
-def toggle_wishlist(request): return JsonResponse({'status': 'ok'})
+@login_required
+def toggle_wishlist(request):
+    if request.method == "POST":
+        prod_type = request.POST.get('type')
+        prod_id = request.POST.get('id')
+        wishlist, _ = Wishlist.objects.get_or_create(user=request.user)
+
+        added = False
+        if prod_type == 'shoe':
+            product = get_object_or_404(shoe, id=prod_id)
+            if product in wishlist.shoes.all():
+                wishlist.shoes.remove(product)
+            else:
+                wishlist.shoes.add(product)
+                added = True
+        elif prod_type == 'watch':
+            product = get_object_or_404(watch, id=prod_id)
+            if product in wishlist.watches.all():
+                wishlist.watches.remove(product)
+            else:
+                wishlist.watches.add(product)
+                added = True
+
+        return JsonResponse({'status': 'success', 'added': added})
+    return JsonResponse({'status': 'error'}, status=400)
 @login_required
 def add_review(request):
     if request.method == "POST":
@@ -675,9 +802,56 @@ def add_review(request):
             return redirect('orders')
     return redirect('orders')
 def help_center(request): return render(request, 'help_center.html')
-def track_order(request): return render(request, 'track_order.html')
+
+def contact(request):
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+
+            # Save to DB
+            ContactMessage.objects.create(name=name, email=email, subject=subject, message=message)
+
+            # Send Email
+            send_contact_email.delay(name, email, subject, message)
+
+            messages.success(request, "Your message has been sent successfully. We will get back to you soon!")
+            return redirect('contact')
+    else:
+        form = ContactForm()
+    return render(request, 'contact.html', {'form': form})
+
+def track_order(request):
+    order_id = request.GET.get('order_id')
+    contact = request.GET.get('contact')
+    order_status = None
+    error_msg = None
+
+    if order_id and contact:
+        try:
+            # Look for order by ID and either phone or email
+            order = Order.objects.filter(id=order_id.replace('ORD-', '')).filter(
+                Q(phone=contact) | Q(user__email=contact)
+            ).first()
+
+            if order:
+                order_status = order.status
+            else:
+                error_msg = "Order not found. Please check your Order ID and Contact details."
+        except Exception:
+            error_msg = "Invalid Order ID format."
+
+    return render(request, 'track_order.html', {
+        'order_status': order_status,
+        'error_msg': error_msg,
+        'searched': bool(order_id)
+    })
 def order_cancellation(request): return render(request, 'order_cancellation.html')
 def returns_refunds(request): return render(request, 'returns_refunds.html')
+def terms_privacy(request): return render(request, 'terms_privacy.html')
 
 def handle_chrome_devtools(request, name):
     """Handle Chrome DevTools .well-known requests gracefully"""
@@ -695,8 +869,12 @@ def clear_order_history(request):
 def mark_order_paid(request, order_id):
     if request.method == "POST":
         order = get_object_or_404(Order, id=order_id, user=request.user)
-        if order.status == "Processing":
-            order.status = "Completed"
+        if order.status == "Processing" or order.status == "Pending":
+            # Reduce Stock when marked as paid
+            decrement_stock(order.items_json)
+
+            order.status = "Delivered"
+            order.complete = True
             order.save()
             messages.success(request, f"Order #{order_id} marked as paid and completed!")
         else:
@@ -743,28 +921,33 @@ def verify_payment(request):
     if res_data["status"] and res_data["data"]["status"] == "success":
         order_id = res_data["data"]["metadata"]["order_id"]
         order = get_object_or_404(Order, id=order_id)
-        order.complete = True
-        order.status = "Paid"
-        order.transaction_id = reference
-        order.save()
 
-        # Send HTML Receipt
-        from .tasks import send_order_receipt_email
-        send_order_receipt_email.delay(order.id)
+        if not order.complete:
+            order.complete = True
+            order.status = "Paid"
+            order.transaction_id = reference
+            order.save()
 
-        # Notify Admin Real-time
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            "admin_notifications",
-            {
-                "type": "send_notification",
-                "content": {
-                    "title": "New Payment Received",
-                    "message": f"Order #{order.id} has been paid (₦{order.total})",
-                    "url": "/admin-dashboard/"
+            # Reduce Stock
+            decrement_stock(order.items_json)
+
+            # Send HTML Receipt
+            from .tasks import send_order_receipt_email
+            send_order_receipt_email.delay(order.id)
+
+            # Notify Admin Real-time
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                "admin_notifications",
+                {
+                    "type": "send_notification",
+                    "content": {
+                        "title": "New Payment Received",
+                        "message": f"Order #{order.id} has been paid (₦{order.total})",
+                        "url": "/admin-dashboard/"
+                    }
                 }
-            }
-        )
+            )
 
         messages.success(request, "Payment successful!")
         return redirect('orders')
@@ -800,6 +983,18 @@ def download_invoice(request, order_id):
         return response
 
     return HttpResponse("Error generating PDF", status=400)
+
+def subscribe_newsletter(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            email = data.get('email')
+            # In a real app, save to a Newsletter model. For now, we'll log it.
+            logger.info(f"New newsletter subscription: {email}")
+            return JsonResponse({'status': 'success', 'message': 'Thank you for subscribing!'})
+        except:
+            return JsonResponse({'status': 'error', 'message': 'Invalid request'})
+    return JsonResponse({'status': 'error'}, status=400)
 
 @login_required
 def admin_dashboard(request):
@@ -844,6 +1039,9 @@ def admin_dashboard(request):
 
     # Summary
     net_profit = total_revenue - total_expenses
+
+    total_users = User.objects.count()
+    recent_messages = ContactMessage.objects.all().order_by('-created_at')[:5]
 
     # Low Stock Alerts
     low_stock_shoes = shoe.objects.filter(stock__gt=0, stock__lte=5)

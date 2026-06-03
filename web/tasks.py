@@ -6,10 +6,92 @@ from django.conf import settings
 from django.utils import timezone
 import logging
 import json
+import os
 
 logger = logging.getLogger(__name__)
 
 # ... (rest of imports)
+
+@shared_task(bind=True, max_retries=3)
+def send_contact_email(self, name, email, subject, message):
+    try:
+        admin_subject = f'CONTACT FORM: {subject}'
+        admin_message = (
+            f"You received a new message from the contact form.\n\n"
+            f"Name: {name}\n"
+            f"Email: {email}\n"
+            f"Subject: {subject}\n\n"
+            f"Message:\n{message}"
+        )
+
+        send_mail(
+            admin_subject,
+            admin_message,
+            settings.DEFAULT_FROM_EMAIL,
+            [settings.ADMIN_EMAIL],
+            fail_silently=False,
+        )
+        return f"Contact email sent for {name}"
+    except Exception as exc:
+        logger.error(f"Failed to send contact email for {name}: {exc}")
+        raise self.retry(exc=exc, countdown=300)
+
+@shared_task(bind=True, max_retries=3)
+def send_order_status_update(self, order_id, new_status):
+    from .models import Order
+    try:
+        order = Order.objects.select_related('user').get(id=order_id)
+        if not order.user or not order.user.email:
+            return f"No email for order #{order_id}"
+
+        subject = f'Order Status Update - #{order_id}'
+        message = (
+            f"Hello {order.user.username},\n\n"
+            f"The status of your order #{order_id} has been updated to: {new_status}.\n\n"
+            f"Log in to your dashboard to see more details.\n"
+            f"Thank you for shopping with MyStore!"
+        )
+
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [order.user.email],
+            fail_silently=False,
+        )
+        return f"Status update email sent to {order.user.email} for #{order_id}"
+    except Exception as exc:
+        logger.error(f"Failed to send status update for #{order_id}: {exc}")
+        raise self.retry(exc=exc, countdown=300)
+
+@shared_task(bind=True, max_retries=3)
+def send_low_stock_alert(self, product_type, product_id, current_stock):
+    from .models import shoe, watch
+    try:
+        if product_type == 'shoe':
+            product = shoe.objects.get(id=product_id)
+        else:
+            product = watch.objects.get(id=product_id)
+
+        subject = f'LOW STOCK ALERT: {product.name}'
+        message = (
+            f"The stock for '{product.name}' (ID: {product_id}) is running low.\n\n"
+            f"Current Stock: {current_stock}\n"
+            f"Threshold: {settings.OTP_EXPIRATION_MINUTES} (using generic threshold from config)\n\n"
+            f"Please visit the admin panel to restock."
+        )
+
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [settings.ADMIN_EMAIL],
+            fail_silently=False,
+        )
+        return f"Low stock alert sent for {product.name}"
+    except Exception as exc:
+        logger.error(f"Failed to send low stock alert for {product_id}: {exc}")
+        raise self.retry(exc=exc, countdown=300)
 
 @shared_task(bind=True, max_retries=3)
 def send_order_receipt_email(self, order_id):
@@ -26,7 +108,7 @@ def send_order_receipt_email(self, order_id):
             'order': order,
             'user': order.user,
             'items': items,
-            'site_url': 'https://mystore.com' # In real app, use Site.objects.get_current().domain
+            'site_url': os.getenv('SITE_URL', 'https://mystore.onrender.com')
         }
 
         html_content = render_to_string('emails/order_receipt.html', context)

@@ -19,6 +19,7 @@ urlpatterns = [
     path("collection/", views.collection, name="collection"),
     path("search/", views.search, name="search"),
     path("live-search/", views.live_search, name="live_search"),
+    path("subscribe-newsletter/", views.subscribe_newsletter, name="subscribe_newsletter"),
 
     # Product Detail
     path("product/<str:prod_type>/<int:pk>/", views.product_detail, name="product_detail"),
@@ -42,9 +43,11 @@ urlpatterns = [
     
     # Help & Info
     path("help/", views.help_center, name="help_center"),
+    path("contact/", views.contact, name="contact"),
     path("track-order/", views.track_order, name="track_order"),
     path("order-cancellation/", views.order_cancellation, name="order_cancellation"),
     path("returns-refunds/", views.returns_refunds, name="returns_refunds"),
+    path("terms-privacy/", views.terms_privacy, name="terms_privacy"),
     path("orders/", views.orders_view, name="orders"),
     path("orders/clear/", views.clear_order_history, name="clear_order_history"),
     path("orders/mark-paid/<int:order_id>/", views.mark_order_paid, name="mark_order_paid"),

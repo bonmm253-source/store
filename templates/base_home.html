@@ -298,7 +298,10 @@
 <div style="margin-bottom: 30px;">
     <div class="section-title" style="background: var(--jumia-orange); color: white;">
         <h3 style="color: white;"><span class="material-icons-outlined">flash_on</span> Flash Sales</h3>
-        <span style="font-size: 14px; font-weight: bold;">Time is ticking!</span>
+        <div id="countdown" style="font-size: 14px; font-weight: bold; background: rgba(0,0,0,0.2); padding: 5px 15px; border-radius: 20px; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 11px; opacity: 0.8; text-transform: uppercase;">Ends In:</span>
+            <span id="timer-display">00h : 00m : 00s</span>
+        </div>
     </div>
     <div class="product-grid-scroll">
         {% for shoe in flash_shoes %}
@@ -416,6 +419,31 @@
             curSlide = (curSlide + 1) % slides.length;
             slides[curSlide].classList.add('active');
         }, 5000);
+    }
+    // Flash Sale Timer Logic
+    function updateTimer() {
+        const now = new Date();
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999);
+
+        let diff = endOfDay - now;
+
+        if (diff <= 0) {
+            document.getElementById('timer-display').textContent = "00h : 00m : 00s";
+            return;
+        }
+
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+        document.getElementById('timer-display').textContent =
+            `${h.toString().padStart(2, '0')}h : ${m.toString().padStart(2, '0')}m : ${s.toString().padStart(2, '0')}s`;
+    }
+
+    if (document.getElementById('timer-display')) {
+        setInterval(updateTimer, 1000);
+        updateTimer();
     }
 </script>
 {% endblock %}
