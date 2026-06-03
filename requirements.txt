@@ -34,3 +34,4 @@ django-security
 django-health-check
 django-redis
 flower
+django-jazzmin
