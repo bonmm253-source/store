@@ -3,11 +3,12 @@ services:
   - type: web
     name: drop-web
     env: python
+    region: ohio # Adjust to your preferred region
     buildCommand: "./scripts/build.sh"
     startCommand: "gunicorn drop.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT"
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
+        value: 3.11.9
       - key: DJANGO_SETTINGS_MODULE
         value: drop.settings
       - key: DEBUG
@@ -21,16 +22,32 @@ services:
           type: redis
           name: drop-redis
           property: connectionString
+      # --- Manual Setup Required in Render Dashboard ---
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: PAYSTACK_SECRET_KEY
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: SITE_URL
+        sync: false
 
   # 2. Celery Worker (Background Tasks)
   - type: worker
     name: drop-worker
     env: python
+    region: ohio
     buildCommand: "./scripts/build.sh"
     startCommand: "celery -A drop worker -l info"
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
+        value: 3.11.9
       - key: DJANGO_SETTINGS_MODULE
         value: drop.settings
       - key: DATABASE_URL
@@ -42,14 +59,23 @@ services:
           type: redis
           name: drop-redis
           property: connectionString
+      # Workers also need these for email/tasks
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
 
 # 3. PostgreSQL Database
 databases:
   - name: drop-db
-    plan: free # Change to starter for production
+    plan: free # Change to 'starter' later to prevent 90-day deletion
+    region: ohio
 
-# 4. Redis Service (Caching/Channels)
+# 4. Redis Service
 redis:
   - name: drop-redis
     plan: free
-    ipAllowList: [] # Only allow internal traffic
+    region: ohio
+    ipAllowList: []
