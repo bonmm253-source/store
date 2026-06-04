@@ -24,14 +24,9 @@ services:
           property: connectionString
       - key: SECRET_KEY
         generateValue: true
-      - key: CLOUDINARY_CLOUD_NAME
-      - key: CLOUDINARY_API_KEY
-      - key: CLOUDINARY_API_SECRET
-      - key: PAYSTACK_SECRET_KEY
-      - key: ADMIN_EMAIL
-      - key: SITE_URL
+      - fromGroup: drop-shared-secrets
 
-  # 2. Celery Worker (Background Tasks)
+  # 2. Celery Worker
   - type: worker
     name: drop-worker
     env: python
@@ -57,10 +52,7 @@ services:
           type: web
           name: drop-web
           envVarKey: SECRET_KEY
-      - key: CLOUDINARY_CLOUD_NAME
-      - key: CLOUDINARY_API_KEY
-      - key: CLOUDINARY_API_SECRET
-      - key: ADMIN_EMAIL
+      - fromGroup: drop-shared-secrets
 
 # 3. PostgreSQL Database
 databases:
@@ -73,3 +65,14 @@ redis:
   - name: drop-redis
     plan: free
     region: oregon
+
+# 5. Shared Environment Variables Group
+envVarGroups:
+  - name: drop-shared-secrets
+    envVars:
+      - key: CLOUDINARY_CLOUD_NAME
+      - key: CLOUDINARY_API_KEY
+      - key: CLOUDINARY_API_SECRET
+      - key: PAYSTACK_SECRET_KEY
+      - key: ADMIN_EMAIL
+      - key: SITE_URL
