@@ -64,3 +64,11 @@ envVarGroups:
       - key: PAYSTACK_SECRET_KEY
       - key: ADMIN_EMAIL
       - key: SITE_URL
+      - key: EMAIL_HOST_USER
+      - key: EMAIL_HOST_PASSWORD
+      - key: EMAIL_HOST
+        value: smtp.gmail.com
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_USE_TLS
+        value: "True"
