@@ -12,7 +12,6 @@ db.sqlite3
 venv
 env
 .env
-static
 staticfiles
 media
 node_modules
