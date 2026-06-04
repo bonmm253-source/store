@@ -1,14 +1,12 @@
 services:
   - type: web
     name: drop-web
-    env: python
+    env: docker
     region: oregon
     plan: free
-    buildCommand: "./scripts/build.sh"
-    startCommand: "gunicorn drop.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT"
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.9
       - key: DJANGO_SETTINGS_MODULE
         value: drop.settings
       - key: DEBUG
@@ -26,14 +24,13 @@ services:
 
   - type: worker
     name: drop-worker
-    env: python
+    env: docker
     region: oregon
     plan: free
-    buildCommand: "./scripts/build.sh"
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
     startCommand: "celery -A drop worker -l info"
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.9
       - key: DJANGO_SETTINGS_MODULE
         value: drop.settings
       - key: DATABASE_URL
