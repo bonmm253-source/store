@@ -2,6 +2,8 @@ services:
   - type: web
     name: drop-web
     env: python
+    region: oregon
+    plan: free
     buildCommand: "./scripts/build.sh"
     startCommand: "gunicorn drop.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT"
     envVars:
@@ -11,8 +13,6 @@ services:
         value: drop.settings
       - key: DEBUG
         value: "False"
-      - key: SECRET_KEY
-        generateValue: true
       - key: DATABASE_URL
         fromDatabase:
           name: drop-db
@@ -22,16 +22,13 @@ services:
           type: redis
           name: drop-redis
           property: connectionString
-      - key: CLOUDINARY_CLOUD_NAME
-      - key: CLOUDINARY_API_KEY
-      - key: CLOUDINARY_API_SECRET
-      - key: PAYSTACK_SECRET_KEY
-      - key: ADMIN_EMAIL
-      - key: SITE_URL
+      - fromGroup: drop-secrets
 
   - type: worker
     name: drop-worker
     env: python
+    region: oregon
+    plan: free
     buildCommand: "./scripts/build.sh"
     startCommand: "celery -A drop worker -l info"
     envVars:
@@ -48,20 +45,25 @@ services:
           type: redis
           name: drop-redis
           property: connectionString
-      - key: SECRET_KEY
-        fromService:
-          type: web
-          name: drop-web
-          envVarKey: SECRET_KEY
-      - key: CLOUDINARY_CLOUD_NAME
-      - key: CLOUDINARY_API_KEY
-      - key: CLOUDINARY_API_SECRET
-      - key: ADMIN_EMAIL
+      - fromGroup: drop-secrets
 
 databases:
   - name: drop-db
     plan: free
+    region: oregon
 
 redis:
   - name: drop-redis
     plan: free
+    region: oregon
+
+envVarGroups:
+  - name: drop-secrets
+    envVars:
+      - key: SECRET_KEY
+      - key: CLOUDINARY_CLOUD_NAME
+      - key: CLOUDINARY_API_KEY
+      - key: CLOUDINARY_API_SECRET
+      - key: PAYSTACK_SECRET_KEY
+      - key: ADMIN_EMAIL
+      - key: SITE_URL
