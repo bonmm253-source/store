@@ -17,7 +17,7 @@ from django.core.exceptions import ImproperlyConfigured
 # -------------------------------------------------
 
 SENTRY_DSN = os.getenv("SENTRY_DSN")
-if SENTRY_DSN:
+if SENTRY_DSN and SENTRY_DSN.startswith("http"):
     sentry_sdk.init(
         dsn=SENTRY_DSN,
         integrations=[DjangoIntegration()],
