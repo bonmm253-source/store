@@ -98,10 +98,10 @@ def base(request):
         context['admin_total_goods_value'] = shoe_val + watch_val
         
         # 2. Total Collected (Revenue)
-        context['admin_total_revenue'] = Order.objects.filter(complete=True).exclude(status='Cancelled').aggregate(total=Sum('total'))['total'] or 0
+        context['admin_total_revenue'] = Order.objects.filter(complete=True).exclude(status='Cancelled').aggregate(revenue=Sum('total'))['revenue'] or 0
         
         # 3. Total Expenses
-        total_exp = Expense.objects.aggregate(total=Sum('amount'))['total'] or 0
+        total_exp = Expense.objects.aggregate(expenses=Sum('amount'))['expenses'] or 0
         context['admin_total_expenses'] = total_exp
         
         # 4. Net Finance
@@ -403,6 +403,10 @@ def collection(request):
     shoes = shoe.objects.filter(target_audience='Collections')
     return render(request, 'collection.html', {'shoes': shoes})
 
+def all_categories(request):
+    categories = Category.objects.all()
+    return render(request, 'all_categories.html', {'categories': categories})
+
 def product_detail(request, prod_type, pk):
     if prod_type == 'shoe':
         product = get_object_or_404(shoe, pk=pk)
@@ -449,9 +453,25 @@ def product_detail(request, prod_type, pk):
 
 def search(request):
     query = request.GET.get('q', '')
-    shoes = shoe.objects.filter(Q(name__icontains=query) | Q(brand__icontains=query))
-    watches = watch.objects.filter(Q(name__icontains=query) | Q(brand__icontains=query))
-    return render(request, 'search_results.html', {'shoes': shoes, 'watches': watches, 'query': query})
+    category_name = request.GET.get('category', '')
+
+    shoes = shoe.objects.all()
+    watches = watch.objects.all()
+
+    if query:
+        shoes = shoes.filter(Q(name__icontains=query) | Q(brand__icontains=query))
+        watches = watches.filter(Q(name__icontains=query) | Q(brand__icontains=query))
+
+    if category_name:
+        shoes = shoes.filter(category__name__icontains=category_name)
+        watches = watches.filter(category__name__icontains=category_name)
+
+    return render(request, 'search_results.html', {
+        'shoes': shoes,
+        'watches': watches,
+        'query': query,
+        'category_name': category_name
+    })
 
 def live_search(request):
     query = request.GET.get('q', '')
@@ -1056,8 +1076,8 @@ def admin_dashboard(request):
     labels = [d.strftime("%b %d") for d in last_7_days]
 
     for day in last_7_days:
-        rev = Order.objects.filter(complete=True, created_at__date=day).aggregate(Sum('total'))['total'] or 0
-        exp = Expense.objects.filter(date__date=day).aggregate(Sum('amount'))['amount__sum'] or 0
+        rev = Order.objects.filter(complete=True, created_at__date=day).aggregate(total_rev=Sum('total'))['total_rev'] or 0
+        exp = Expense.objects.filter(date__date=day).aggregate(total_exp=Sum('amount'))['total_exp'] or 0
         revenue_data.append(float(rev))
         expense_data.append(float(exp))
 
