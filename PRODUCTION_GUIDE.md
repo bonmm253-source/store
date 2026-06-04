@@ -14,6 +14,7 @@ Your project is already configured for Render using the `render.yaml` blueprint.
    - `CLOUDINARY_API_SECRET`: From your Cloudinary dashboard.
    - `PAYSTACK_SECRET_KEY`: Use your **Live** secret key from Paystack.
    - `SECRET_KEY`: (Render generates one, but you can paste your own).
+   - `SENTRY_DSN`: (Optional) From your Sentry.io dashboard.
 
 ---
 
@@ -27,38 +28,24 @@ Once Render says "Live", you must perform these steps:
 4. Follow prompts to create your login.
 
 ### Initialize Store Data
-1. Visit `https://drop-web.onrender.com/admin` and log in.
+1. Visit `https://your-app-url.onrender.com/admin` and log in.
 2. **Categories**: Create categories (e.g., "Men", "Women", "Wristwatches").
 3. **Products**: Add your first products. Ensure you upload images (they will auto-save to Cloudinary).
 
 ---
 
-## 3. Mobile App (Flutter)
-The mobile app is now configured to point to `https://drop-web.onrender.com`.
-
-### Build for Production
-Run these commands in your terminal (inside the `mobile/` folder):
-1. `flutter clean`
-2. `flutter pub get`
-3. `flutter build apk --release`
-
-The file will be located at: `build/app/outputs/flutter-apk/app-release.apk`
-
----
-
-## 4. Maintenance & Monitoring
+## 3. Maintenance & Monitoring
 - **Error Tracking**: Log in to [Sentry.io](https://sentry.io) to see if users are experiencing crashes.
-- **Background Tasks**: Visit `https://drop-web.onrender.com/ht/` to check the health of your Database and Redis.
-- **Worker Management**: Monitor background tasks (like emails) via the **drop-worker** logs in Render.
+- **Real-time Logs**: Monitor background tasks (like emails) via the **drop-worker** logs in Render.
+- **Database Management**: Use the **drop-db** tab in Render to view your PostgreSQL backups.
 
 ---
 
-## 5. Scaling for the Future
-- **Domain**: Add a custom domain in Render Settings (e.g., `www.dropdownstore.com`).
-- **Database**: The "Free" database on Render expires after 90 days. Upgrade to the **Starter ($7/mo)** plan before then to keep your data forever.
-- **Email**: For high volume, switch `EMAIL_HOST` in `.env` from Gmail to **SendGrid** or **Amazon SES**.
+## 4. Scaling for the Future
+- **Domain**: Add a custom domain in Render Settings (e.g., `www.mystore.com`).
+- **Plan Upgrade**: The "Free" database on Render expires after 90 days. Upgrade to the **Starter ($7/mo)** plan before then to keep your data permanently.
 
 ---
 
-**Generated on:** June 2024
+**Generated on:** May 2026
 **Status:** Production Ready ✅

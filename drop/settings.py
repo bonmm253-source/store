@@ -94,13 +94,6 @@ INSTALLED_APPS = [
 
     "channels",
     "web",
-
-    # Health Checks
-    "health_check",
-    "health_check.db",
-    "health_check.cache",
-    "health_check.storage",
-    "health_check.contrib.redis",
 ]
 
 SITE_ID = 1
@@ -396,7 +389,31 @@ if not DEBUG:
 # -------------------------------------------------
 
 LOGGING = {
-    # ... (keep existing)
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": False,
+        },
+    },
 }
 
 # -------------------------------------------------
