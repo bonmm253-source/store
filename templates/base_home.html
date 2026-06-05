@@ -33,7 +33,7 @@
         align-items: center;
         gap: 10px;
         padding: 10px 15px;
-        font-size: 13px;
+        font-size: 11px;
         color: var(--jumia-text);
         transition: 0.2s;
     }
@@ -84,7 +84,7 @@
         align-items: center;
         gap: 10px;
         color: #000;
-        font-size: 18px;
+        font-size: 16px;
     }
 
     .product-grid {
@@ -159,13 +159,13 @@
         background: #f6ebd8;
         color: var(--jumia-orange);
         padding: 2px 6px;
-        font-size: 12px;
+        font-size: 10px;
         font-weight: bold;
         border-radius: 2px;
     }
 
     .product-name {
-        font-size: 14px;
+        font-size: 12px;
         color: var(--jumia-text);
         overflow: hidden;
         text-overflow: ellipsis;
@@ -174,13 +174,13 @@
     }
 
     .product-price {
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 700;
         color: var(--jumia-dark);
     }
 
     .product-old-price {
-        font-size: 12px;
+        font-size: 10px;
         color: var(--jumia-light-text);
         text-decoration: line-through;
         margin-top: 2px;
@@ -193,7 +193,7 @@
 <!-- Admin Quick Dashboard & Registration Section -->
 <div class="admin-home-section" style="margin-bottom: 40px; background: white; border-radius: 16px; border: 1px solid #f0f0f0; box-shadow: 0 10px 30px rgba(0,0,0,0.03); overflow: hidden;">
     <div class="admin-header" style="background: linear-gradient(135deg, #673AB7 0%, #512DA8 100%); color: white; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="margin: 0; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
+        <h2 style="margin: 0; font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
             <span class="material-icons-outlined">admin_panel_settings</span> Control Panel
         </h2>
         <a href="{% url 'admin_dashboard' %}" style="color: rgba(255,255,255,0.9); font-size: 13px; text-decoration: none; font-weight: 600; background: rgba(255,255,255,0.1); padding: 6px 14px; border-radius: 20px; transition: 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
@@ -204,53 +204,53 @@
     <div class="admin-body" style="padding: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
         <!-- Financial Summary -->
         <div class="admin-stats-card">
-            <h3 style="font-size: 14px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; border-bottom: 1px solid #f9f9f9; padding-bottom: 10px;">Quick Metrics</h3>
+            <h3 style="font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; border-bottom: 1px solid #f9f9f9; padding-bottom: 10px;">Quick Metrics</h3>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                 <div style="background: #fafafa; padding: 16px; border-radius: 12px; border: 1px solid #f0f0f0;">
-                    <div style="font-size: 11px; color: #7B1FA2; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Total Goods</div>
-                    <div style="font-size: 20px; font-weight: 800; color: #1a1a1a;">{% load humanize %}₦{{ admin_total_goods_value|default:0|intcomma }}</div>
+                    <div style="font-size: 9px; color: #7B1FA2; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Total Goods</div>
+                    <div style="font-size: 18px; font-weight: 800; color: #1a1a1a;">{% load humanize %}₦{{ admin_total_goods_value|default:0|intcomma }}</div>
                 </div>
                 <div style="background: #fafafa; padding: 16px; border-radius: 12px; border: 1px solid #f0f0f0;">
-                    <div style="font-size: 11px; color: #2E7D32; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Finance Sold</div>
-                    <div style="font-size: 20px; font-weight: 800; color: #1a1a1a;">₦{{ admin_total_revenue|default:0|intcomma }}</div>
+                    <div style="font-size: 9px; color: #2E7D32; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Finance Sold</div>
+                    <div style="font-size: 18px; font-weight: 800; color: #1a1a1a;">₦{{ admin_total_revenue|default:0|intcomma }}</div>
                 </div>
                 <div style="background: #fafafa; padding: 16px; border-radius: 12px; border: 1px solid #f0f0f0;">
-                    <div style="font-size: 11px; color: #C62828; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Expenses</div>
-                    <div style="font-size: 20px; font-weight: 800; color: #1a1a1a;">₦{{ admin_total_expenses|default:0|intcomma }}</div>
+                    <div style="font-size: 9px; color: #C62828; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Expenses</div>
+                    <div style="font-size: 18px; font-weight: 800; color: #1a1a1a;">₦{{ admin_total_expenses|default:0|intcomma }}</div>
                 </div>
                 <div style="background: #fafafa; padding: 16px; border-radius: 12px; border: 1px solid #f0f0f0;">
-                    <div style="font-size: 11px; color: #1976D2; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Items in Stock</div>
-                    <div style="font-size: 20px; font-weight: 800; color: #1a1a1a;">{{ admin_total_units|default:"0" }} Units</div>
+                    <div style="font-size: 9px; color: #1976D2; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Items in Stock</div>
+                    <div style="font-size: 18px; font-weight: 800; color: #1a1a1a;">{{ admin_total_units|default:"0" }} Units</div>
                 </div>
                 <div style="background: #673AB7; padding: 16px; border-radius: 12px; box-shadow: 0 4px 10px rgba(103, 58, 183, 0.2);">
-                    <div style="font-size: 11px; color: rgba(255,255,255,0.7); font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Net Net Profit</div>
-                    <div style="font-size: 20px; font-weight: 800; color: white;">₦{{ admin_net_finance|default:0|intcomma }}</div>
+                    <div style="font-size: 9px; color: rgba(255,255,255,0.7); font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Net Net Profit</div>
+                    <div style="font-size: 18px; font-weight: 800; color: white;">₦{{ admin_net_finance|default:0|intcomma }}</div>
                 </div>
             </div>
         </div>
 
         <!-- Add Admin Form -->
         <div class="admin-form-card" style="position: relative;">
-            <h3 style="font-size: 14px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; border-bottom: 1px solid #f9f9f9; padding-bottom: 10px;">Register New Admin</h3>
+            <h3 style="font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; border-bottom: 1px solid #f9f9f9; padding-bottom: 10px;">Register New Admin</h3>
             <form action="{% url 'admin_register_home' %}" method="post">
                 {% csrf_token %}
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
                     <div class="form-group">
-                        <input type="text" name="username" placeholder="Username" required style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; transition: 0.3s; background: #fafafa;" onfocus="this.style.borderColor='#673AB7'; this.style.background='white'" onblur="this.style.borderColor='#e0e0e0'; this.style.background='#fafafa'">
+                        <input type="text" name="username" placeholder="Username" required style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 12px; transition: 0.3s; background: #fafafa;" onfocus="this.style.borderColor='#673AB7'; this.style.background='white'" onblur="this.style.borderColor='#e0e0e0'; this.style.background='#fafafa'">
                     </div>
                     <div class="form-group">
-                        <input type="email" name="email" placeholder="Email" required style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; transition: 0.3s; background: #fafafa;" onfocus="this.style.borderColor='#673AB7'; this.style.background='white'" onblur="this.style.borderColor='#e0e0e0'; this.style.background='#fafafa'">
+                        <input type="email" name="email" placeholder="Email" required style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 12px; transition: 0.3s; background: #fafafa;" onfocus="this.style.borderColor='#673AB7'; this.style.background='white'" onblur="this.style.borderColor='#e0e0e0'; this.style.background='#fafafa'">
                     </div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
                     <div class="form-group">
-                        <input type="text" name="phone" placeholder="Phone Number" required style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; transition: 0.3s; background: #fafafa;" onfocus="this.style.borderColor='#673AB7'; this.style.background='white'" onblur="this.style.borderColor='#e0e0e0'; this.style.background='#fafafa'">
+                        <input type="text" name="phone" placeholder="Phone Number" required style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 12px; transition: 0.3s; background: #fafafa;" onfocus="this.style.borderColor='#673AB7'; this.style.background='white'" onblur="this.style.borderColor='#e0e0e0'; this.style.background='#fafafa'">
                     </div>
                     <div class="form-group">
-                        <input type="password" name="password" placeholder="Password" required style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; transition: 0.3s; background: #fafafa;" onfocus="this.style.borderColor='#673AB7'; this.style.background='white'" onblur="this.style.borderColor='#e0e0e0'; this.style.background='#fafafa'">
+                        <input type="password" name="password" placeholder="Password" required style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 12px; transition: 0.3s; background: #fafafa;" onfocus="this.style.borderColor='#673AB7'; this.style.background='white'" onblur="this.style.borderColor='#e0e0e0'; this.style.background='#fafafa'">
                     </div>
                 </div>
-                <button type="submit" style="width: 100%; background: #1a1a1a; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 14px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;" onmouseover="this.style.background='#000'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#1a1a1a'; this.style.transform='translateY(0)'">
+                <button type="submit" style="width: 100%; background: #1a1a1a; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 12px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;" onmouseover="this.style.background='#000'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#1a1a1a'; this.style.transform='translateY(0)'">
                     CREATE STAFF ACCOUNT
                 </button>
             </form>
@@ -326,7 +326,7 @@
 
 <div style="margin-bottom: 30px;">
     <div class="section-title">
-        <h3>Top Selling Watches</h3>
+        <h3>Top Selling Items </h3>
         <a href="{% url 'wristcollection' %}" class="see-all">See All ></a>
     </div>
     <div class="product-grid-scroll">
@@ -402,6 +402,93 @@
             <div class="product-price">₦{{ shoe.discount_price|default:shoe.price|floatformat:0 }}</div>
             {% if shoe.discount_price %}
             <div class="product-old-price">₦{{ shoe.price|floatformat:0 }}</div>
+            {% endif %}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if appliances %}
+<div style="margin-bottom: 30px;">
+    <div class="section-title">
+        <h3>Top Home Appliances</h3>
+        <a href="{% url 'category_view' 'home-appliances' %}" class="see-all">See All ></a>
+    </div>
+    <div class="product-grid-scroll">
+        {% for p in appliances %}
+        <a href="{% url 'product_detail' 'product' p.id %}" class="product-card">
+            {% if p.image %}
+            <img class="product-img" src="{{ p.image.url }}" alt="{{ p.name }}">
+            {% else %}
+            <div class="product-img" style="background: #eee;"></div>
+            {% endif %}
+
+            {% if p.discount_price %}
+            <div class="discount-badge">Sale</div>
+            {% endif %}
+            <div class="product-name">{{ p.brand|default:"" }} {{ p.name }}</div>
+            <div class="product-price">₦{{ p.discount_price|default:p.price|floatformat:0 }}</div>
+            {% if p.discount_price %}
+            <div class="product-old-price">₦{{ p.price|floatformat:0 }}</div>
+            {% endif %}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if accessories %}
+<div style="margin-bottom: 30px;">
+    <div class="section-title">
+        <h3>Computer Accessories</h3>
+        <a href="{% url 'category_view' 'computer-accessories' %}" class="see-all">See All ></a>
+    </div>
+    <div class="product-grid-scroll">
+        {% for p in accessories %}
+        <a href="{% url 'product_detail' 'product' p.id %}" class="product-card">
+            {% if p.image %}
+            <img class="product-img" src="{{ p.image.url }}" alt="{{ p.name }}">
+            {% else %}
+            <div class="product-img" style="background: #eee;"></div>
+            {% endif %}
+
+            {% if p.discount_price %}
+            <div class="discount-badge">Sale</div>
+            {% endif %}
+            <div class="product-name">{{ p.brand|default:"" }} {{ p.name }}</div>
+            <div class="product-price">₦{{ p.discount_price|default:p.price|floatformat:0 }}</div>
+            {% if p.discount_price %}
+            <div class="product-old-price">₦{{ p.price|floatformat:0 }}</div>
+            {% endif %}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if phones %}
+<div style="margin-bottom: 30px;">
+    <div class="section-title">
+        <h3>Smartphones & More</h3>
+        <a href="{% url 'category_view' 'phones' %}" class="see-all">See All ></a>
+    </div>
+    <div class="product-grid-scroll">
+        {% for p in phones %}
+        <a href="{% url 'product_detail' 'product' p.id %}" class="product-card">
+            {% if p.image %}
+            <img class="product-img" src="{{ p.image.url }}" alt="{{ p.name }}">
+            {% else %}
+            <div class="product-img" style="background: #eee;"></div>
+            {% endif %}
+
+            {% if p.discount_price %}
+            <div class="discount-badge">Sale</div>
+            {% endif %}
+            <div class="product-name">{{ p.brand|default:"" }} {{ p.name }}</div>
+            <div class="product-price">₦{{ p.discount_price|default:p.price|floatformat:0 }}</div>
+            {% if p.discount_price %}
+            <div class="product-old-price">₦{{ p.price|floatformat:0 }}</div>
             {% endif %}
         </a>
         {% endfor %}

@@ -53,8 +53,8 @@
     <!-- Dashboard Header -->
     <div class="dashboard-header" style="margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end;">
         <div>
-            <h1 style="font-size: 28px; font-weight: 800; color: #1a1a1a; margin-bottom: 8px;">Business Overview</h1>
-            <p style="color: #666; font-size: 15px;">Live performance metrics and inventory valuation.</p>
+            <h1 style="font-size: 24px; font-weight: 800; color: #1a1a1a; margin-bottom: 8px;">Business Overview</h1>
+            <p style="color: #666; font-size: 13px;">Live performance metrics and inventory valuation.</p>
         </div>
         <a href="/admin/" style="padding: 10px 20px; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 10px; color: #666; font-size: 13px; font-weight: 700; text-decoration: none; transition: 0.2s; display: flex; align-items: center; gap: 10px;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#fafafa'">
             <i class="fas fa-cogs"></i> SYSTEM ADMIN
@@ -62,7 +62,7 @@
     </div>
 
     <!-- Low Stock Alerts -->
-    {% if low_stock_shoes or low_stock_watches %}
+    {% if low_stock_shoes or low_stock_watches or low_stock_products %}
     <div style="background: #FFF9C4; border: 1px solid #FBC02D; padding: 15px 24px; border-radius: 12px; margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
         <i class="fas fa-exclamation-circle" style="color: #F57F17; font-size: 20px;"></i>
         <div style="flex: 1;">
@@ -70,8 +70,9 @@
             Some items are running low (5 or fewer units).
             {% for s in low_stock_shoes %}<span style="font-size: 13px; background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 4px; margin-left: 5px;">{{ s.name }} ({{ s.stock }})</span>{% endfor %}
             {% for w in low_stock_watches %}<span style="font-size: 13px; background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 4px; margin-left: 5px;">{{ w.name }} ({{ w.stock }})</span>{% endfor %}
+            {% for p in low_stock_products %}<span style="font-size: 13px; background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 4px; margin-left: 5px;">{{ p.name }} ({{ p.stock }})</span>{% endfor %}
         </div>
-        <a href="/admin/web/shoe/" style="color: #F57F17; font-weight: 700; font-size: 13px; text-decoration: underline;">Restock Now</a>
+        <a href="/admin/web/product/" style="color: #F57F17; font-weight: 700; font-size: 13px; text-decoration: underline;">Restock Now</a>
     </div>
     {% endif %}
 
@@ -90,9 +91,9 @@
             <div style="width: 48px; height: 48px; background: #EDE7F6; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: #673AB7;">
                 <i class="fas fa-boxes fa-lg"></i>
             </div>
-            <div style="color: #888; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Total Goods Value</div>
-            <div style="font-size: 24px; font-weight: 800; color: #1a1a1a;">₦{{ total_inventory_value|floatformat:1 }}</div>
-            <div style="margin-top: 12px; font-size: 12px; color: #4CAF50;">
+            <div style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Total Goods Value</div>
+            <div style="font-size: 20px; font-weight: 800; color: #1a1a1a;">₦{{ total_inventory_value|floatformat:1 }}</div>
+            <div style="margin-top: 12px; font-size: 10px; color: #4CAF50;">
                 <i class="fas fa-chart-line"></i> Full Inventory Worth
             </div>
         </div>
@@ -102,9 +103,9 @@
             <div style="width: 48px; height: 48px; background: #E0F2F1; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: #00BFA5;">
                 <i class="fas fa-warehouse fa-lg"></i>
             </div>
-            <div style="color: #888; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Stock Finance (Cost)</div>
-            <div style="font-size: 24px; font-weight: 800; color: #1a1a1a;">₦{{ total_stock_cost_in_inventory|floatformat:1 }}</div>
-            <div style="margin-top: 12px; font-size: 12px; color: #00BFA5;">
+            <div style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Stock Finance (Cost)</div>
+            <div style="font-size: 20px; font-weight: 800; color: #1a1a1a;">₦{{ total_stock_cost_in_inventory|floatformat:1 }}</div>
+            <div style="margin-top: 12px; font-size: 10px; color: #00BFA5;">
                 <i class="fas fa-wallet"></i> Total Amount Invested
             </div>
         </div>
@@ -114,9 +115,9 @@
             <div style="width: 48px; height: 48px; background: #FFF3E0; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: #FF9800;">
                 <i class="fas fa-cash-register fa-lg"></i>
             </div>
-            <div style="color: #888; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Finance / Amount Sold</div>
-            <div style="font-size: 24px; font-weight: 800; color: #1a1a1a;">₦{{ total_revenue|floatformat:1 }}</div>
-            <div style="margin-top: 12px; font-size: 12px; color: #FF9800;">
+            <div style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Finance / Amount Sold</div>
+            <div style="font-size: 20px; font-weight: 800; color: #1a1a1a;">₦{{ total_revenue|floatformat:1 }}</div>
+            <div style="margin-top: 12px; font-size: 10px; color: #FF9800;">
                 <i class="fas fa-shopping-bag"></i> Total Revenue Received
             </div>
         </div>
@@ -150,9 +151,9 @@
             <div style="width: 48px; height: 48px; background: #E3F2FD; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: #1976D2;">
                 <i class="fas fa-users fa-lg"></i>
             </div>
-            <div style="color: #888; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Total Customers</div>
-            <div style="font-size: 24px; font-weight: 800; color: #1a1a1a;">{{ total_users|default:0 }}</div>
-            <div style="margin-top: 12px; font-size: 12px; color: #1976D2;">
+            <div style="color: #888; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Total Customers</div>
+            <div style="font-size: 20px; font-weight: 800; color: #1a1a1a;">{{ total_users|default:0 }}</div>
+            <div style="margin-top: 12px; font-size: 10px; color: #1976D2;">
                 <i class="fas fa-user-check"></i> Registered Accounts
             </div>
         </div>
@@ -162,9 +163,9 @@
             <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: white;">
                 <i class="fas fa-hand-holding-usd fa-lg"></i>
             </div>
-            <div style="color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Net Net Profit</div>
-            <div style="font-size: 24px; font-weight: 800; color: white;">₦{{ net_profit|floatformat:1 }}</div>
-            <div style="margin-top: 12px; font-size: 12px; color: rgba(255,255,255,0.8);">
+            <div style="color: rgba(255,255,255,0.6); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Net Net Profit</div>
+            <div style="font-size: 20px; font-weight: 800; color: white;">₦{{ net_profit|floatformat:1 }}</div>
+            <div style="margin-top: 12px; font-size: 10px; color: rgba(255,255,255,0.8);">
                 <i class="fas fa-cubes"></i> {{ total_units }} Units in Stock
             </div>
         </div>
@@ -175,27 +176,27 @@
         <!-- Recent Orders Table -->
         <div style="background: white; border-radius: 16px; border: 1px solid #f0f0f0; box-shadow: 0 10px 20px rgba(0,0,0,0.02); overflow: hidden;">
             <div style="padding: 24px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="margin: 0; font-size: 18px; font-weight: 700;">Recent Transactions</h3>
-                <span style="font-size: 12px; color: #673AB7; font-weight: 600; background: #EDE7F6; padding: 4px 12px; border-radius: 20px;">LAST 10 ORDERS</span>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Recent Transactions</h3>
+                <span style="font-size: 10px; color: #673AB7; font-weight: 600; background: #EDE7F6; padding: 4px 12px; border-radius: 20px;">LAST 10 ORDERS</span>
             </div>
             <div style="padding: 0;">
                 <table style="width: 100%; border-collapse: collapse; text-align: left;">
                     <thead>
                         <tr style="background: #fafafa;">
-                            <th style="padding: 16px 24px; font-size: 13px; color: #888; font-weight: 600; border-bottom: 1px solid #f0f0f0;">ORDER</th>
-                            <th style="padding: 16px 24px; font-size: 13px; color: #888; font-weight: 600; border-bottom: 1px solid #f0f0f0;">CUSTOMER</th>
-                            <th style="padding: 16px 24px; font-size: 13px; color: #888; font-weight: 600; border-bottom: 1px solid #f0f0f0;">AMOUNT</th>
-                            <th style="padding: 16px 24px; font-size: 13px; color: #888; font-weight: 600; border-bottom: 1px solid #f0f0f0;">STATUS</th>
+                            <th style="padding: 16px 24px; font-size: 11px; color: #888; font-weight: 600; border-bottom: 1px solid #f0f0f0;">ORDER</th>
+                            <th style="padding: 16px 24px; font-size: 11px; color: #888; font-weight: 600; border-bottom: 1px solid #f0f0f0;">CUSTOMER</th>
+                            <th style="padding: 16px 24px; font-size: 11px; color: #888; font-weight: 600; border-bottom: 1px solid #f0f0f0;">AMOUNT</th>
+                            <th style="padding: 16px 24px; font-size: 11px; color: #888; font-weight: 600; border-bottom: 1px solid #f0f0f0;">STATUS</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for order in recent_orders %}
                         <tr style="transition: 0.2s;" onmouseover="this.style.background='#fcfcfc'" onmouseout="this.style.background='transparent'">
-                            <td style="padding: 16px 24px; font-size: 14px; font-weight: 500; border-bottom: 1px solid #f9f9f9;">#{{ order.id }}</td>
-                            <td style="padding: 16px 24px; font-size: 14px; border-bottom: 1px solid #f9f9f9;">{{ order.user.username|default:"Guest" }}</td>
-                            <td style="padding: 16px 24px; font-size: 14px; font-weight: 600; border-bottom: 1px solid #f9f9f9;">₦{{ order.total|floatformat:1 }}</td>
+                            <td style="padding: 16px 24px; font-size: 12px; font-weight: 500; border-bottom: 1px solid #f9f9f9;">#{{ order.id }}</td>
+                            <td style="padding: 16px 24px; font-size: 12px; border-bottom: 1px solid #f9f9f9;">{{ order.user.username|default:"Guest" }}</td>
+                            <td style="padding: 16px 24px; font-size: 12px; font-weight: 600; border-bottom: 1px solid #f9f9f9;">₦{{ order.total|floatformat:1 }}</td>
                             <td style="padding: 16px 24px; border-bottom: 1px solid #f9f9f9;">
-                                <span style="font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; 
+                                <span style="font-size: 9px; font-weight: 700; padding: 4px 10px; border-radius: 4px; text-transform: uppercase;
                                 {% if order.status == 'Delivered' or order.status == 'Completed' %} background: #E8F5E9; color: #2E7D32; 
                                 {% elif order.status == 'Cancelled' %} background: #FFEBEE; color: #C62828; 
                                 {% else %} background: #FFF3E0; color: #E65100; {% endif %}">
@@ -221,11 +222,11 @@
                 {% for msg in recent_messages %}
                 <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #f9f9f9;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                        <span style="font-size: 14px; font-weight: 700; color: #1a1a1a;">{{ msg.name }}</span>
-                        <span style="font-size: 11px; color: #888;">{{ msg.created_at|date:"M d, H:i" }}</span>
+                        <span style="font-size: 12px; font-weight: 700; color: #1a1a1a;">{{ msg.name }}</span>
+                        <span style="font-size: 10px; color: #888;">{{ msg.created_at|date:"M d, H:i" }}</span>
                     </div>
-                    <div style="font-size: 13px; color: #673AB7; font-weight: 600; margin-bottom: 5px;">{{ msg.subject }}</div>
-                    <div style="font-size: 13px; color: #666; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                    <div style="font-size: 11px; color: #673AB7; font-weight: 600; margin-bottom: 5px;">{{ msg.subject }}</div>
+                    <div style="font-size: 11px; color: #666; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                         {{ msg.message }}
                     </div>
                 </div>
@@ -252,10 +253,10 @@
                 {% for expense in recent_expenses %}
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #f9f9f9;">
                     <div>
-                        <div style="font-size: 14px; font-weight: 600; color: #1a1a1a;">{{ expense.description }}</div>
-                        <div style="font-size: 12px; color: #888;">{{ expense.category }} • {{ expense.date|date:"M d" }}</div>
+                        <div style="font-size: 12px; font-weight: 600; color: #1a1a1a;">{{ expense.description }}</div>
+                        <div style="font-size: 10px; color: #888;">{{ expense.category }} • {{ expense.date|date:"M d" }}</div>
                     </div>
-                    <div style="font-weight: 700; color: #D32F2F; font-size: 14px;">-₦{{ expense.amount|floatformat:1 }}</div>
+                    <div style="font-weight: 700; color: #D32F2F; font-size: 12px;">-₦{{ expense.amount|floatformat:1 }}</div>
                 </div>
                 {% empty %}
                 <div style="text-align: center; color: #999; padding-top: 40px;">No expenses recorded.</div>

@@ -214,18 +214,16 @@ document.addEventListener("DOMContentLoaded", function () {
     
     
 
-    let html = `<h2>Cart Items</h2>`;
+    let html = `<h2 style="color:var(--jumia-dark, #313133);border-bottom:1px solid #eee;padding-bottom:10px;">Cart Items</h2>`;
   let totalPrice = 0;
   let totalPriceUSD = 0;
     if (cart.length === 0) {
-      html += `<p>Your cart is empty.</p>`;
+      html += `<p style="color:#75757a;text-align:center;padding:20px 0;">Your cart is empty.</p>`;
     } else {
       cart.forEach(function (item) {
         const qty = item.quantity || 1;
-        let priceUSD = parseFloat(item.watchPrice) || 0;
-        let subtotalUSD = priceUSD * qty;
-        let subtotalNGN = subtotalUSD * 1500;
-        totalPriceUSD += subtotalUSD;
+        let priceNGN = parseFloat(item.watchPrice || 0);
+        let subtotalNGN = priceNGN * qty;
         totalPrice += subtotalNGN;
         // build a small star display if rating present
         let starHtml = '';
@@ -250,8 +248,8 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       html += `<h3 style="margin-top:1rem;">Total: ₦${totalPrice.toLocaleString()} <br>`;
     }
-    html += `<button id="clear-cart-modal" style="margin-top:1rem;margin-right:1rem;">Clear Cart</button>`;
-    html += `<button id="close-cart-modal" style="margin-top:1rem;">Close</button>`;
+    html += `<button id="clear-cart-modal" style="margin-top:1rem;margin-right:1rem;background-color:#ff4d4f;color:white;border:1px solid #ff4d4f;padding:10px 20px;border-radius:5px;cursor:pointer;font-weight:600;">Clear Cart</button>`;
+    html += `<button id="close-cart-modal" style="margin-top:1rem;background-color:#75757a;color:white;border:1px solid #75757a;padding:10px 20px;border-radius:5px;cursor:pointer;font-weight:600;">Close</button>`;
     modal.innerHTML = html;
     document.body.appendChild(modal);
 

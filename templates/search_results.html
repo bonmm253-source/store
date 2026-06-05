@@ -7,8 +7,12 @@
 {% csrf_token %}
 <div class="card" style="padding: 20px;">
     <h2
-        style="font-size: 20px; font-weight: 500; border-bottom: 1px solid var(--jumia-border); padding-bottom: 15px; margin-bottom: 20px;">
-        Search results for "{{ query }}"
+        style="font-size: 18px; font-weight: 500; border-bottom: 1px solid var(--jumia-border); padding-bottom: 15px; margin-bottom: 20px;">
+        {% if category_name %}
+            Category: {{ category_name }}
+        {% else %}
+            Search results for "{{ query }}"
+        {% endif %}
     </h2>
 
     <div class="product-grid">
@@ -78,7 +82,13 @@
     {% if not shoes and not watches %}
     <div style="text-align: center; padding: 40px; color: var(--jumia-light-text);">
         <span class="material-icons-outlined" style="font-size: 48px;">search_off</span>
-        <p style="margin-top: 10px;">We couldn't find any matches for "{{ query }}".</p>
+        <p style="margin-top: 10px;">
+            {% if category_name %}
+                We couldn't find any products in the "{{ category_name }}" category.
+            {% else %}
+                We couldn't find any matches for "{{ query }}".
+            {% endif %}
+        </p>
     </div>
     {% endif %}
 </div>
@@ -86,4 +96,4 @@
 
 {% block scripts %}
 <script src="{% static 'cart.js' %}?v=1.4" defer></script>
-{% endblock %}
+{% endblock %}

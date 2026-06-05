@@ -75,6 +75,21 @@ class shoe(models.Model):
     def __str__(self):
         return f"{self.brand or ''} {self.name}".strip()
 
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='products/')
+    brand = models.CharField(max_length=100, null=True, blank=True)
+    description = models.TextField(blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    cost_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    stock = models.IntegerField(default=10)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"[{self.category.name}] {self.name}"
+
 # --- OTP MODEL ---
 class OTP(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -102,11 +117,12 @@ class CartItem(models.Model):
     cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)
     shoe_item = models.ForeignKey(shoe, on_delete=models.CASCADE, null=True, blank=True)
     watch_item = models.ForeignKey(watch, on_delete=models.CASCADE, null=True, blank=True)
+    product_item = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.PositiveIntegerField(default=1)
 
     @property
     def product(self):
-        return self.shoe_item or self.watch_item
+        return self.shoe_item or self.watch_item or self.product_item
 
     @property
     def total_price(self):
@@ -160,10 +176,10 @@ class Order(models.Model):
             items = json.loads(self.items_json)
             for item in items:
                 # Standardize keys to avoid VariableDoesNotExist in templates
-                item['image'] = item.get('shoeImage') or item.get('watchImage') or item.get('image') or ''
-                item['name'] = item.get('shoeName') or item.get('watchName') or item.get('name') or 'Item'
-                item['id'] = item.get('shoeId') or item.get('watchId') or item.get('id')
-                item['type'] = 'shoe' if 'shoeId' in item else 'watch'
+                item['image'] = item.get('shoeImage') or item.get('watchImage') or item.get('productImage') or item.get('image') or ''
+                item['name'] = item.get('shoeName') or item.get('watchName') or item.get('productName') or item.get('name') or 'Item'
+                item['id'] = item.get('shoeId') or item.get('watchId') or item.get('productId') or item.get('id')
+                item['type'] = item.get('type') or ('shoe' if 'shoeId' in item else 'watch' if 'watchId' in item else 'product')
             return items
         except:
             return []

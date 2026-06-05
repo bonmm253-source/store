@@ -8,8 +8,8 @@
     body { background: #f6f7fb; color: #222; }
     .container-order { max-width: 1000px; margin: 20px auto; background: rgb(231, 143, 28); padding: 20px; border-radius: 8px; box-shadow: 0 6px 24px rgba(0,0,0,0.06); }
     h1, h2, h3 { color: white; margin: 0 0 12px 0; }
-    label { font-weight: 600; display: block; margin-top: 8px; color: white; }
-    input, textarea { width: 100%; padding: 10px; border: 1px solid #e0e6ef; border-radius: 6px; margin-top: 6px; box-sizing: border-box; }
+    label { font-weight: 600; display: block; margin-top: 8px; color: white; font-size: 13px; }
+    input, textarea { width: 100%; padding: 10px; border: 1px solid #e0e6ef; border-radius: 6px; margin-top: 6px; box-sizing: border-box; font-size: 13px; }
     .form-row { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
     .delivery { flex: 1; min-width: 250px; }
     .items { flex: 0 0 420px; max-width: 100%; }
@@ -21,18 +21,18 @@
     #pay-button { background: #007bff; color: #fff; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: 700; }
     #pay-button:hover { background: #0062d6; }
     #order-summary { margin-top: 12px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
-    #summary-info { font-weight:700;color:#fff; }
+    #summary-info { font-weight:700;color:#fff; font-size: 13px; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container-order">
-    <h1 style="color: white;">Your Orders</h1>
+    <h1 style="color: white; font-size: 22px;">Your Orders</h1>
 
     {% if orders %}
     <div style="margin-bottom: 30px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h2 style="color: white; margin: 0;">📋 Previous Orders</h2>
+            <h2 style="color: white; margin: 0; font-size: 18px;">📋 Previous Orders</h2>
             <form action="{% url 'clear_order_history' %}" method="POST" onsubmit="return confirm('Are you sure you want to clear your entire order history? This cannot be undone.');">
                 {% csrf_token %}
                 <button type="submit" style="background: #ff4d4f; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 5px;">
@@ -46,10 +46,10 @@
             <div style="padding: 20px; border-bottom: 2px solid #f0f0f0; background: #fff;">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
                     <div>
-                        <p style="margin: 0; font-weight: bold; color: #333; font-size: 16px;">Order #{{ order.id }}</p>
-                        <p style="margin: 5px 0; color: #888; font-size: 13px;">📅 {{ order.created_at|date:"M d, Y - H:i" }}</p>
-                        <p style="margin: 5px 0; color: #f68b1e; font-weight: 600; font-size: 13px;">Status: {{ order.status }}</p>
-                        <p style="margin: 5px 0; color: #555; font-size: 12px; font-weight: 500;">💳 Method: {{ order.payment_method }}</p>
+                        <p style="margin: 0; font-weight: bold; color: #333; font-size: 14px;">Order #{{ order.id }}</p>
+                        <p style="margin: 5px 0; color: #888; font-size: 12px;">📅 {{ order.created_at|date:"M d, Y - H:i" }}</p>
+                        <p style="margin: 5px 0; color: #f68b1e; font-weight: 600; font-size: 12px;">Status: {{ order.status }}</p>
+                        <p style="margin: 5px 0; color: #555; font-size: 11px; font-weight: 500;">💳 Method: {{ order.payment_method }}</p>
                         {% if order.payment_method == "Bank Transfer" and order.confirmed_account_number %}
                         <p style="margin: 2px 0; color: #888; font-size: 11px;">(Paid to: {{ order.confirmed_account_number }})</p>
                         {% endif %}
@@ -81,7 +81,7 @@
                         {% endif %}
                     </div>
                     <div style="text-align: right;">
-                        <p style="margin: 0; font-weight: 800; color: #E78F1C; font-size: 20px;">₦{{ order.total|floatformat:0 }}</p>
+                        <p style="margin: 0; font-weight: 800; color: #E78F1C; font-size: 18px;">₦{{ order.total|floatformat:0 }}</p>
                     </div>
                 </div>
 
@@ -90,10 +90,10 @@
                     <div style="flex: 0 0 100px; text-align: center; background: #f9f9f9; padding: 10px; border-radius: 12px; border: 1px solid #eee;">
                         <img src="{{ item.image }}" alt="{{ item.name }}"
                             style="width: 70px; height: 70px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;">
-                        <p style="margin: 0; font-size: 12px; font-weight: 600; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        <p style="margin: 0; font-size: 11px; font-weight: 600; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                             {{ item.name }}
                         </p>
-                        <p style="margin: 2px 0 8px; font-size: 11px; color: #888;">Qty: {{ item.quantity }}</p>
+                        <p style="margin: 2px 0 8px; font-size: 10px; color: #888;">Qty: {{ item.quantity }}</p>
 
                         <div class="rating-stars" data-type="{{ item.type }}" data-id="{{ item.id }}"
                             style="display: flex; justify-content: center; gap: 2px;">
@@ -120,14 +120,14 @@
     {% endif %}
 
     <div style="margin-top: 30px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 8px;">
-        <h2 style="color: white; margin-bottom: 15px;">🛒 Place New Order</h2>
+        <h2 style="color: white; margin-bottom: 15px; font-size: 18px;">🛒 Place New Order</h2>
         <form id="order-form" method="post" action="{% url 'submit_order' %}">
             {% csrf_token %}
             <div class="form-row" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 8px;">
                 <div class="items" style="flex: 1;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h3 style="margin: 0;">📦 Items in your Cart</h3>
-                        <a href="{% url 'men' %}" style="color: white; text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 5px; background: rgba(0,0,0,0.2); padding: 5px 12px; border-radius: 20px;">
+                        <h3 style="margin: 0; font-size: 15px;">📦 Items in your Cart</h3>
+                        <a href="{% url 'men' %}" style="color: white; text-decoration: none; font-size: 12px; display: flex; align-items: center; gap: 5px; background: rgba(0,0,0,0.2); padding: 5px 12px; border-radius: 20px;">
                             <span class="material-icons-outlined" style="font-size: 18px;">add_shopping_cart</span>
                             Shop More
                         </a>

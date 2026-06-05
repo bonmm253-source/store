@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="page-container" style="max-width: 800px; margin: 40px auto; padding: 20px;">
-    <h1 style="color: var(--jumia-dark); margin-bottom: 20px;">Place & Track Order</h1>
+    <h1 style="color: var(--jumia-dark); margin-bottom: 20px; font-size: 20px;">Place & Track Order</h1>
 
     <div
         style="background: white; border-radius: 8px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 30px;">
@@ -12,7 +12,7 @@
             <span class="material-icons-outlined" style="color: var(--jumia-orange);">local_shipping</span>
             Track Your Order
         </h2>
-        <p style="color: var(--jumia-light-text); font-size: 14px; margin-top: 5px;">Enter your Order ID and Email/Phone
+        <p style="color: var(--jumia-light-text); font-size: 12px; margin-top: 5px;">Enter your Order ID and Email/Phone
             Number to see the status of your shipment.</p>
 
         <form style="margin-top: 25px;" method="GET">
@@ -35,8 +35,8 @@
         {% if searched %}
         <div style="margin-top: 30px; padding: 20px; border-radius: 8px; background: #f9f9f9; border: 1px solid var(--jumia-border);">
             {% if order_status %}
-                <h3 style="margin-top: 0; color: var(--jumia-dark);">Order Status: <span style="color: var(--jumia-orange);">{{ order_status }}</span></h3>
-                <p style="font-size: 14px; color: var(--jumia-light-text);">
+                <h3 style="margin-top: 0; color: var(--jumia-dark); font-size: 16px;">Order Status: <span style="color: var(--jumia-orange);">{{ order_status }}</span></h3>
+                <p style="font-size: 12px; color: var(--jumia-light-text);">
                     {% if order_status == 'Pending' %}
                         Your order has been received and is waiting for payment confirmation.
                     {% elif order_status == 'Paid' or order_status == 'Processing' %}

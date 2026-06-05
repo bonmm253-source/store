@@ -18,7 +18,7 @@ from django.template.loader import get_template
 from datetime import datetime, timedelta
 from xhtml2pdf import pisa
 import io
-from .models import User, OTP, shoe, watch, Category, Cart, CartItem, Order, Wishlist, Review, Expense, ContactMessage
+from .models import User, OTP, shoe, watch, Category, Cart, CartItem, Order, Wishlist, Review, Expense, ContactMessage, Product
 from .forms import RegistrationForm, LoginForm, PhoneLoginForm, ProfileUpdateForm, ContactForm
 from .tasks import send_otp_email, send_registration_email, send_sms_otp, send_contact_email
 
@@ -43,6 +43,9 @@ def decrement_stock(items_json):
             elif 'watchId' in item:
                 product = watch.objects.filter(id=item['watchId']).first()
                 ptype = "watch"
+            elif 'productId' in item:
+                product = Product.objects.filter(id=item['productId']).first()
+                ptype = "product"
 
             if product:
                 product.stock = F('stock') - qty
@@ -64,6 +67,11 @@ def base(request):
     men_shoes = shoe.objects.filter(target_audience='Male')[:8]
     women_shoes = shoe.objects.filter(target_audience='Female')[:8]
     
+    # New Categories
+    appliances = Product.objects.filter(category__name='Home Appliances')[:8]
+    accessories = Product.objects.filter(category__name='Computer Accessories')[:8]
+    phones = Product.objects.filter(category__name='Phones')[:8]
+
     # Fetch Recently Viewed Items
     recently_viewed_ids = request.session.get('recently_viewed', [])
     recently_viewed_items = []
@@ -72,8 +80,10 @@ def base(request):
             ptype, pk = item_id.split('_')
             if ptype == 'shoe':
                 recently_viewed_items.append({'type': 'shoe', 'item': shoe.objects.get(pk=pk)})
-            else:
+            elif ptype == 'watch':
                 recently_viewed_items.append({'type': 'watch', 'item': watch.objects.get(pk=pk)})
+            else:
+                recently_viewed_items.append({'type': 'product', 'item': Product.objects.get(pk=pk)})
         except:
             continue
 
@@ -85,6 +95,9 @@ def base(request):
         'top_watches': top_watches,
         'men_shoes': men_shoes,
         'women_shoes': women_shoes,
+        'appliances': appliances,
+        'accessories': accessories,
+        'phones': phones,
         'recently_viewed': recently_viewed_items,
         'free_shipping_threshold': 50000, # Example threshold in Naira
         'flash_sale_end': (timezone.now() + timedelta(days=2)).isoformat(), # 2 days from now
@@ -386,6 +399,22 @@ def wrist(request):
     watches = watch.objects.all()
     return render(request, 'wristcollection.html', {'watches': watches})
 
+def category_view(request, category_name):
+    # Standardize name (e.g., 'home-appliances' -> 'Home Appliances')
+    clean_name = category_name.replace('-', ' ').title()
+    products = Product.objects.filter(category__name__iexact=clean_name)
+
+    # Also search in shoes/watches just in case
+    shoes = shoe.objects.filter(category__name__iexact=clean_name)
+    watches = watch.objects.filter(category__name__iexact=clean_name)
+
+    return render(request, 'category_detail.html', {
+        'category_name': clean_name,
+        'products': products,
+        'shoes': shoes,
+        'watches': watches
+    })
+
 @login_required
 def orders_view(request):
     if request.user.is_authenticated:
@@ -410,8 +439,10 @@ def all_categories(request):
 def product_detail(request, prod_type, pk):
     if prod_type == 'shoe':
         product = get_object_or_404(shoe, pk=pk)
-    else:
+    elif prod_type == 'watch':
         product = get_object_or_404(watch, pk=pk)
+    else:
+        product = get_object_or_404(Product, pk=pk)
 
     # Recently Viewed Logic
     recently_viewed = request.session.get('recently_viewed', [])
@@ -573,9 +604,12 @@ def add_to_cart(request):
             if prod_type == 'shoe':
                 item = get_object_or_404(shoe, id=prod_id)
                 cart_item, created = CartItem.objects.get_or_create(cart=cart, shoe_item=item)
-            else:
+            elif prod_type == 'watch':
                 item = get_object_or_404(watch, id=prod_id)
                 cart_item, created = CartItem.objects.get_or_create(cart=cart, watch_item=item)
+            else:
+                item = get_object_or_404(Product, id=prod_id)
+                cart_item, created = CartItem.objects.get_or_create(cart=cart, product_item=item)
 
             if not created:
                 cart_item.quantity += quantity
@@ -1024,12 +1058,14 @@ def admin_dashboard(request):
     # 1. Total Inventory Selling Value
     shoe_inventory_value = shoe.objects.aggregate(total=Sum(F('price') * F('stock')))['total'] or 0
     watch_inventory_value = watch.objects.aggregate(total=Sum(F('price') * F('stock')))['total'] or 0
-    total_inventory_value = shoe_inventory_value + watch_inventory_value
+    product_inventory_value = Product.objects.aggregate(total=Sum(F('price') * F('stock')))['total'] or 0
+    total_inventory_value = shoe_inventory_value + watch_inventory_value + product_inventory_value
 
     # 2. Total Stock Cost (What you spent to get the stock currently sitting in inventory)
     shoe_stock_cost = shoe.objects.aggregate(total=Sum(F('cost_price') * F('stock')))['total'] or 0
     watch_stock_cost = watch.objects.aggregate(total=Sum(F('cost_price') * F('stock')))['total'] or 0
-    total_stock_cost_in_inventory = shoe_stock_cost + watch_stock_cost
+    product_stock_cost = Product.objects.aggregate(total=Sum(F('cost_price') * F('stock')))['total'] or 0
+    total_stock_cost_in_inventory = shoe_stock_cost + watch_stock_cost + product_stock_cost
 
     # 3. Total Revenue (Goods Sold)
     completed_orders = Order.objects.filter(complete=True).exclude(status='Cancelled')
@@ -1047,7 +1083,8 @@ def admin_dashboard(request):
 
     out_of_stock_shoes = shoe.objects.filter(stock__lte=0).count()
     out_of_stock_watches = watch.objects.filter(stock__lte=0).count()
-    out_of_stock_count = out_of_stock_shoes + out_of_stock_watches
+    out_of_stock_products = Product.objects.filter(stock__lte=0).count()
+    out_of_stock_count = out_of_stock_shoes + out_of_stock_watches + out_of_stock_products
 
     # 4. Total Expenses (Registered Expenses)
     total_expenses = Expense.objects.aggregate(total=Sum('amount'))['total'] or 0
@@ -1055,7 +1092,8 @@ def admin_dashboard(request):
     # 5. Total Units in Stock
     shoe_units = shoe.objects.aggregate(total=Sum('stock'))['total'] or 0
     watch_units = watch.objects.aggregate(total=Sum('stock'))['total'] or 0
-    total_units = shoe_units + watch_units
+    product_units = Product.objects.aggregate(total=Sum('stock'))['total'] or 0
+    total_units = shoe_units + watch_units + product_units
 
     # Summary
     net_profit = total_revenue - total_expenses
@@ -1066,6 +1104,7 @@ def admin_dashboard(request):
     # Low Stock Alerts
     low_stock_shoes = shoe.objects.filter(stock__gt=0, stock__lte=5)
     low_stock_watches = watch.objects.filter(stock__gt=0, stock__lte=5)
+    low_stock_products = Product.objects.filter(stock__gt=0, stock__lte=5)
 
     # Chart Data (last 7 days)
     from django.utils import timezone

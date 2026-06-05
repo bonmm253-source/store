@@ -11,42 +11,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
   addToCartButtons.forEach(function (btn) {
     btn.addEventListener("click", function (e) {
-      // normalize shoeId to string to avoid type mismatches
+      const type = btn.getAttribute("data-type") || "shoe";
       const rawId = btn.getAttribute("data-product-id") || btn.dataset.productId || btn.getAttribute("data-shoe-id") || btn.getAttribute("data-watch-id");
-      const shoeId = String(rawId);
+      const productId = String(rawId);
 
-      // Get quantity from data-quantity (set by quantity controls) or default to 1
       const selectedQty = parseInt(btn.getAttribute("data-quantity") || btn.getAttribute("data-shoe-quantity") || "1", 10) || 1;
+      const existing = cart.find((item) => String(item.id) === productId && item.type === type);
 
-      // Find existing item by normalized id
-      const existing = cart.find((item) => String(item.shoeId) === shoeId);
-      // Read selected rating (set when user clicks stars)
-      const selectedRating = parseInt(btn.getAttribute('data-shoe-rating') || btn.dataset.shoeRating || '0', 10) || 0;
+      const selectedRating = parseInt(btn.getAttribute('data-rating') || btn.dataset.rating || '0', 10) || 0;
+
       if (existing) {
-        // Ensure quantity is an integer
-        existing.quantity = parseInt(existing.quantity, 10) || 1;
-        // update rating to latest selected rating if provided
+        existing.quantity = Math.min(5, (parseInt(existing.quantity, 10) || 1) + selectedQty);
         if (selectedRating > 0) existing.rating = selectedRating;
-        // Add the selected quantity to existing quantity, max 5
-        existing.quantity = Math.min(5, existing.quantity + selectedQty);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        updateCartCount();
-        btn.textContent = `Added (${existing.quantity})`;
-        btn.disabled = existing.quantity >= 5;
       } else {
-        const shoeImage = btn.getAttribute("data-shoe-image") || btn.dataset.shoeImage || "";
-        const shoeName = btn.getAttribute("data-shoe-name") || btn.dataset.shoeName || "";
-        const shoeBrand = btn.getAttribute("data-shoe-brand") || btn.dataset.shoeBrand || "";
-        const shoePrice = btn.getAttribute("data-shoe-price") || btn.dataset.shoePrice || "0";
-        // Use selected quantity, not just 1
-        const addQty = Math.min(5, selectedQty);
-        cart.push({ shoeId, shoeImage, shoeName, shoeBrand, shoePrice, quantity: addQty, rating: selectedRating });
-        localStorage.setItem("cart", JSON.stringify(cart));
-        updateCartCount();
-        btn.disabled = false;
-        btn.textContent = `Added (${addQty})`;
+        const image = btn.getAttribute("data-product-image") || btn.getAttribute("data-shoe-image") || "";
+        const name = btn.getAttribute("data-product-name") || btn.getAttribute("data-shoe-name") || "";
+        const brand = btn.getAttribute("data-product-brand") || btn.getAttribute("data-shoe-brand") || "";
+        const price = btn.getAttribute("data-product-price") || btn.getAttribute("data-shoe-price") || "0";
+
+        cart.push({
+          id: productId,
+          type: type,
+          image,
+          name,
+          brand,
+          price,
+          quantity: Math.min(5, selectedQty),
+          rating: selectedRating
+        });
       }
-      // prevent accidental form submit if button is inside a form
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartCount();
+      btn.textContent = `Added`;
+
       if (e && typeof e.preventDefault === 'function') e.preventDefault();
     });
   });
@@ -278,18 +276,18 @@ document.addEventListener("DOMContentLoaded", function () {
     
     
 
-    let html = `<h2>Cart Items</h2>`;
+    let html = `<h2 style="color:var(--jumia-dark, #313133);border-bottom:1px solid #eee;padding-bottom:10px;">Cart Items</h2>`;
   let totalPrice = 0;
   let totalPriceUSD = 0;
     if (cart.length === 0) {
-      html += `<p>Your cart is empty.</p>`;
+      html += `<p style="color:#75757a;text-align:center;padding:20px 0;">Your cart is empty.</p>`;
     } else {
       cart.forEach(function (item) {
         const qty = item.quantity || 1;
-        let priceNGN = parseFloat(item.shoePrice || item.watchPrice || 0);
+        let priceNGN = parseFloat(item.price || item.shoePrice || item.watchPrice || 0);
         let subtotalNGN = priceNGN * qty;
         totalPrice += subtotalNGN;
-        // build a small star display if rating present
+
         let starHtml = '';
         const ratingVal = parseInt(item.rating || 0, 10) || 0;
         if (ratingVal > 0) {
@@ -297,11 +295,12 @@ document.addEventListener("DOMContentLoaded", function () {
             starHtml += `<span style="color:${i<=ratingVal?'gold':'#ddd'};font-size:14px;margin-right:2px">★</span>`;
           }
         }
+
         html += `<div style="display:flex;background:#f9f9f9;border-radius:10px;padding:1rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.07);text-align:center;align-items:center;">
-          <img src="${item.shoeImage}" alt="${item.shoeName}" style="width:60px;height:70px;object-fit:cover;border-radius:8px;margin-bottom:10px;border:1px solid #eee;display:flex;margin-left:auto;margin-right:auto;">
+          <img src="${item.image || item.shoeImage || item.watchImage}" alt="${item.name || item.shoeName}" style="width:60px;height:70px;object-fit:cover;border-radius:8px;margin-bottom:10px;border:1px solid #eee;display:flex;margin-left:auto;margin-right:auto;">
           <div style="margin-bottom:6px;margin-left:12px;flex:1;text-align:left;">
-            <span style="font-weight:bold;font-size:1.1rem;">${item.shoeName}</span><br>
-            <span style="color:#555;">${item.shoeBrand}</span><br>
+            <span style="font-weight:bold;font-size:1.1rem;">${item.name || item.shoeName || item.watchName}</span><br>
+            <span style="color:#555;">${item.brand || item.shoeBrand || item.watchBrand}</span><br>
             ${starHtml}
           </div>
           <div style="margin-bottom:4px;text-align:right;">
@@ -312,8 +311,8 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       html += `<h3 style="margin-top:1rem;">Total: ₦${totalPrice.toLocaleString()} <br>`;
     }
-    html += `<button id="clear-cart-modal" style="margin-top:1rem;margin-right:1rem;">Clear Cart</button>`;
-    html += `<button id="close-cart-modal" style="margin-top:1rem;">Close</button>`;
+    html += `<button id="clear-cart-modal" style="margin-top:1rem;margin-right:1rem;background-color:#ff4d4f;color:white;border:1px solid #ff4d4f;padding:10px 20px;border-radius:5px;cursor:pointer;font-weight:600;">Clear Cart</button>`;
+    html += `<button id="close-cart-modal" style="margin-top:1rem;background-color:#75757a;color:white;border:1px solid #75757a;padding:10px 20px;border-radius:5px;cursor:pointer;font-weight:600;">Close</button>`;
     modal.innerHTML = html;
     document.body.appendChild(modal);
 

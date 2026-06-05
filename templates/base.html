@@ -41,9 +41,13 @@
         <div style="flex: 1; overflow-y: auto; padding: 10px 0;">
             <div style="padding: 15px 20px; font-weight: 700; font-size: 13px; color: #888; text-transform: uppercase; letter-spacing: 1px;">Categories</div>
             <a href="{% url 'home' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">home</span> Home</a>
-            <a href="{% url 'men' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">male</span> Men's Sneakers</a>
-            <a href="{% url 'women' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">female</span> Women's Shoes</a>
+            <a href="{% url 'all_categories' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: var(--jumia-orange); font-weight: 700;"><span class="material-icons-outlined">apps</span> All Categories</a>
+            <a href="{% url 'men' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">male Itmes</span> Men's Items</a>
+            <a href="{% url 'women' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">female Itmes</span> Women's Items</a>
             <a href="{% url 'wristcollection' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">watch</span> Wrist Watches</a>
+            <a href="{% url 'category_view' 'home-appliances' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">kitchen</span> Home Appliances</a>
+            <a href="{% url 'category_view' 'computer-accessories' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">mouse</span> Computer Accessories</a>
+            <a href="{% url 'category_view' 'phones' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">smartphone</span> Phones</a>
             <a href="{% url 'collection' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">stars</span> Collections</a>
 
             <hr style="border: none; border-top: 1px solid #f0f0f0; margin: 10px 0;">
@@ -106,9 +110,14 @@
                         <div style="padding: 10px 20px;">
                             <h4 style="font-size: 14px; color: var(--jumia-light-text); margin-bottom: 5px;">Shop Categories</h4>
                         </div>
-                        <a href="{% url 'men' %}">Men</a>
-                        <a href="{% url 'women' %}">Women</a>
-                        <a href="{% url 'wristcollection' %}">Wrist Watch</a>
+                        <a href="{% url 'all_categories' %}" style="font-weight: bold; color: var(--jumia-orange);">All Categories</a>
+                        <a href="{% url 'category_view' 'home-appliances' %}">Home Appliances</a>
+                        <a href="{% url 'category_view' 'computer-accessories' %}">Computer Accessories</a>
+                        <a href="{% url 'category_view' 'phones' %}">Phones</a>
+                        <hr>
+                        <a href="{% url 'men' %}">Male Items</a>
+                        <a href="{% url 'women' %}">Female Items</a>
+                        <a href="{% url 'wristcollection' %}">Wrist Watches </a>
                         <hr>
                         <a href="{% url 'orders' %}">Orders</a>
                     </div>
@@ -140,8 +149,6 @@
                         <a href="{% url 'register' %}">Create an Account</a>
                         <a href="{% url 'dashboard' %}">Orders</a>
                         <a href="{% url 'dashboard' %}">Saved Items</a>
-                        <hr>
-                        <a href="{% url 'admin_login' %}" style="color: #673AB7; font-weight: 600;"><i class="fas fa-lock"></i> Admin Login</a>
                         {% endif %}
                     </div>
                 </div>

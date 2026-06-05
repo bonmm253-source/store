@@ -18,7 +18,7 @@
           <div class="name">{{ shoe.name }}</div>
           <div class="price-row">
             {% if shoe.discount_price %}
-              <span class="old-price" style="text-decoration: line-through; color: #888; font-size: 0.9em; margin-right: 8px;">₦{{ shoe.price|floatformat:0 }}</span>
+              <span class="old-price" style="text-decoration: line-through; color: #888; font-size: 0.8em; margin-right: 8px;">₦{{ shoe.price|floatformat:0 }}</span>
               <span class="current-price" style="color: #e47911; font-weight: bold;">₦{{ shoe.discount_price|floatformat:0 }}</span>
             {% else %}
               <span class="current-price">₦{{ shoe.price|floatformat:0 }}</span>
