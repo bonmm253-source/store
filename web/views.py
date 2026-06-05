@@ -143,11 +143,13 @@ def register(request):
             code = generate_otp()
             OTP.objects.update_or_create(user=user, defaults={'code': code, 'created_at': timezone.now()})
             
-            # Send OTP Email
+            # Send OTP to both Email and Phone
             send_otp_email.delay(user.email, code)
-            
+            if user.phone:
+                send_sms_otp.delay(user.phone, code)
+
             request.session['unverified_user_id'] = user.id
-            messages.success(request, "Registration successful! Please enter the code sent to your email.")
+            messages.success(request, f"A verification code has been sent to {user.email} and {user.phone if user.phone else ''}. Please enter it to complete your registration.")
             return redirect("verify_code")
     else:
         form = RegistrationForm()
@@ -195,7 +197,7 @@ def verify_code(request):
             login(request, user)
             send_registration_email.delay(user.email, user.username)
             del request.session['unverified_user_id']
-            messages.success(request, "Email verified successfully!")
+            messages.success(request, "Account verified and registered successfully!")
             return redirect("home")
         except (User.DoesNotExist, OTP.DoesNotExist):
             messages.error(request, "Invalid code.")
