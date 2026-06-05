@@ -1,11 +1,10 @@
 services:
+  # 1. Main Web Service
   - type: web
     name: drop-web
     env: docker
     region: oregon
     plan: free
-    dockerContext: .
-    dockerfilePath: ./Dockerfile
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: drop.settings
@@ -22,13 +21,12 @@ services:
           property: connectionString
       - fromGroup: drop-secrets
 
+  # 2. Celery Worker
   - type: worker
     name: drop-worker
     env: docker
     region: oregon
     plan: free
-    dockerContext: .
-    dockerfilePath: ./Dockerfile
     startCommand: "celery -A drop worker -l info"
     envVars:
       - key: DJANGO_SETTINGS_MODULE
@@ -46,16 +44,19 @@ services:
           property: connectionString
       - fromGroup: drop-secrets
 
+# 3. PostgreSQL Database
 databases:
   - name: drop-db
     plan: free
     region: oregon
 
+# 4. Managed Redis
 redis:
-  - name: drop-redis
-    plan: free
-    region: oregon
+  name: drop-redis
+  plan: free
+  region: oregon
 
+# 5. Shared Secrets
 envVarGroups:
   - name: drop-secrets
     envVars:
