@@ -1,42 +1,47 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Terms & Privacy | MyStore{% endblock %}
 
-{% block content %}
-<div class="page-container" style="max-width: 900px; margin: 40px auto; padding: 0 20px; line-height: 1.8; color: #444;">
-    <h1 style="color: var(--jumia-dark); border-bottom: 2px solid var(--jumia-orange); padding-bottom: 10px; margin-bottom: 30px;">Terms of Service & Privacy Policy</h1>
+{% block head_extra %}
+<link rel="stylesheet" href="{% static 'css/legal.css' %}">
+{% endblock %}
 
-    <section style="margin-bottom: 40px;">
-        <h2 style="color: #333; font-size: 22px;">1. Introduction</h2>
+{% block content %}
+<div class="legal-container">
+    <h1 class="legal-title">Terms of Service & Privacy Policy</h1>
+
+    <section class="legal-section">
+        <h2 class="legal-section-title">1. Introduction</h2>
         <p>Welcome to MyStore. By accessing our website and using our services, you agree to comply with and be bound by the following terms and conditions. Please read them carefully.</p>
     </section>
 
-    <section style="margin-bottom: 40px;">
-        <h2 style="color: #333; font-size: 22px;">2. Privacy Policy</h2>
+    <section class="legal-section">
+        <h2 class="legal-section-title">2. Privacy Policy</h2>
         <p>Your privacy is important to us. We collect your personal information (name, email, phone, and address) solely to process your orders and improve your shopping experience. We do not sell or share your data with third parties except for payment processing (Paystack) and delivery services.</p>
-        <ul style="padding-left: 20px;">
+        <ul class="legal-list">
             <li><strong>Cookies:</strong> We use cookies to keep you logged in and remember your cart items.</li>
             <li><strong>Security:</strong> All transactions are processed through secure, encrypted gateways.</li>
         </ul>
     </section>
 
-    <section style="margin-bottom: 40px;">
-        <h2 style="color: #333; font-size: 22px;">3. Ordering & Payments</h2>
+    <section class="legal-section">
+        <h2 class="legal-section-title">3. Ordering & Payments</h2>
         <p>When you place an order, you agree to provide accurate and complete information. Payments can be made via Bank Transfer or Card Payment (Paystack). Orders are only processed once payment is confirmed.</p>
     </section>
 
-    <section style="margin-bottom: 40px;">
-        <h2 style="color: #333; font-size: 22px;">4. Delivery & Returns</h2>
-        <p>Delivery times vary based on location. If you are not satisfied with your purchase, please refer to our <a href="{% url 'returns_refunds' %}" style="color: var(--jumia-orange);">Returns & Refunds</a> policy for guidance on how to return items.</p>
+    <section class="legal-section">
+        <h2 class="legal-section-title">4. Delivery & Returns</h2>
+        <p>Delivery times vary based on location. If you are not satisfied with your purchase, please refer to our <a href="{% url 'returns_refunds' %}" class="legal-link">Returns & Refunds</a> policy for guidance on how to return items.</p>
     </section>
 
-    <section style="margin-bottom: 40px;">
-        <h2 style="color: #333; font-size: 22px;">5. Contact Us</h2>
-        <p>If you have any questions regarding these terms, please contact our support team through the <a href="{% url 'help_center' %}" style="color: var(--jumia-orange);">Help Center</a>.</p>
+    <section class="legal-section">
+        <h2 class="legal-section-title">5. Contact Us</h2>
+        <p>If you have any questions regarding these terms, please contact our support team through the <a href="{% url 'help_center' %}" class="legal-link">Help Center</a>.</p>
     </section>
 
-    <div style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid #eee;">
-        <a href="{% url 'home' %}" class="btn-primary" style="display: inline-block; padding: 12px 30px;">Back to Shopping</a>
+    <div class="legal-footer">
+        <a href="{% url 'home' %}" class="btn-primary btn-legal-back">Back to Shopping</a>
     </div>
 </div>
 {% endblock %}

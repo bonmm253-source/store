@@ -1,42 +1,41 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Place & Track Order | MyStore{% endblock %}
 
-{% block content %}
-<div class="page-container" style="max-width: 800px; margin: 40px auto; padding: 20px;">
-    <h1 style="color: var(--jumia-dark); margin-bottom: 20px; font-size: 20px;">Place & Track Order</h1>
+{% block head_extra %}
+<link rel="stylesheet" href="{% static 'css/support.css' %}">
+{% endblock %}
 
-    <div
-        style="background: white; border-radius: 8px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 30px;">
-        <h2 style="display: flex; align-items: center; gap: 10px;">
-            <span class="material-icons-outlined" style="color: var(--jumia-orange);">local_shipping</span>
+{% block content %}
+<div class="support-container">
+    <h1 class="support-title small">Place & Track Order</h1>
+
+    <div class="track-order-box">
+        <h2 class="track-order-header">
+            <span class="material-icons-outlined track-order-icon">local_shipping</span>
             Track Your Order
         </h2>
-        <p style="color: var(--jumia-light-text); font-size: 12px; margin-top: 5px;">Enter your Order ID and Email/Phone
-            Number to see the status of your shipment.</p>
+        <p class="support-action-desc">Enter your Order ID and Email/Phone Number to see the status of your shipment.</p>
 
-        <form style="margin-top: 25px;" method="GET">
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; font-weight: bold; margin-bottom: 8px;">Order ID</label>
-                <input type="text" name="order_id" placeholder="e.g., ORD-12345" value="{{ request.GET.order_id|default:'' }}"
-                    style="width: 100%; padding: 12px; border: 1px solid var(--jumia-border); border-radius: 4px; box-sizing: border-box;"
-                    required>
+        <form class="track-order-form" method="GET">
+            <div class="form-group">
+                <label class="form-label">Order ID</label>
+                <input type="text" name="order_id" placeholder="e.g., ORD-12345" value="{{ request.GET.order_id|default:'' }}" required>
             </div>
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; font-weight: bold; margin-bottom: 8px;">Email or Phone Number</label>
-                <input type="text" name="contact" placeholder="Enter details used during checkout" value="{{ request.GET.contact|default:'' }}"
-                    style="width: 100%; padding: 12px; border: 1px solid var(--jumia-border); border-radius: 4px; box-sizing: border-box;"
-                    required>
+            <div class="form-group">
+                <label class="form-label">Email or Phone Number</label>
+                <input type="text" name="contact" placeholder="Enter details used during checkout" value="{{ request.GET.contact|default:'' }}" required>
             </div>
 
-            <button type="submit" class="btn-primary" style="width: 100%;">TRACK MY ORDER</button>
+            <button type="submit" class="btn-primary full-width">TRACK MY ORDER</button>
         </form>
 
         {% if searched %}
-        <div style="margin-top: 30px; padding: 20px; border-radius: 8px; background: #f9f9f9; border: 1px solid var(--jumia-border);">
+        <div class="track-results-box">
             {% if order_status %}
-                <h3 style="margin-top: 0; color: var(--jumia-dark); font-size: 16px;">Order Status: <span style="color: var(--jumia-orange);">{{ order_status }}</span></h3>
-                <p style="font-size: 12px; color: var(--jumia-light-text);">
+                <h3 class="status-title">Order Status: <span class="status-highlight">{{ order_status }}</span></h3>
+                <p class="support-action-desc">
                     {% if order_status == 'Pending' %}
                         Your order has been received and is waiting for payment confirmation.
                     {% elif order_status == 'Paid' or order_status == 'Processing' %}
@@ -50,8 +49,8 @@
                     {% endif %}
                 </p>
             {% elif error_msg %}
-                <div style="color: #d32f2f; font-weight: 500;">
-                    <span class="material-icons-outlined" style="vertical-align: middle; font-size: 20px;">error_outline</span>
+                <div class="error-msg-wrap">
+                    <span class="material-icons-outlined vertical-align-middle">error_outline</span>
                     {{ error_msg }}
                 </div>
             {% endif %}
@@ -59,9 +58,9 @@
         {% endif %}
     </div>
 
-    <div style="background: white; border-radius: 8px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+    <div class="how-to-box">
         <h2>How to Place an Order</h2>
-        <ol style="color: var(--jumia-text); line-height: 1.8; margin-top: 15px; padding-left: 20px;">
+        <ol class="how-to-list">
             <li>Browse the catalog or use the Search bar to find your desired item.</li>
             <li>Select the product and click on "Add to Cart".</li>
             <li>Click the Cart icon at the top right, then click "Checkout".</li>
@@ -69,9 +68,8 @@
             <li>Review your order and click "Confirm Order". You will immediately receive a confirmation email!</li>
         </ol>
 
-        <div style="margin-top: 20px; text-align: center;">
-            <a href="{% url 'home' %}" class="btn-primary"
-                style="display: inline-block; padding: 12px 25px; text-decoration: none;">START SHOPPING</a>
+        <div class="text-center margin-top-20">
+            <a href="{% url 'home' %}" class="btn-primary display-inline-block">START SHOPPING</a>
         </div>
     </div>
 </div>

@@ -4,171 +4,7 @@
 {% block title %}Cart | MyStore{% endblock %}
 
 {% block head_extra %}
-<style>
-    .cart-layout {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        align-items: flex-start;
-    }
-
-    .cart-left {
-        flex: 1;
-        min-width: 300px;
-        background: white;
-        border-radius: 4px;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .cart-header {
-        padding: 15px 20px;
-        border-bottom: 1px solid var(--jumia-border, #f1f1f1);
-        font-size: 16px;
-        font-weight: 600;
-    }
-
-    .cart-item {
-        display: flex;
-        padding: 20px;
-        border-bottom: 1px solid var(--jumia-border, #f1f1f1);
-        gap: 15px;
-        transition: background 0.2s;
-    }
-
-    .cart-item:hover {
-        background-color: #fafafa;
-    }
-
-    .item-img {
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-        border-radius: 4px;
-    }
-
-    .item-details {
-        flex: 1;
-    }
-
-    .item-name {
-        font-size: 14px;
-        font-weight: 500;
-        margin-bottom: 5px;
-    }
-
-    .item-brand {
-        font-size: 11px;
-        color: #75757a;
-        margin-bottom: 15px;
-    }
-
-    .item-price {
-        font-size: 16px;
-        font-weight: bold;
-        color: #313133;
-    }
-
-    .cart-right {
-        width: 350px;
-        background: white;
-        border-radius: 4px;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        position: sticky;
-        top: 20px;
-    }
-
-    .summary-title {
-        font-size: 12px;
-        text-transform: uppercase;
-        color: #75757a;
-        border-bottom: 1px solid #f1f1f1;
-        padding-bottom: 10px;
-        margin-bottom: 15px;
-    }
-
-    .summary-row {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 15px;
-        font-size: 13px;
-    }
-
-    .summary-total {
-        display: flex;
-        justify-content: space-between;
-        font-size: 16px;
-        font-weight: bold;
-        border-top: 1px solid #f1f1f1;
-        padding-top: 15px;
-        margin-bottom: 20px;
-    }
-
-    .remove-btn:hover {
-        color: #e07b1b;
-    }
-
-    /* Progress Bar for Free Shipping */
-    .shipping-progress {
-        background: #f1f1f1;
-        border-radius: 10px;
-        height: 8px;
-        margin: 10px 0;
-        overflow: hidden;
-    }
-
-    .progress-bar {
-        background: #2e7d32;
-        height: 100%;
-        transition: width 0.5s ease;
-    }
-
-    .shipping-info {
-        background: #e8f5e9;
-        padding: 12px;
-        border-radius: 4px;
-        margin-bottom: 20px;
-        font-size: 11px;
-        color: #2e7d32;
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* Upsell Grid */
-    .upsell-section {
-        margin-top: 30px;
-        padding: 20px;
-    }
-
-    .upsell-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 15px;
-        margin-top: 15px;
-    }
-
-    .upsell-card {
-        border: 1px solid #eee;
-        padding: 10px;
-        border-radius: 4px;
-        text-decoration: none;
-        color: inherit;
-        font-size: 13px;
-        text-align: center;
-        transition: 0.2s;
-    }
-
-    .upsell-card:hover {
-        border-color: var(--jumia-orange);
-    }
-
-    .upsell-img {
-        width: 100%;
-        height: 120px;
-        object-fit: cover;
-        margin-bottom: 8px;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -183,9 +19,8 @@
             {% if item.product.image %}
             <img class="item-img" src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
             {% else %}
-            <div class="item-img"
-                style="background: #eee; display: flex; align-items: center; justify-content: center;">
-                <span class="material-icons-outlined" style="color: #ccc;">image</span>
+            <div class="item-img empty-img-placeholder">
+                <span class="material-icons-outlined empty-img-icon">image</span>
             </div>
             {% endif %}
 
@@ -193,39 +28,38 @@
                 <div class="item-name">{{ item.product.name }}</div>
                 <div class="item-brand">{{ item.product.brand|default:"Generic" }}</div>
 
-                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <div class="item-actions">
                     <div class="remove-btn" onclick="removeFromCart('{{ item.id }}')">
-                        <span class="material-icons-outlined" style="font-size: 18px;">delete</span>
+                        <span class="material-icons-outlined remove-icon">delete</span>
                         REMOVE <button type="button"></button>
                     </div>
-                    <div style="text-align: right;">
+                    <div class="item-price-col">
                         <div class="item-price">₦{{ item.total_price }}</div>
-                        <div style="color: #75757a; font-size: 12px;">
-                            <div style="color: var(--jumia-light-text); font-size: 12px;">Qty: {{ item.quantity }} x ₦{{ item.product.discount_price|default:item.product.price }}</div>
+                        <div class="item-qty-container">
+                            <div class="item-qty-text">Qty: {{ item.quantity }} x ₦{{ item.product.discount_price|default:item.product.price }}</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         {% empty %}
-        <div style="padding: 60px 20px; text-align: center; color: #75757a;">
-            <span class="material-icons-outlined" style="font-size: 80px; color: #e1e1e1;">shopping_cart</span>
-            <h3 style="margin-top: 15px; color: #313133;">Your cart is empty!</h3>
+        <div class="cart-empty-container">
+            <span class="material-icons-outlined cart-empty-icon">shopping_cart</span>
+            <h3 class="cart-empty-title">Your cart is empty!</h3>
             <p>Browse our categories and discover our best deals!</p>
-            <a href="{% url 'home' %}" class="btn-primary"
-                style="display: inline-block; width: auto; margin-top: 20px; padding: 12px 30px; text-decoration: none; border-radius: 4px;">
+            <a href="{% url 'home' %}" class="btn-primary btn-start-shopping">
                 START SHOPPING
             </a>
 
             {% if upsell_products %}
             <div class="upsell-section">
-                <h4 style="text-align: left; color: #313133; margin-bottom: 10px; border-top: 1px solid #eee; padding-top: 20px;">Popular Items to Start With</h4>
+                <h4 class="upsell-title">Popular Items to Start With</h4>
                 <div class="upsell-grid">
                     {% for p in upsell_products %}
                     <a href="{% url 'product_detail' 'shoe' p.id %}" class="upsell-card">
                         <img src="{{ p.image.url }}" class="upsell-img">
-                        <div style="font-weight: 500;">{{ p.name }}</div>
-                        <div style="color: var(--jumia-orange);">₦{{ p.price|floatformat:0 }}</div>
+                        <div class="upsell-name">{{ p.name }}</div>
+                        <div class="upsell-price">₦{{ p.price|floatformat:0 }}</div>
                     </a>
                     {% endfor %}
                 </div>
@@ -241,12 +75,12 @@
             {% with total=cart.total_price %}
                 <div class="shipping-info">
                     {% if total >= free_shipping_threshold %}
-                        <div style="display:flex; align-items:center; gap:5px; font-weight:bold;">
+                        <div class="shipping-unlocked">
                             <span class="material-icons-outlined">check_circle</span> You've unlocked FREE SHIPPING!
                         </div>
                     {% else %}
-                        <div style="font-weight:bold;">Free Shipping Progress</div>
-                        <div style="font-size:12px; margin-top:2px;">Spend ₦{{ free_shipping_threshold|add:"-total"|floatformat:0 }} more to qualify!</div>
+                        <div class="shipping-progress-title">Free Shipping Progress</div>
+                        <div class="shipping-progress-text">Spend ₦{{ free_shipping_threshold|add:"-total"|floatformat:0 }} more to qualify!</div>
                         <div class="shipping-progress">
                             <div class="progress-bar" style="width: {% widthratio total free_shipping_threshold 100 %}%"></div>
                         </div>
@@ -260,7 +94,7 @@
             <span>Subtotal</span>
             <span>₦{{ cart.total_price|floatformat:0 }}</span>
         </div>
-        <div class="summary-row" style="font-size: 12px; color: #75757a;">
+        <div class="summary-row summary-row-small">
             <span>Delivery fees not included yet.</span>
         </div>
         <div class="summary-total">
@@ -268,8 +102,7 @@
             <span>₦{{ cart.total_price|floatformat:0 }}</span>
         </div>
 
-        <a href="{% url 'pay' %}" class="btn-primary"
-            style="text-decoration: none; display: block; text-align: center; border-radius: 4px; padding: 15px;">
+        <a href="{% url 'pay' %}" class="btn-primary btn-checkout">
             CHECKOUT (₦{{ cart.total_price|floatformat:0 }})
         </a>
     </div>

@@ -1,0 +1,188 @@
+/* ============================================================
+   JAZZMIN CUSTOM ADMIN THEME - PREMIUM PROFESSIONAL
+   (Modern Slate, Clean White, and Brand Orange)
+   ============================================================ */
+
+/* Root variables for a balanced professional palette */
+:root {
+    --primary-orange: #f68b1e;      /* Your brand color */
+    --sidebar-dark: #111827;        /* Modern Deep Slate */
+    --bg-light: #f9fafb;            /* Soft Off-White Background */
+    --text-main: #1f2937;           /* Deep Slate for high legibility */
+    --text-muted: #6b7280;          /* Gray for secondary text */
+    --sidebar-width: 280px;
+}
+
+/* Global Layout */
+html, body, .wrapper, .content-wrapper {
+    background-color: var(--bg-light) !important;
+    color: var(--text-main) !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* Header (Top Navbar) */
+.main-header {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    margin-left: var(--sidebar-width) !important;
+}
+
+.main-header .nav-link {
+    color: var(--text-main) !important;
+}
+
+/* WIDER SIDEBAR - Premium Dark */
+.main-sidebar, .brand-link, .sidebar {
+    width: var(--sidebar-width) !important;
+    background-color: var(--sidebar-dark) !important;
+    border-right: none !important;
+}
+
+.content-wrapper, .main-footer {
+    margin-left: var(--sidebar-width) !important;
+}
+
+/* Brand Area */
+.brand-link {
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+    text-align: center;
+    padding: 15px !important;
+}
+
+.brand-text {
+    font-weight: 800 !important;
+    letter-spacing: 0.5px;
+    color: #ffffff !important;
+}
+
+/* Navigation Links */
+.nav-sidebar .nav-link {
+    color: #d1d5db !important; /* Light gray for inactive */
+    padding: 12px 20px !important;
+    border-radius: 8px !important;
+    margin: 4px 12px !important;
+    transition: 0.2s ease;
+}
+
+.nav-sidebar .nav-link p {
+    color: inherit !important;
+}
+
+/* Active Nav State - Branded Orange */
+.nav-sidebar .nav-item > .nav-link.active {
+    background-color: var(--primary-orange) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(246, 139, 30, 0.3);
+}
+
+.nav-sidebar .nav-item:hover > .nav-link:not(.active) {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+
+/* Section Headers in Sidebar */
+.nav-header {
+    color: var(--text-muted) !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 20px 25px 10px !important;
+}
+
+/* Cards - Clean Elevated Look */
+.card {
+    background-color: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+    margin-bottom: 20px;
+}
+
+.card-header {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #f3f4f6 !important;
+    padding: 15px 20px !important;
+}
+
+.card-title {
+    color: var(--text-main) !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+}
+
+/* Tables - High Legibility */
+.table {
+    color: var(--text-main) !important;
+}
+
+.table thead th {
+    background-color: #f9fafb !important;
+    color: var(--text-muted) !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    font-size: 11px !important;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+.table td {
+    border-top: 1px solid #f3f4f6 !important;
+    vertical-align: middle !important;
+}
+
+/* Form Controls */
+.form-control {
+    background-color: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    color: var(--text-main) !important;
+}
+
+.form-control:focus {
+    border-color: var(--primary-orange) !important;
+    box-shadow: 0 0 0 3px rgba(246, 139, 30, 0.1) !important;
+}
+
+/* Buttons */
+.btn-primary, .btn-success {
+    background-color: var(--primary-orange) !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    padding: 10px 20px !important;
+    border-radius: 6px !important;
+    transition: 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #e07b14 !important;
+    transform: translateY(-1px);
+}
+
+/* Custom Checkboxes/Radios Fix */
+.custom-control-input:checked ~ .custom-control-label::before {
+    background-color: var(--primary-orange) !important;
+    border-color: var(--primary-orange) !important;
+}
+
+/* Hide Unnecessary Icons */
+.nav-icon {
+    display: none !important;
+}
+
+/* Breadcrumbs */
+.breadcrumb-item a {
+    color: var(--primary-orange) !important;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .main-sidebar {
+        margin-left: calc(var(--sidebar-width) * -1) !important;
+    }
+    .main-header, .content-wrapper, .main-footer {
+        margin-left: 0 !important;
+    }
+}

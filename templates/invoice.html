@@ -19,44 +19,54 @@
         .items-table td { padding: 10px; border-bottom: 1px solid #eee; }
         .total-section { text-align: right; font-size: 14px; font-weight: bold; }
         .footer { position: absolute; bottom: 0; width: 100%; text-align: center; font-size: 10px; color: #999; border-top: 1px solid #eee; padding-top: 10px; }
+        .brand-title { color: #673AB7; margin: 0; }
+        .company-address { margin: 5px 0; }
+        .invoice-title { margin: 0; }
+        .invoice-details { margin: 5px 0; }
+        .customer-title { border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .customer-detail { margin: 5px 0; }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .grand-total { font-size: 18px; color: #673AB7; }
+        .payment-info { margin-top: 50px; font-size: 11px; color: #666; }
     </style>
 </head>
 <body>
     <div class="invoice-header">
         <div class="company-info">
-            <h1 style="color: #673AB7; margin: 0;">MyStore</h1>
-            <p style="margin: 5px 0;">123 Fashion Ave, Lagos, Nigeria<br>support@mystore.com | +234 800 MYSTORE</p>
+            <h1 class="brand-title">MyStore</h1>
+            <p class="company-address">123 Fashion Ave, Lagos, Nigeria<br>support@mystore.com | +234 800 MYSTORE</p>
         </div>
         <div class="invoice-info">
-            <h2 style="margin: 0;">INVOICE</h2>
-            <p style="margin: 5px 0;">Order ID: #{{ order.id }}<br>Date: {{ order.created_at|date:"M d, Y" }}<br>Status: {{ order.status }}</p>
+            <h2 class="invoice-title">INVOICE</h2>
+            <p class="invoice-details">Order ID: #{{ order.id }}<br>Date: {{ order.created_at|date:"M d, Y" }}<br>Status: {{ order.status }}</p>
         </div>
         <div class="clear"></div>
     </div>
 
     <div class="customer-info">
-        <h3 style="border-bottom: 1px solid #eee; padding-bottom: 5px;">Bill To:</h3>
-        <p style="margin: 5px 0;"><strong>{{ user.get_full_name|default:user.username }}</strong></p>
-        <p style="margin: 5px 0;">{{ order.delivery_address }}</p>
-        <p style="margin: 5px 0;">Phone: {{ order.phone }}</p>
+        <h3 class="customer-title">Bill To:</h3>
+        <p class="customer-detail"><strong>{{ user.get_full_name|default:user.username }}</strong></p>
+        <p class="customer-detail">{{ order.delivery_address }}</p>
+        <p class="customer-detail">Phone: {{ order.phone }}</p>
     </div>
 
     <table class="items-table">
         <thead>
             <tr>
                 <th>Item Description</th>
-                <th style="text-align: center;">Qty</th>
-                <th style="text-align: right;">Unit Price</th>
-                <th style="text-align: right;">Total</th>
+                <th class="text-center">Qty</th>
+                <th class="text-right">Unit Price</th>
+                <th class="text-right">Total</th>
             </tr>
         </thead>
         <tbody>
             {% for item in items %}
             <tr>
                 <td>{{ item.name }}</td>
-                <td style="text-align: center;">{{ item.quantity }}</td>
-                <td style="text-align: right;">₦{{ item.price|floatformat:2 }}</td>
-                <td style="text-align: right;">₦{{ item.price|multiply:item.quantity|floatformat:2 }}</td>
+                <td class="text-center">{{ item.quantity }}</td>
+                <td class="text-right">₦{{ item.price|floatformat:2 }}</td>
+                <td class="text-right">₦{{ item.price|multiply:item.quantity|floatformat:2 }}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -64,10 +74,10 @@
 
     <div class="total-section">
         <p>Subtotal: ₦{{ order.total|floatformat:2 }}</p>
-        <p style="font-size: 18px; color: #673AB7;">Grand Total: ₦{{ order.total|floatformat:2 }}</p>
+        <p class="grand-total">Grand Total: ₦{{ order.total|floatformat:2 }}</p>
     </div>
 
-    <div style="margin-top: 50px; font-size: 11px; color: #666;">
+    <div class="payment-info">
         <p><strong>Payment Method:</strong> {{ order.payment_method }}</p>
         {% if order.transaction_id %}
         <p><strong>Transaction ID:</strong> {{ order.transaction_id }}</p>

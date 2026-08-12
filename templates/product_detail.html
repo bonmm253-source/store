@@ -7,246 +7,7 @@
 {% block og_description %}{{ product.description|truncatewords:20 }}{% endblock %}
 
 {% block head_extra %}
-<style>
-    .detail-layout {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        align-items: flex-start;
-    }
-
-    .img-container {
-        flex: 1;
-        min-width: 300px;
-        background: white;
-        border-radius: 4px;
-        padding: 20px;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-    }
-
-    .main-img {
-        width: 100%;
-        height: 400px;
-        object-fit: contain;
-        border-radius: 4px;
-    }
-
-    .info-container {
-        flex: 1;
-        min-width: 300px;
-        background: white;
-        border-radius: 4px;
-        padding: 20px;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-    }
-
-    .prod-brand {
-        font-size: 12px;
-        text-transform: uppercase;
-        color: var(--jumia-light-text);
-        margin-bottom: 5px;
-    }
-
-    .prod-title {
-        font-size: 18px;
-        font-weight: 500;
-        margin-bottom: 10px;
-    }
-
-    .prod-rating {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        margin-bottom: 20px;
-        font-size: 12px;
-        color: var(--jumia-orange);
-    }
-
-    .prod-rating span.material-icons-outlined {
-        font-size: 16px;
-    }
-
-    .prod-pricing {
-        border-top: 1px solid var(--jumia-border);
-        border-bottom: 1px solid var(--jumia-border);
-        padding: 15px 0;
-        margin-bottom: 20px;
-    }
-
-    .prod-price {
-        font-size: 22px;
-        font-weight: bold;
-    }
-
-    .prod-old-price {
-        font-size: 12px;
-        color: var(--jumia-light-text);
-        text-decoration: line-through;
-    }
-
-    .prod-desc {
-        font-size: 13px;
-        line-height: 1.6;
-        margin-bottom: 25px;
-    }
-
-    .btn-group {
-        display: flex;
-        gap: 15px;
-        margin-top: 20px;
-    }
-
-    .wishlist-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 50px;
-        border-radius: 4px;
-        border: 1px solid var(--jumia-orange);
-        color: var(--jumia-orange);
-        background: white;
-        cursor: pointer;
-        transition: 0.2s;
-    }
-
-    .wishlist-btn:hover {
-        background: #fff4ea;
-    }
-
-    .wishlist-btn.active {
-        background: var(--jumia-orange);
-        color: white;
-    }
-
-    /* Review Section */
-    .reviews-section {
-        background: white;
-        border-radius: 4px;
-        padding: 20px;
-        margin-top: 20px;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-    }
-
-    .review-item {
-        border-bottom: 1px solid var(--jumia-border);
-        padding: 15px 0;
-    }
-
-    .review-item:last-child {
-        border-bottom: none;
-    }
-
-    .leave-review {
-        background: #fdfdfd;
-        border: 1px solid var(--jumia-border);
-        border-radius: 4px;
-        padding: 20px;
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-
-    .star-selector {
-        display: flex;
-        gap: 5px;
-        margin-bottom: 15px;
-        cursor: pointer;
-    }
-
-    .star-selector .material-icons-outlined {
-        font-size: 28px;
-        color: #ccc;
-    }
-
-    .star-selector .material-icons-outlined.active {
-        color: var(--jumia-orange);
-    }
-
-    .review-textarea {
-        width: 100% !important;
-        padding: 10px;
-        border: 1px solid var(--jumia-border);
-        border-radius: 4px;
-        margin-bottom: 15px;
-        font-family: inherit;
-        resize: vertical;
-        min-height: 80px;
-        box-sizing: border-box;
-    }
-
-    /* Related Products Styles */
-    .section-title {
-        background: #fdfde9;
-        padding: 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-radius: 4px 4px 0 0;
-        margin-top: 30px;
-    }
-
-    .product-grid-scroll {
-        background: white;
-        padding: 15px;
-        display: flex;
-        overflow-x: auto;
-        gap: 15px;
-        border-radius: 0 0 4px 4px;
-        scrollbar-width: thin;
-        scrollbar-color: var(--jumia-orange) transparent;
-        margin-bottom: 30px;
-    }
-
-    .product-grid-scroll::-webkit-scrollbar {
-        height: 6px;
-    }
-
-    .product-grid-scroll::-webkit-scrollbar-thumb {
-        background-color: var(--jumia-orange);
-        border-radius: 10px;
-    }
-
-    .product-card {
-        flex: 0 0 180px;
-        display: block;
-        background: white;
-        border-radius: 4px;
-        padding: 10px;
-        transition: all 0.3s ease;
-        text-align: left;
-        position: relative;
-        text-decoration: none;
-        color: inherit;
-        border: 1px solid #eee;
-    }
-
-    .product-card:hover {
-        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        transform: translateY(-3px);
-    }
-
-    .product-img-sm {
-        width: 100%;
-        height: 150px;
-        object-fit: cover;
-        border-radius: 4px;
-        margin-bottom: 8px;
-    }
-
-    .product-name-sm {
-        font-size: 11px;
-        color: var(--jumia-text);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        margin-bottom: 4px;
-    }
-
-    .product-price-sm {
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--jumia-dark);
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -255,9 +16,7 @@
         {% if product.image %}
         <img class="main-img" src="{{ product.image.url }}" alt="{{ product.name }}">
         {% else %}
-        <div class="main-img"
-            style="background: #eee; display: flex; align-items: center; justify-content: center; color: #aaa;">No Image
-            Available</div>
+        <div class="no-image-placeholder">No Image Available</div>
         {% endif %}
     </div>
 
@@ -274,7 +33,7 @@
                     <span class="material-icons-outlined">star_border</span>
                 {% endif %}
             {% endfor %}
-            <span style="color: var(--jumia-text); margin-left: 5px;">({{ average_rating|floatformat:1 }} / 5.0 - {{ reviews.count }} Ratings)</span>
+            <span class="prod-rating-text">({{ average_rating|floatformat:1 }} / 5.0 - {{ reviews.count }} Ratings)</span>
         </div>
 
         <div class="prod-pricing">
@@ -285,15 +44,15 @@
 
             {% if product.stock > 0 %}
                 {% if product.stock <= low_stock_threshold %}
-                    <div style="font-size: 13px; font-weight: bold; color: #d32f2f; margin-top: 10px; display: flex; align-items: center; gap: 5px;">
-                        <span class="material-icons-outlined" style="font-size: 18px;">warning</span>
+                    <div class="stock-status stock-low">
+                        <span class="material-icons-outlined">warning</span>
                         Only {{ product.stock }} left in stock!
                     </div>
                 {% else %}
-                    <div style="font-size: 13px; font-weight: bold; color: green; margin-top: 10px;">In Stock</div>
+                    <div class="stock-status stock-in">In Stock</div>
                 {% endif %}
             {% else %}
-                <div style="font-size: 13px; font-weight: bold; color: red; margin-top: 10px;">Out of Stock</div>
+                <div class="stock-status stock-out">Out of Stock</div>
             {% endif %}
         </div>
 
@@ -302,8 +61,7 @@
         </div>
 
         <div class="btn-group">
-            <button class="btn-primary" id="add-to-cart-btn"
-                style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px;">
+            <button class="btn-primary" id="add-to-cart-btn">
                 <span class="material-icons-outlined">shopping_cart</span> ADD TO CART
             </button>
             <button class="wishlist-btn {% if in_wishlist %}active{% endif %}" id="wishlist-toggle">
@@ -314,46 +72,44 @@
 </div>
 
 <div class="reviews-section">
-    <h3 style="border-bottom: 1px solid var(--jumia-border); padding-bottom: 15px; margin-bottom: 15px;">Verified
-        Customer Feedback</h3>
+    <h3 class="reviews-header">Verified Customer Feedback</h3>
 
     {% if user.is_authenticated %}
     <div class="leave-review">
-        <h4 style="margin-bottom: 10px;">Leave a Review</h4>
+        <h4 class="leave-review-title">Leave a Review</h4>
         <div class="star-selector" id="star-selector">
             {% for i in stars_range %}
             <span class="material-icons-outlined" data-value="{{ i }}">star_border</span>
             {% endfor %}
         </div>
         <textarea class="review-textarea" id="review-comment" placeholder="Share your experience with this product..."></textarea>
-        <button class="btn-primary" id="submit-review-btn" style="padding: 12px 25px; width: auto;">SUBMIT REVIEW</button>
+        <button class="btn-primary" id="submit-review-btn">SUBMIT REVIEW</button>
     </div>
     {% else %}
-    <div class="leave-review" style="text-align: center;">
-        <p>Please <a href="{% url 'login' %}" style="color: var(--jumia-orange); font-weight: bold;">Login</a> to leave a review.</p>
+    <div class="leave-review review-login-prompt">
+        <p>Please <a href="{% url 'login' %}">Login</a> to leave a review.</p>
     </div>
     {% endif %}
 
     {% for review in reviews %}
     <div class="review-item">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-            <div style="color: var(--jumia-orange); font-size: 14px;">
+        <div class="review-item-meta">
+            <div class="review-item-stars">
                 {% for i in stars_range %}
                 {% if i <= review.rating %}
-                    <span class="material-icons-outlined" style="font-size: 14px;">star</span>
+                    <span class="material-icons-outlined">star</span>
                 {% else %}
-                    <span class="material-icons-outlined" style="font-size: 14px;">star_border</span>
+                    <span class="material-icons-outlined">star_border</span>
                 {% endif %}
                 {% endfor %}
             </div>
-            <div style="color: var(--jumia-light-text); font-size: 12px;">{{ review.created_at|date:"d-m-Y" }}</div>
+            <div class="review-item-date">{{ review.created_at|date:"d-m-Y" }}</div>
         </div>
-        <div style="font-weight: 500; font-size: 14px; margin-bottom: 10px;">{{ review.user.username }}</div>
-        <div style="font-size: 14px; color: var(--jumia-text);">{{ review.comment|default:"No comment left by user." }}
-        </div>
+        <div class="review-item-user">{{ review.user.username }}</div>
+        <div class="review-item-comment">{{ review.comment|default:"No comment left by user." }}</div>
     </div>
     {% empty %}
-    <div style="text-align: center; color: var(--jumia-light-text); padding: 20px;">
+    <div class="no-reviews-msg">
         There are no reviews yet. Be the first to review this!
     </div>
     {% endfor %}
@@ -361,7 +117,7 @@
 
 {% if related_products %}
 <div class="section-title">
-    <h3 style="margin:0;">Customers also viewed</h3>
+    <h3>Customers also viewed</h3>
 </div>
 <div class="product-grid-scroll">
     {% for related in related_products %}
@@ -369,7 +125,7 @@
         {% if related.image %}
         <img class="product-img-sm" src="{{ related.image.url }}" alt="{{ related.name }}">
         {% else %}
-        <div class="product-img-sm" style="background: #eee;"></div>
+        <div class="related-product-img-placeholder"></div>
         {% endif %}
         <div class="product-name-sm">{{ related.brand|default:"" }} {{ related.name }}</div>
         <div class="product-price-sm">₦{{ related.discount_price|default:related.price|floatformat:0 }}</div>
@@ -378,7 +134,7 @@
 </div>
 {% endif %}
 
-<div style="display:none;" id="csrf-form">
+<div class="hidden" id="csrf-form">
     {% csrf_token %}
 </div>
 

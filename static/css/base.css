@@ -289,8 +289,8 @@ main {
    ========================= */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Reduced from 160px to fit more */
+  gap: 10px; /* Tighter gap like Jumia */
   padding: 10px 0;
   width: 100%;
 }
@@ -305,17 +305,18 @@ main {
 
 .product-card, .shoe {
   background: var(--jumia-white);
-  border-radius: 10px;
+  border-radius: 4px; /* More angular like Jumia */
   padding: 8px;
   display: flex;
   flex-direction: column;
   transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.3s ease;
   border: 1px solid var(--jumia-border);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   position: relative;
   overflow: hidden;
   text-align: left;
-  height: 100%;
+  height: auto;
+  min-height: 250px; /* Further reduced height */
 }
 
 .product-card:hover, .shoe:hover {
@@ -366,10 +367,11 @@ main {
 
 .product-card img, .shoe img {
   width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 10px;
+  height: 140px; /* Reduced height to look more like Jumia's compact grid */
+  object-fit: contain; /* Changed to contain to show full product like Jumia */
+  background-color: #fcfcfc; /* Subtle background for transparency */
+  border-radius: 4px;
+  margin-bottom: 8px;
   transition: transform 0.6s ease;
 }
 
@@ -467,14 +469,15 @@ main {
   background: linear-gradient(135deg, var(--jumia-orange) 0%, #e07b14 100%);
   color: white;
   border: none;
-  padding: 12px 20px;
-  border-radius: 12px;
+  padding: 8px 12px; /* Reduced padding */
+  border-radius: 4px; /* Squares off the button a bit like Jumia */
   cursor: pointer;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 11px; /* Reduced font size */
   width: 100%;
+  margin-top: auto; /* Pushes button to bottom of div */
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(246, 139, 30, 0.3);
+  box-shadow: 0 4px 10px rgba(246, 139, 30, 0.2);
 }
 
 .add-btn:hover, .add-to-cart-btn:hover {
@@ -587,65 +590,7 @@ main {
   }
 }
 
-/* Forms */
-.auth-form {
-  background: var(--jumia-white);
-  max-width: 400px;
-  margin: 40px auto;
-  padding: 30px;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-.auth-form h2 {
-  margin-bottom: 20px;
-  font-size: 20px;
-  color: var(--jumia-dark);
-  text-align: center;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  font-weight: 500;
-  margin-bottom: 8px;
-  font-size: 12px;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid var(--jumia-border);
-  border-radius: 4px;
-  font-size: 12px;
-}
-
-.form-group input:focus {
-  border-color: var(--jumia-orange);
-  outline: none;
-}
-
-.btn-primary {
-  display: block;
-  width: 100%;
-  padding: 12px;
-  background-color: var(--jumia-orange);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.3s;
-  text-align: center;
-}
-
-.btn-primary:hover {
-  background-color: #e07b14;
-}
+/* Forms removed - moved to user_auth.css */
 
 /* Social Buttons */
 .social-divider {
@@ -699,4 +644,366 @@ main {
 .btn-google img {
   width: 18px;
   height: 18px;
+}
+
+/* =========================
+   DRAWER / OVERLAY
+========================= */
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 10000;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.mobile-drawer {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 300px;
+    height: 100%;
+    background: white;
+    z-index: 10001;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+}
+
+.drawer-header {
+    background: var(--jumia-orange);
+    color: white;
+    padding: 25px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.drawer-logo {
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.drawer-logo span {
+    color: white;
+}
+
+.drawer-close {
+    cursor: pointer;
+}
+
+.drawer-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 0;
+}
+
+.drawer-section-label {
+    padding: 15px 20px;
+    font-weight: 700;
+    font-size: 13px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.drawer-link {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 20px;
+    color: #333;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.drawer-link:hover {
+    background: var(--jumia-gray);
+    color: var(--jumia-orange);
+}
+
+.drawer-link.active {
+    color: var(--jumia-orange);
+    font-weight: 700;
+}
+
+.drawer-link-icon {
+    color: var(--jumia-orange);
+}
+
+.drawer-hr {
+    border: none;
+    border-top: 1px solid #f0f0f0;
+    margin: 10px 0;
+}
+
+.drawer-footer {
+    padding: 20px;
+    background: #fafafa;
+    border-top: 1px solid #f0f0f0;
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+}
+
+.drawer-logout {
+    color: #ff4d4f;
+    font-weight: 600;
+}
+
+.expand-icon {
+    font-size: 16px;
+}
+
+.admin-nav-link {
+    color: var(--jumia-orange);
+    font-weight: bold;
+}
+
+.system-admin-link {
+    color: #673AB7;
+    font-weight: 500;
+}
+
+.dropdown-signin-btn {
+    margin-bottom: 10px;
+}
+
+/* =========================
+   SEARCH RESULTS
+========================= */
+.search-results-container {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    z-index: 1000;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* =========================
+   DROPDOWN ENHANCEMENTS
+========================= */
+.dropdown-menu-header {
+    padding: 10px 20px;
+}
+
+.dropdown-menu-title {
+    font-size: 14px;
+    color: var(--jumia-light-text);
+    margin-bottom: 5px;
+}
+
+.dropdown-all-categories {
+    font-weight: bold;
+    color: var(--jumia-orange);
+}
+
+.admin-badge {
+    font-size: 10px;
+    margin-left: 5px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
+}
+
+/* =========================
+   NOTIFICATIONS & UI
+========================= */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    width: 300px;
+}
+
+.toast-notification {
+    background: white;
+    color: #333;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    margin-bottom: 10px;
+    border-left: 5px solid #673AB7;
+    cursor: pointer;
+    animation: slideIn 0.3s ease-out;
+    transition: opacity 0.5s;
+}
+
+.toast-header {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.toast-close {
+    color: #999;
+}
+
+.toast-body {
+    font-size: 13px;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--jumia-orange);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+}
+
+.back-to-top:hover {
+    background: #e07b14;
+}
+
+/* =========================
+   NEWSLETTER
+========================= */
+.newsletter-section {
+    background: rgba(255,255,255,0.05);
+    padding: 40px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 40px;
+}
+
+.newsletter-container {
+    max-width: var(--max-width);
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+}
+
+.newsletter-info {
+    flex: 1;
+    min-width: 300px;
+}
+
+.newsletter-info h4 {
+    color: white;
+    font-size: 18px;
+    margin-bottom: 10px;
+    text-transform: none;
+}
+
+.newsletter-info p {
+    color: #ccc;
+    font-size: 14px;
+    margin: 0;
+}
+
+.newsletter-form {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    gap: 10px;
+}
+
+.newsletter-input {
+    flex: 1;
+    padding: 14px;
+    border-radius: 4px;
+    border: none;
+    font-size: 14px;
+}
+
+.newsletter-submit {
+    background: var(--jumia-orange);
+    color: white;
+    border: none;
+    padding: 0 30px;
+    border-radius: 4px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.newsletter-submit:hover {
+    background: #e07b14;
+}
+
+/* =========================
+   LIVE SEARCH RESULTS
+========================= */
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 15px;
+    text-decoration: none;
+    border-bottom: 1px solid #f5f5f5;
+    transition: 0.2s;
+}
+
+.search-result-item:hover {
+    background: #f9f9f9;
+}
+
+.search-result-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.search-result-info {
+    flex: 1;
+}
+
+.search-result-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.search-result-category {
+    font-size: 12px;
+    color: #888;
+}
+
+.search-result-price {
+    font-size: 14px;
+    font-weight: 700;
+    color: #673AB7;
+}
+
+.search-no-results {
+    padding: 15px;
+    color: #999;
+    font-size: 14px;
+    text-align: center;
 }

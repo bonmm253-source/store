@@ -4,109 +4,7 @@
 {% block title %}Verify Email - MyStore{% endblock %}
 
 {% block head_extra %}
-<style>
-    .auth-page-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 80vh;
-        padding: 40px 20px;
-        background: #fafafa;
-    }
-
-    .premium-auth-card {
-        background: white;
-        width: 100%;
-        max-width: 440px;
-        border-radius: 20px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.05);
-        padding: 40px;
-        border: 1px solid #f0f0f0;
-        text-align: center;
-    }
-
-    .verification-icon {
-        width: 64px;
-        height: 64px;
-        background: #EDE7F6;
-        color: #673AB7;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 24px auto;
-        font-size: 32px;
-    }
-
-    .auth-header h2 {
-        font-size: 24px;
-        font-weight: 800;
-        color: #1a1a1a;
-        margin-bottom: 8px;
-    }
-
-    .auth-header p {
-        color: #888;
-        font-size: 14px;
-        line-height: 1.6;
-    }
-
-    .otp-input {
-        width: 100%;
-        padding: 16px;
-        border: 1px solid #e0e0e0;
-        border-radius: 12px;
-        font-size: 28px;
-        font-weight: 800;
-        text-align: center;
-        letter-spacing: 12px;
-        background: #fafafa;
-        transition: 0.3s;
-        margin-bottom: 24px;
-    }
-
-    .otp-input:focus {
-        outline: none;
-        border-color: #673AB7;
-        background: white;
-        box-shadow: 0 0 0 4px rgba(103, 58, 183, 0.1);
-    }
-
-    .btn-premium {
-        width: 100%;
-        background: #1a1a1a;
-        color: white;
-        border: none;
-        padding: 16px;
-        border-radius: 10px;
-        font-size: 15px;
-        font-weight: 800;
-        cursor: pointer;
-        transition: 0.3s;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .btn-premium:hover {
-        background: #000;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-
-    .auth-footer {
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 1px solid #f5f5f5;
-        font-size: 13px;
-        color: #888;
-    }
-
-    .auth-footer a {
-        color: #673AB7;
-        font-weight: 700;
-        text-decoration: none;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/user_auth.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -122,12 +20,9 @@
         </div>
 
         {% if messages %}
-        <div style="margin-bottom: 24px;">
+        <div class="auth-msg-container-spacing">
             {% for message in messages %}
-            <div style="padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600;
-                {% if message.tags == 'error' %} background: #FFF1F0; border: 1px solid #FFA39E; color: #CF1322;
-                {% elif message.tags == 'success' %} background: #F6FFED; border: 1px solid #B7EB8F; color: #389E0D;
-                {% else %} background: #E6F7FF; border: 1px solid #91D5FF; color: #096DD9; {% endif %}">
+            <div class="msg-auth-generic {% if message.tags == 'error' %}msg-tag-error{% elif message.tags == 'success' %}msg-tag-success{% else %}msg-tag-info{% endif %}">
                 {{ message }}
             </div>
             {% endfor %}
@@ -137,12 +32,12 @@
         <form method="post" action="{% url 'verify_code' %}">
             {% csrf_token %}
             <input type="text" name="code" class="otp-input" required maxlength="6" pattern="\d{6}" placeholder="000000" autocomplete="one-time-code">
-            <button type="submit" class="btn-premium">Verify Account</button>
+            <button type="submit" class="btn-premium-auth">Verify Account</button>
         </form>
 
         <div class="auth-footer">
             <a href="{% url 'register' %}">Change Email</a>
-            <span style="margin: 0 8px; color: #ddd;">|</span>
+            <span class="auth-footer-divider">|</span>
             <a href="{% url 'login' %}">Back to Login</a>
         </div>
     </div>

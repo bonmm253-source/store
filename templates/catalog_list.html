@@ -3,98 +3,75 @@
 
 {% block title %}Category List | MyStore{% endblock %}
 
+{% block head_extra %}
+<link rel="stylesheet" href="{% static 'css/catalog.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="card" style="padding: 20px;">
-    <div
-        style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--jumia-border); padding-bottom: 15px; margin-bottom: 20px;">
-        <h2 style="font-size: 20px; font-weight: 500; margin: 0;">Products Listing</h2>
-        <a href="{% url 'home' %}" class="btn-primary"
-            style="text-decoration: none; padding: 8px 16px; width: auto; font-size: 14px; border-radius: 4px;">&larr;
-            Back to Menu</a>
+<div class="catalog-card">
+    <div class="catalog-header">
+        <h2 class="catalog-title">Products Listing</h2>
+        <a href="{% url 'home' %}" class="btn-primary catalog-back-btn">&larr; Back to Menu</a>
     </div>
 
     <div style="display:none;" id="csrf-form">
         {% csrf_token %}
     </div>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px;">
+    <div class="catalog-grid">
         {% for shoe in shoes %}
-        <div
-            style="background: white; border: 1px solid var(--jumia-border); border-radius: 4px; padding: 10px; position: relative;">
-            <a href="{% url 'product_detail' 'shoe' shoe.id %}"
-                style="display: block; transition: 0.2s; text-decoration: none; color: inherit;">
+        <div class="catalog-item">
+            <a href="{% url 'product_detail' 'shoe' shoe.id %}" class="catalog-link">
                 {% if shoe.discount_price %}
-                <div
-                    style="position: absolute; top: 10px; right: 10px; background: #f6ebd8; color: var(--jumia-orange); padding: 2px 6px; font-size: 12px; font-weight: bold; border-radius: 2px;">
-                    SALE</div>
+                <div class="sale-badge">SALE</div>
                 {% endif %}
                 {% if shoe.image %}
-                <img src="{{ shoe.image.url }}"
-                    style="width: 100%; height: 180px; object-fit: cover; border-radius: 4px; margin-bottom: 10px;">
+                <img src="{{ shoe.image.url }}" class="catalog-img">
                 {% else %}
-                <div style="width: 100%; height: 180px; background: #eee; margin-bottom:10px;"></div>
+                <div class="catalog-no-img"></div>
                 {% endif %}
-                <div
-                    style="color: var(--jumia-text); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 5px;">
-                    {{ shoe.name }}</div>
-                <div style="font-size: 16px; font-weight: bold; color: var(--jumia-dark);">
+                <div class="catalog-name">{{ shoe.name }}</div>
+                <div class="catalog-price">
                     <span>₦</span><span>{{ shoe.discount_price|default:shoe.price|floatformat:0 }}</span>
                 </div>
             </a>
-            <div
-                style="display: flex; gap: 8px; justify-content: center; align-items: center; margin-top: 10px; flex-wrap: wrap;">
-                <button class="qty-decrease" data-shoe-id="shoe_{{ shoe.id }}"
-                    style="background-color: var(--jumia-orange); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px;">−</button>
-                <span class="qty-display" data-shoe-id="shoe_{{ shoe.id }}"
-                    style="min-width: 20px; text-align: center; font-weight: bold; font-size: 14px;">0</span>
-                <button class="qty-increase" data-shoe-id="shoe_{{ shoe.id }}"
-                    style="background-color: var(--jumia-orange); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px;">+</button>
-                <button class="add-to-cart-btn btn-primary" data-shoe-id="shoe_{{ shoe.id }}"
+            <div class="catalog-controls">
+                <button class="qty-decrease catalog-qty-btn" data-shoe-id="shoe_{{ shoe.id }}">−</button>
+                <span class="qty-display catalog-qty-display" data-shoe-id="shoe_{{ shoe.id }}">0</span>
+                <button class="qty-increase catalog-qty-btn" data-shoe-id="shoe_{{ shoe.id }}">+</button>
+                <button class="add-to-cart-btn btn-primary catalog-add-btn" data-shoe-id="shoe_{{ shoe.id }}"
                     data-shoe-image="{% if shoe.image %}{{ shoe.image.url }}{% endif %}"
                     data-shoe-name="{{ shoe.name|escapejs }}" data-shoe-brand="{{ shoe.brand|default:''|escapejs }}"
-                    data-shoe-price="{{ shoe.discount_price|default:shoe.price }}"
-                    style="flex: 1; padding: 8px 4px; font-size: 13px;">Add (<span
+                    data-shoe-price="{{ shoe.discount_price|default:shoe.price }}">Add (<span
                         class="qty-indicator">0</span>)</button>
             </div>
         </div>
         {% endfor %}
 
         {% for watch in watchs %} <!-- In case we use this layout for watch queries too -->
-        <div
-            style="background: white; border: 1px solid var(--jumia-border); border-radius: 4px; padding: 10px; position: relative;">
-            <a href="{% url 'product_detail' 'watch' watch.id %}"
-                style="display: block; transition: 0.2s; text-decoration: none; color: inherit;">
+        <div class="catalog-item">
+            <a href="{% url 'product_detail' 'watch' watch.id %}" class="catalog-link">
                 {% if watch.discount_price %}
-                <div
-                    style="position: absolute; top: 10px; right: 10px; background: #f6ebd8; color: var(--jumia-orange); padding: 2px 6px; font-size: 12px; font-weight: bold; border-radius: 2px;">
-                    SALE</div>
+                <div class="sale-badge">SALE</div>
                 {% endif %}
                 {% if watch.image %}
-                <img src="{{ watch.image.url }}"
-                    style="width: 100%; height: 180px; object-fit: cover; border-radius: 4px; margin-bottom: 10px;">
+                <img src="{{ watch.image.url }}" class="catalog-img">
                 {% else %}
-                <div style="width: 100%; height: 180px; background: #eee; margin-bottom:10px;"></div>
+                <div class="catalog-no-img"></div>
                 {% endif %}
-                <div
-                    style="color: var(--jumia-text); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 5px;">
-                    {{ watch.name }}</div>
-                <div style="font-size: 16px; font-weight: bold; color: var(--jumia-dark);">
+                <div class="catalog-name">{{ watch.name }}</div>
+                <div class="catalog-price">
                     <span>₦</span><span>{{ watch.discount_price|default:watch.price|floatformat:0 }}</span>
                 </div>
             </a>
-            <div
-                style="display: flex; gap: 8px; justify-content: center; align-items: center; margin-top: 10px; flex-wrap: wrap;">
-                <button class="qty-decrease" data-shoe-id="watch_{{ watch.id }}"
-                    style="background-color: var(--jumia-orange); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px;">−</button>
-                <span class="qty-display" data-shoe-id="watch_{{ watch.id }}"
-                    style="min-width: 20px; text-align: center; font-weight: bold; font-size: 14px;">0</span>
-                <button class="qty-increase" data-shoe-id="watch_{{ watch.id }}"
-                    style="background-color: var(--jumia-orange); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px;">+</button>
-                <button class="add-to-cart-btn btn-primary" data-shoe-id="watch_{{ watch.id }}"
+            <div class="catalog-controls">
+                <button class="qty-decrease catalog-qty-btn" data-shoe-id="watch_{{ watch.id }}">−</button>
+                <span class="qty-display catalog-qty-display" data-watch-id="watch_{{ watch.id }}">0</span>
+                <button class="qty-increase catalog-qty-btn" data-watch-id="watch_{{ watch.id }}">+</button>
+                <button class="add-to-cart-btn btn-primary catalog-add-btn" data-shoe-id="watch_{{ watch.id }}"
                     data-shoe-image="{% if watch.image %}{{ watch.image.url }}{% endif %}"
                     data-shoe-name="{{ watch.name|escapejs }}" data-shoe-brand="{{ watch.brand|default:''|escapejs }}"
-                    data-shoe-price="{{ watch.discount_price|default:watch.price }}"
-                    style="flex: 1; padding: 8px 4px; font-size: 13px;">Add (<span
+                    data-shoe-price="{{ watch.discount_price|default:watch.price }}">Add (<span
                         class="qty-indicator">0</span>)</button>
             </div>
         </div>
@@ -102,7 +79,7 @@
     </div>
 
     {% if not shoes and not watchs %}
-    <div style="text-align: center; padding: 40px; color: var(--jumia-light-text);">
+    <div class="catalog-empty">
         <p>No products found in this category.</p>
     </div>
     {% endif %}

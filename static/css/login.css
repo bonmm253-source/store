@@ -1,151 +1,198 @@
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+.auth-page-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    padding: 40px 20px;
+    background: #fafafa;
 }
 
-body {
-  width: 90%;
-  max-width: 1200px; /* keeps content from stretching too much on big screens */
-  margin: auto;
-  background-color: #f5f5f5;
-  text-align: center;
-}
-
-.nav {
-  background-color: rgb(231, 143, 28);
-  color: white;
-  font-family: Arial, sans-serif;
-  border-radius: 5px;
-  padding: 10px;
-  text-align: center;
-}
-
-form {
-  border: 1px solid rgb(231, 143, 28);
-  border-radius: 10px;
-  padding: 20px 10px;
-  box-shadow: 1px 2px 8px rgba(0,0,0,0.2);
-  max-width: 400px;
-  margin: 50px auto;
-  height: auto;
-  background-color: white;
-  text-align: center;
-}
-
-form h2 {
-  margin-bottom: 10px;
-  color: rgb(231, 143, 28);
-  font-size: 1.5rem;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: 700;
-  text-align: center;
-  
-}
-
-form p {
-  text-align: center;
-  margin-bottom: 15px;
-  color:  rgb(231, 143, 28);
-  margin-bottom: 20px;
- 
-}
-
-.img {
-  width: 100%;
-  max-width: 500px;
-  height: auto;
-  object-fit: cover;
-  border-radius: 10px;
-  margin: 20px auto;
-  display: block;
-  box-shadow: 1px 2px 8px brown;
-}
-
-input {
-  border-radius: 10px;
-  padding: 14px;
-  margin: 10px auto;
-  height: 45px;
-  font-size: 1rem;
-  outline: none;
-  border: 1px solid rgb(231, 143, 28);
-  width: 90%;
-  max-width: 310px;
-  display: block;
-}
-
-.btn {
-  margin: 20px auto;
-  background-color: white;
-  font-size: 1.1rem;
-  width: 90%;
-  max-width: 310px;
-  height: 50px;
-  border-radius: 10px;
-  color: rgb(231, 143, 28);
-  border: 1px solid rgb(231, 143, 28);
-  cursor: pointer;
-  display: block;
-  transition: 0.3s;
-}
-
-.btn:hover {
-  background-color: blueviolet;
-  color: white;
-}
-
-.btn:active {
-  background-color: green;
-  color: white;
-}
-
-/* =========================
-   MEDIA QUERIES FOR RESPONSIVENESS
-============================ */
-
-/* Tablets */
-@media (max-width: 992px) {
-  body {
-    width: 95%;
-  }
-  form {
-    max-width: 90%;
-    margin: 40px auto;
-    padding: 15px;
-  }
-  form h2 {
-    font-size: 1.3rem;
-  }
-  input, .btn {
-    width: 95%;
-  }
-  .img {
-    max-width: 100%;
-  }
-}
-
-/* Mobile Phones */
-@media (max-width: 600px) {
-  body {
+.premium-auth-card {
+    background: white;
     width: 100%;
-    margin: 20px auto;
-  }
-  form {
-    max-width: 95%;
-    margin: 30px auto;
-    padding: 10px;
-  }
-  form h2 {
-    font-size: 1.2rem;
-  }
-  input, .btn {
+    max-width: 440px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    padding: 40px;
+    border: 1px solid #f0f0f0;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-header h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+}
+
+.auth-header p {
+    color: #888;
+    font-size: 14px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #444;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input {
     width: 100%;
-    font-size: 1rem;
-  }
-  .img {
-    max-width: 100%;
-    height: auto;
-  }
+    padding: 14px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 15px;
+    background: #fdfdfd;
+    transition: 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #673AB7;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(103, 58, 183, 0.1);
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #aaa;
+    font-size: 20px;
+    user-select: none;
+}
+
+.btn-premium {
+    width: 100%;
+    background: #1a1a1a;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-premium:hover {
+    background: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #f5f5f5;
+    font-size: 14px;
+    color: #666;
+}
+
+.auth-footer a {
+    color: #673AB7;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.error-container {
+    background: #FFF1F0;
+    border: 1px solid #FFA39E;
+    color: #CF1322;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 13px;
+}
+
+.error-text {
+    margin: 0;
+}
+
+.field-error {
+    color: #D32F2F;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.social-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 25px 0;
+    color: #aaa;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.divider-line {
+    flex: 1;
+    height: 1px;
+    background: #eee;
+}
+
+.divider-line-left {
+    margin-right: 15px;
+}
+
+.divider-line-right {
+    margin-left: 15px;
+}
+
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    color: #444;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-google:hover {
+    background: #f9f9f9;
+    border-color: #ccc;
+}
+
+.google-icon {
+    width: 18px;
+}
+
+.footer-link-secondary {
+    margin-top: 8px;
 }

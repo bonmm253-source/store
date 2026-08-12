@@ -3,19 +3,23 @@
 
 {% block title %}All Categories | MyStore{% endblock %}
 
+{% block head_extra %}
+<link rel="stylesheet" href="{% static 'css/store_layouts.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="page-container" style="max-width: var(--max-width); margin: 40px auto; padding: 0 20px;">
-    <div style="text-align: center; margin-bottom: 40px;">
-        <h1 style="color: var(--jumia-dark); font-size: 26px; margin-bottom: 10px;">Shop by Category</h1>
-        <p style="color: #666; font-size: 14px;">Browse our diverse range of premium products.</p>
+<div class="all-categories-container">
+    <div class="categories-header">
+        <h1 class="categories-title">Shop by Category</h1>
+        <p class="categories-subtitle">Browse our diverse range of premium products.</p>
     </div>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
+    <div class="categories-grid">
         {% for category in categories %}
-        <div class="category-card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid #f0f0f0;">
-            <div style="padding: 30px; text-align: center;">
-                <div style="width: 80px; height: 80px; background: #fdfde9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--jumia-orange);">
-                    <span class="material-icons-outlined" style="font-size: 40px;">
+        <div class="category-card">
+            <div class="category-card-body">
+                <div class="category-icon-wrapper">
+                    <span class="material-icons-outlined category-icon">
                         {% if category.name == 'Men' %}male
                         {% elif category.name == 'Women' %}female
                         {% elif category.name == 'Wrist Watch' %}watch
@@ -27,11 +31,11 @@
                         {% else %}category{% endif %}
                     </span>
                 </div>
-                <h3 style="font-size: 18px; color: var(--jumia-dark); margin-bottom: 10px;">{{ category.name }}</h3>
-                <p style="color: #888; font-size: 12px; margin-bottom: 25px; line-height: 1.6;">
+                <h3 class="category-card-title">{{ category.name }}</h3>
+                <p class="category-card-desc">
                     {{ category.description|default:"Explore our exclusive collection of high-quality products." }}
                 </p>
-                <a href="{% url 'search' %}?category={{ category.name }}" class="btn-primary" style="display: inline-block; width: auto; padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: 700; transition: 0.3s;">
+                <a href="{% url 'search' %}?category={{ category.name }}" class="btn-primary category-card-link">
                     EXPLORE NOW
                 </a>
             </div>
@@ -39,23 +43,12 @@
         {% endfor %}
     </div>
 
-    <div style="margin-top: 60px; background: #fafafa; border-radius: 16px; padding: 40px; text-align: center; border: 1px solid #eee;">
-        <h2 style="color: var(--jumia-dark); margin-bottom: 15px;">Looking for something specific?</h2>
-        <p style="color: #666; margin-bottom: 25px;">Use our search bar at the top to find exactly what you need.</p>
-        <a href="{% url 'home' %}" style="color: var(--jumia-orange); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+    <div class="categories-footer-box">
+        <h2 class="categories-footer-title">Looking for something specific?</h2>
+        <p class="categories-footer-text">Use our search bar at the top to find exactly what you need.</p>
+        <a href="{% url 'home' %}" class="categories-back-link">
             <span class="material-icons-outlined">arrow_back</span> Back to Home
         </a>
     </div>
 </div>
-
-<style>
-    .category-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-        border-color: var(--jumia-orange);
-    }
-    .category-card:hover .btn-primary {
-        background: black;
-    }
-</style>
 {% endblock %}

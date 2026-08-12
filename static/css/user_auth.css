@@ -1,0 +1,327 @@
+/* User Authentication Pages Styles */
+.auth-page-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    padding: 40px 20px;
+    background: #fafafa;
+}
+
+.premium-auth-card {
+    background: white;
+    width: 100%;
+    max-width: 440px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+    padding: 40px;
+    border: 1px solid #f0f0f0;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-header h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+}
+
+.auth-header p {
+    color: #888;
+    font-size: 14px;
+}
+
+.form-group-auth {
+    margin-bottom: 20px;
+}
+
+.form-group-auth label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #444;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group-auth input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 15px;
+    background: #fdfdfd;
+    transition: 0.3s;
+}
+
+.form-group-auth input:focus {
+    outline: none;
+    border-color: #673AB7;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(103, 58, 183, 0.1);
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #aaa;
+    font-size: 20px;
+    user-select: none;
+}
+
+.btn-premium-auth {
+    width: 100%;
+    background: #1a1a1a;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+}
+
+.btn-premium-auth:hover {
+    background: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.social-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 25px 0;
+    color: #aaa;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.divider-line {
+    flex: 1;
+    height: 1px;
+    background: #eee;
+}
+
+.divider-text {
+    margin: 0 15px;
+}
+
+.btn-google-auth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    color: #444;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-google-auth:hover {
+    background: #f9f9f9;
+    border-color: #ccc;
+}
+
+.google-icon-img {
+    width: 18px;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #f5f5f5;
+    font-size: 14px;
+    color: #666;
+}
+
+.auth-footer a {
+    color: #673AB7;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.auth-footer-sub {
+    margin-top: 8px;
+}
+
+.error-box-auth {
+    background: #FFF1F0;
+    border: 1px solid #FFA39E;
+    color: #CF1322;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 13px;
+}
+
+.error-text-small {
+    color: #D32F2F;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* Base Auth Form for Legacy Templates */
+.auth-form {
+    background: white;
+    max-width: 440px;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.auth-form h2 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: var(--jumia-dark);
+    text-align: center;
+}
+
+.auth-form-subtitle {
+    text-align: center;
+    color: var(--jumia-light-text);
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 12px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.form-group input:focus {
+    border-color: var(--jumia-orange);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(246, 139, 30, 0.1);
+}
+
+.btn-auth-submit {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background-color: var(--jumia-orange);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s;
+    text-align: center;
+    text-transform: uppercase;
+    margin-top: 20px;
+}
+
+.btn-auth-submit:hover {
+    background-color: #e07b14;
+}
+
+.auth-redirect-text {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.auth-link-highlight {
+    color: var(--jumia-orange);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* Verification Specifics */
+.verification-icon {
+    width: 64px;
+    height: 64px;
+    background: #EDE7F6;
+    color: #673AB7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px auto;
+    font-size: 32px;
+}
+
+.verification-icon.phone-verification {
+    background: #E0F2F1;
+    color: #00BFA5;
+}
+
+.otp-input {
+    width: 100%;
+    padding: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 28px;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: 12px;
+    background: #fafafa;
+    transition: 0.3s;
+    margin-bottom: 24px;
+    box-sizing: border-box;
+}
+
+.otp-input:focus {
+    outline: none;
+    border-color: #673AB7;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(103, 58, 183, 0.1);
+}
+
+.auth-footer-divider {
+    margin: 0 8px;
+    color: #ddd;
+}
+
+.msg-tag-error { background: #FFF1F0; border: 1px solid #FFA39E; color: #CF1322; }
+.msg-tag-success { background: #F6FFED; border: 1px solid #B7EB8F; color: #389E0D; }
+.msg-tag-info { background: #E6F7FF; border: 1px solid #91D5FF; color: #096DD9; }
+
+.msg-auth-generic {
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}

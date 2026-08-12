@@ -4,7 +4,7 @@
 {% block title %}Wrist Collection | MyStore{% endblock %}
 
 {% block head_extra %}
-<link rel="stylesheet" href="{% static 'css/men.css' %}" />
+<link rel="stylesheet" href="{% static 'css/store_layouts.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -23,7 +23,7 @@
           {% if watch.image %}
             <img src="{{ watch.image.url }}" alt="{{ watch.name }}">
           {% else %}
-            <div class="no-image" style="height: 200px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 14px;">No image available</div>
+            <div class="no-image-placeholder">No image available</div>
           {% endif %}
           <div class="brand">{{ watch.brand }}</div>
           <div class="rating" data-type="watch" data-id="{{ watch.id }}">
@@ -38,8 +38,8 @@
           </div>
           <div class="price-row">
             {% if watch.discount_price %}
-              <span class="old-price" style="text-decoration: line-through; color: #888; font-size: 0.8em; margin-right: 8px;">₦{{ watch.price }}</span>
-              <span class="current-price" style="color: #e47911; font-weight: bold;">₦{{ watch.discount_price }}</span>
+              <span class="old-price">₦{{ watch.price }}</span>
+              <span class="discount-price">₦{{ watch.discount_price }}</span>
             {% else %}
               <span class="current-price">₦{{ watch.price }}</span>
             {% endif %}

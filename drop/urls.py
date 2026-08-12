@@ -8,7 +8,6 @@ from django.urls import re_path
 
 urlpatterns = [
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
-    path('favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'images/favicon-32x32.png')),
     path("admin/", admin.site.urls),
     path("", include("web.urls")),
     

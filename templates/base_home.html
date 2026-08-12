@@ -4,253 +4,72 @@
 {% block title %}MyStore | Best Deals Online{% endblock %}
 
 {% block head_extra %}
-<style>
-    /* Homepage Specific Layout */
-    .hero-section {
-        display: flex;
-        gap: 15px;
-        margin-bottom: 30px;
-    }
-
-    .hero-categories {
-        width: 200px;
-        background: white;
-        border-radius: 4px;
-        padding: 10px 0;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-        display: none;
-        /* hidden on small screens */
-    }
-
-    @media (min-width: 900px) {
-        .hero-categories {
-            display: block;
-        }
-    }
-
-    .hero-categories ul li a {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 15px;
-        font-size: 11px;
-        color: var(--jumia-text);
-        transition: 0.2s;
-    }
-
-    .hero-categories ul li a:hover {
-        color: var(--jumia-orange);
-        background: var(--jumia-gray);
-        font-weight: 500;
-    }
-
-    .hero-slider {
-        flex: 1;
-        background: var(--jumia-dark);
-        border-radius: 4px;
-        position: relative;
-        overflow: hidden;
-        height: 384px;
-    }
-
-    .slide {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        transition: opacity 0.5s ease-in-out;
-        background-size: cover;
-        background-position: center;
-    }
-
-    .slide.active {
-        opacity: 1;
-    }
-
-    /* Grids */
-    .section-title {
-        background: #fdfde9;
-        padding: 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-radius: 4px 4px 0 0;
-    }
-
-    .section-title h3 {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: #000;
-        font-size: 16px;
-    }
-
-    .product-grid {
-        background: white;
-        padding: 15px;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 15px;
-        border-radius: 0 0 4px 4px;
-    }
-
-    /* Side-by-side scrollable grid */
-    .product-grid-scroll {
-        background: white;
-        padding: 15px;
-        display: flex;
-        overflow-x: auto;
-        gap: 15px;
-        border-radius: 0 0 4px 4px;
-        scrollbar-width: thin;
-        scrollbar-color: var(--jumia-orange) transparent;
-    }
-
-    .product-grid-scroll::-webkit-scrollbar {
-        height: 6px;
-    }
-
-    .product-grid-scroll::-webkit-scrollbar-thumb {
-        background-color: var(--jumia-orange);
-        border-radius: 10px;
-    }
-
-    .product-grid-scroll .product-card {
-        flex: 0 0 180px;
-        overflow: hidden; /* Overflow on the product */
-    }
-
-    /* Product Animation */
-    .product-card {
-        display: block;
-        background: white;
-        border-radius: 4px;
-        padding: 10px;
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        text-align: left;
-        position: relative;
-        animation: fadeIn 0.6s ease-out backwards;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .product-card:hover {
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        transform: translateY(-5px);
-    }
-
-    .product-img {
-        width: 100%;
-        height: 180px;
-        object-fit: cover;
-        border-radius: 4px;
-        margin-bottom: 10px;
-    }
-
-    .discount-badge {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: #f6ebd8;
-        color: var(--jumia-orange);
-        padding: 2px 6px;
-        font-size: 10px;
-        font-weight: bold;
-        border-radius: 2px;
-    }
-
-    .product-name {
-        font-size: 12px;
-        color: var(--jumia-text);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        margin-bottom: 5px;
-    }
-
-    .product-price {
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--jumia-dark);
-    }
-
-    .product-old-price {
-        font-size: 10px;
-        color: var(--jumia-light-text);
-        text-decoration: line-through;
-        margin-top: 2px;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
 
 {% block content %}
 {% if user.is_staff %}
 <!-- Admin Quick Dashboard & Registration Section -->
-<div class="admin-home-section" style="margin-bottom: 40px; background: white; border-radius: 16px; border: 1px solid #f0f0f0; box-shadow: 0 10px 30px rgba(0,0,0,0.03); overflow: hidden;">
-    <div class="admin-header" style="background: linear-gradient(135deg, #673AB7 0%, #512DA8 100%); color: white; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="margin: 0; font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
+<div class="admin-home-section">
+    <div class="admin-header">
+        <h2 class="admin-header-title">
             <span class="material-icons-outlined">admin_panel_settings</span> Control Panel
         </h2>
-        <a href="{% url 'admin_dashboard' %}" style="color: rgba(255,255,255,0.9); font-size: 13px; text-decoration: none; font-weight: 600; background: rgba(255,255,255,0.1); padding: 6px 14px; border-radius: 20px; transition: 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
-            FULL DASHBOARD <i class="fas fa-chevron-right" style="font-size: 10px; margin-left: 5px;"></i>
+        <a href="{% url 'admin_dashboard' %}" class="admin-header-btn">
+            FULL DASHBOARD <i class="fas fa-chevron-right admin-header-icon-small"></i>
         </a>
     </div>
     
-    <div class="admin-body" style="padding: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
+    <div class="admin-body">
         <!-- Financial Summary -->
         <div class="admin-stats-card">
-            <h3 style="font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; border-bottom: 1px solid #f9f9f9; padding-bottom: 10px;">Quick Metrics</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                <div style="background: #fafafa; padding: 16px; border-radius: 12px; border: 1px solid #f0f0f0;">
-                    <div style="font-size: 9px; color: #7B1FA2; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Total Goods</div>
-                    <div style="font-size: 18px; font-weight: 800; color: #1a1a1a;">{% load humanize %}₦{{ admin_total_goods_value|default:0|intcomma }}</div>
+            <h3 class="admin-stats-title">Quick Metrics</h3>
+            <div class="admin-stats-grid">
+                <div class="admin-stat-item">
+                    <div class="admin-stat-label color-goods">Total Goods</div>
+                    <div class="admin-stat-value">{% load humanize %}₦{{ admin_total_goods_value|default:0|intcomma }}</div>
                 </div>
-                <div style="background: #fafafa; padding: 16px; border-radius: 12px; border: 1px solid #f0f0f0;">
-                    <div style="font-size: 9px; color: #2E7D32; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Finance Sold</div>
-                    <div style="font-size: 18px; font-weight: 800; color: #1a1a1a;">₦{{ admin_total_revenue|default:0|intcomma }}</div>
+                <div class="admin-stat-item">
+                    <div class="admin-stat-label color-revenue">Finance Sold</div>
+                    <div class="admin-stat-value">₦{{ admin_total_revenue|default:0|intcomma }}</div>
                 </div>
-                <div style="background: #fafafa; padding: 16px; border-radius: 12px; border: 1px solid #f0f0f0;">
-                    <div style="font-size: 9px; color: #C62828; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Expenses</div>
-                    <div style="font-size: 18px; font-weight: 800; color: #1a1a1a;">₦{{ admin_total_expenses|default:0|intcomma }}</div>
+                <div class="admin-stat-item">
+                    <div class="admin-stat-label color-expenses">Expenses</div>
+                    <div class="admin-stat-value">₦{{ admin_total_expenses|default:0|intcomma }}</div>
                 </div>
-                <div style="background: #fafafa; padding: 16px; border-radius: 12px; border: 1px solid #f0f0f0;">
-                    <div style="font-size: 9px; color: #1976D2; font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Items in Stock</div>
-                    <div style="font-size: 18px; font-weight: 800; color: #1a1a1a;">{{ admin_total_units|default:"0" }} Units</div>
+                <div class="admin-stat-item">
+                    <div class="admin-stat-label color-stock">Items in Stock</div>
+                    <div class="admin-stat-value">{{ admin_total_units|default:"0" }} Units</div>
                 </div>
-                <div style="background: #673AB7; padding: 16px; border-radius: 12px; box-shadow: 0 4px 10px rgba(103, 58, 183, 0.2);">
-                    <div style="font-size: 9px; color: rgba(255,255,255,0.7); font-weight: 800; text-transform: uppercase; margin-bottom: 4px;">Net Net Profit</div>
-                    <div style="font-size: 18px; font-weight: 800; color: white;">₦{{ admin_net_finance|default:0|intcomma }}</div>
+                <div class="admin-stat-highlight">
+                    <div class="admin-stat-label">Net Net Profit</div>
+                    <div class="admin-stat-value">₦{{ admin_net_finance|default:0|intcomma }}</div>
                 </div>
             </div>
         </div>
 
         <!-- Add Admin Form -->
-        <div class="admin-form-card" style="position: relative;">
-            <h3 style="font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; border-bottom: 1px solid #f9f9f9; padding-bottom: 10px;">Register New Admin</h3>
+        <div class="admin-form-card">
+            <h3 class="admin-form-title">Register New Admin</h3>
             <form action="{% url 'admin_register_home' %}" method="post">
                 {% csrf_token %}
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                <div class="admin-form-row">
                     <div class="form-group">
-                        <input type="text" name="username" placeholder="Username" required style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 12px; transition: 0.3s; background: #fafafa;" onfocus="this.style.borderColor='#673AB7'; this.style.background='white'" onblur="this.style.borderColor='#e0e0e0'; this.style.background='#fafafa'">
+                        <input type="text" name="username" placeholder="Username" required class="admin-form-input">
                     </div>
                     <div class="form-group">
-                        <input type="email" name="email" placeholder="Email" required style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 12px; transition: 0.3s; background: #fafafa;" onfocus="this.style.borderColor='#673AB7'; this.style.background='white'" onblur="this.style.borderColor='#e0e0e0'; this.style.background='#fafafa'">
-                    </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
-                    <div class="form-group">
-                        <input type="text" name="phone" placeholder="Phone Number" required style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 12px; transition: 0.3s; background: #fafafa;" onfocus="this.style.borderColor='#673AB7'; this.style.background='white'" onblur="this.style.borderColor='#e0e0e0'; this.style.background='#fafafa'">
-                    </div>
-                    <div class="form-group">
-                        <input type="password" name="password" placeholder="Password" required style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 12px; transition: 0.3s; background: #fafafa;" onfocus="this.style.borderColor='#673AB7'; this.style.background='white'" onblur="this.style.borderColor='#e0e0e0'; this.style.background='#fafafa'">
+                        <input type="email" name="email" placeholder="Email" required class="admin-form-input">
                     </div>
                 </div>
-                <button type="submit" style="width: 100%; background: #1a1a1a; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 12px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;" onmouseover="this.style.background='#000'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#1a1a1a'; this.style.transform='translateY(0)'">
+                <div class="admin-form-row mb-20">
+                    <div class="form-group">
+                        <input type="text" name="phone" placeholder="Phone Number" required class="admin-form-input">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="password" placeholder="Password" required class="admin-form-input">
+                    </div>
+                </div>
+                <button type="submit" class="admin-form-submit">
                     CREATE STAFF ACCOUNT
                 </button>
             </form>
@@ -274,20 +93,20 @@
 </div>
 
 {% if recently_viewed %}
-<div style="margin-bottom: 30px;">
+<div class="home-section-spacer">
     <div class="section-title">
         <h3>Recently Viewed</h3>
     </div>
     <div class="product-grid-scroll">
         {% for rv in recently_viewed %}
-        <a href="{% url 'product_detail' rv.type rv.item.id %}" class="product-card">
+        <a href="{% url 'product_detail' rv.type rv.item.id %}" class="product-card-home">
             {% if rv.item.image %}
-            <img class="product-img" src="{{ rv.item.image.url }}" alt="{{ rv.item.name }}">
+            <img class="product-img-home" src="{{ rv.item.image.url }}" alt="{{ rv.item.name }}">
             {% else %}
-            <div class="product-img" style="background: #eee;"></div>
+            <div class="product-img-home no-image"></div>
             {% endif %}
-            <div class="product-name">{{ rv.item.brand|default:"" }} {{ rv.item.name }}</div>
-            <div class="product-price">₦{{ rv.item.discount_price|default:rv.item.price|floatformat:0 }}</div>
+            <div class="product-name-home">{{ rv.item.brand|default:"" }} {{ rv.item.name }}</div>
+            <div class="product-price-home">₦{{ rv.item.discount_price|default:rv.item.price|floatformat:0 }}</div>
         </a>
         {% endfor %}
     </div>
@@ -295,28 +114,28 @@
 {% endif %}
 
 {% if flash_shoes %}
-<div style="margin-bottom: 30px;">
-    <div class="section-title" style="background: var(--jumia-orange); color: white;">
-        <h3 style="color: white;"><span class="material-icons-outlined">flash_on</span> Flash Sales</h3>
-        <div id="countdown" style="font-size: 14px; font-weight: bold; background: rgba(0,0,0,0.2); padding: 5px 15px; border-radius: 20px; display: flex; align-items: center; gap: 10px;">
-            <span style="font-size: 11px; opacity: 0.8; text-transform: uppercase;">Ends In:</span>
+<div class="home-section-spacer">
+    <div class="section-title flash-sale-header">
+        <h3 class="flash-sale-title"><span class="material-icons-outlined">flash_on</span> Flash Sales</h3>
+        <div id="countdown" class="countdown-timer">
+            <span class="countdown-label">Ends In:</span>
             <span id="timer-display">00h : 00m : 00s</span>
         </div>
     </div>
     <div class="product-grid-scroll">
         {% for shoe in flash_shoes %}
-        <a href="{% url 'product_detail' 'shoe' shoe.id %}" class="product-card">
+        <a href="{% url 'product_detail' 'shoe' shoe.id %}" class="product-card-home">
             {% if shoe.image %}
-            <img class="product-img" src="{{ shoe.image.url }}" alt="{{ shoe.name }}">
+            <img class="product-img-home" src="{{ shoe.image.url }}" alt="{{ shoe.name }}">
             {% else %}
-            <div class="product-img" style="background: #eee;"></div>
+            <div class="product-img-home no-image"></div>
             {% endif %}
 
-            <div class="discount-badge">Flash Sale</div>
-            <div class="product-name">{{ shoe.brand|default:"" }} {{ shoe.name }}</div>
-            <div class="product-price">₦{{ shoe.discount_price|default:shoe.price|floatformat:0 }}</div>
+            <div class="discount-badge-home">Flash Sale</div>
+            <div class="product-name-home">{{ shoe.brand|default:"" }} {{ shoe.name }}</div>
+            <div class="product-price-home">₦{{ shoe.discount_price|default:shoe.price|floatformat:0 }}</div>
             {% if shoe.discount_price %}
-            <div class="product-old-price">₦{{ shoe.price|floatformat:0 }}</div>
+            <div class="product-old-price-home">₦{{ shoe.price|floatformat:0 }}</div>
             {% endif %}
         </a>
         {% endfor %}
@@ -324,27 +143,27 @@
 </div>
 {% endif %}
 
-<div style="margin-bottom: 30px;">
+<div class="home-section-spacer">
     <div class="section-title">
         <h3>Top Selling Items </h3>
         <a href="{% url 'wristcollection' %}" class="see-all">See All ></a>
     </div>
     <div class="product-grid-scroll">
         {% for watch in top_watches|default:flash_shoes %}
-        <a href="{% url 'product_detail' 'watch' watch.id %}" class="product-card">
+        <a href="{% url 'product_detail' 'watch' watch.id %}" class="product-card-home">
             {% if watch.image %}
-            <img class="product-img" src="{{ watch.image.url }}" alt="{{ watch.name }}">
+            <img class="product-img-home" src="{{ watch.image.url }}" alt="{{ watch.name }}">
             {% else %}
-            <div class="product-img" style="background: #eee;"></div>
+            <div class="product-img-home no-image"></div>
             {% endif %}
 
             {% if watch.discount_price %}
-            <div class="discount-badge">Sale</div>
+            <div class="discount-badge-home">Sale</div>
             {% endif %}
-            <div class="product-name">{{ watch.brand|default:"" }} {{ watch.name }}</div>
-            <div class="product-price">₦{{ watch.discount_price|default:watch.price }}</div>
+            <div class="product-name-home">{{ watch.brand|default:"" }} {{ watch.name }}</div>
+            <div class="product-price-home">₦{{ watch.discount_price|default:watch.price }}</div>
             {% if watch.discount_price %}
-            <div class="product-old-price">₦{{ watch.price }}</div>
+            <div class="product-old-price-home">₦{{ watch.price }}</div>
             {% endif %}
         </a>
         {% endfor %}
@@ -352,27 +171,27 @@
 </div>
 
 {% if men_shoes %}
-<div style="margin-bottom: 30px;">
+<div class="home-section-spacer">
     <div class="section-title">
         <h3>Featured Men's Sneakers</h3>
         <a href="{% url 'men' %}" class="see-all">See All ></a>
     </div>
     <div class="product-grid-scroll">
         {% for shoe in men_shoes %}
-        <a href="{% url 'product_detail' 'shoe' shoe.id %}" class="product-card">
+        <a href="{% url 'product_detail' 'shoe' shoe.id %}" class="product-card-home">
             {% if shoe.image %}
-            <img class="product-img" src="{{ shoe.image.url }}" alt="{{ shoe.name }}">
+            <img class="product-img-home" src="{{ shoe.image.url }}" alt="{{ shoe.name }}">
             {% else %}
-            <div class="product-img" style="background: #eee;"></div>
+            <div class="product-img-home no-image"></div>
             {% endif %}
 
             {% if shoe.discount_price %}
-            <div class="discount-badge">Sale</div>
+            <div class="discount-badge-home">Sale</div>
             {% endif %}
-            <div class="product-name">{{ shoe.brand|default:"" }} {{ shoe.name }}</div>
-            <div class="product-price">₦{{ shoe.discount_price|default:shoe.price|floatformat:0 }}</div>
+            <div class="product-name-home">{{ shoe.brand|default:"" }} {{ shoe.name }}</div>
+            <div class="product-price-home">₦{{ shoe.discount_price|default:shoe.price|floatformat:0 }}</div>
             {% if shoe.discount_price %}
-            <div class="product-old-price">₦{{ shoe.price|floatformat:0 }}</div>
+            <div class="product-old-price-home">₦{{ shoe.price|floatformat:0 }}</div>
             {% endif %}
         </a>
         {% endfor %}
@@ -381,27 +200,27 @@
 {% endif %}
 
 {% if women_shoes %}
-<div style="margin-bottom: 30px;">
+<div class="home-section-spacer">
     <div class="section-title">
         <h3>Premium Women's Shoes</h3>
         <a href="{% url 'women' %}" class="see-all">See All ></a>
     </div>
     <div class="product-grid-scroll">
         {% for shoe in women_shoes %}
-        <a href="{% url 'product_detail' 'shoe' shoe.id %}" class="product-card">
+        <a href="{% url 'product_detail' 'shoe' shoe.id %}" class="product-card-home">
             {% if shoe.image %}
-            <img class="product-img" src="{{ shoe.image.url }}" alt="{{ shoe.name }}">
+            <img class="product-img-home" src="{{ shoe.image.url }}" alt="{{ shoe.name }}">
             {% else %}
-            <div class="product-img" style="background: #eee;"></div>
+            <div class="product-img-home no-image"></div>
             {% endif %}
 
             {% if shoe.discount_price %}
-            <div class="discount-badge">Sale</div>
+            <div class="discount-badge-home">Sale</div>
             {% endif %}
-            <div class="product-name">{{ shoe.brand|default:"" }} {{ shoe.name }}</div>
-            <div class="product-price">₦{{ shoe.discount_price|default:shoe.price|floatformat:0 }}</div>
+            <div class="product-name-home">{{ shoe.brand|default:"" }} {{ shoe.name }}</div>
+            <div class="product-price-home">₦{{ shoe.discount_price|default:shoe.price|floatformat:0 }}</div>
             {% if shoe.discount_price %}
-            <div class="product-old-price">₦{{ shoe.price|floatformat:0 }}</div>
+            <div class="product-old-price-home">₦{{ shoe.price|floatformat:0 }}</div>
             {% endif %}
         </a>
         {% endfor %}
@@ -410,27 +229,27 @@
 {% endif %}
 
 {% if appliances %}
-<div style="margin-bottom: 30px;">
+<div class="home-section-spacer">
     <div class="section-title">
         <h3>Top Home Appliances</h3>
         <a href="{% url 'category_view' 'home-appliances' %}" class="see-all">See All ></a>
     </div>
     <div class="product-grid-scroll">
         {% for p in appliances %}
-        <a href="{% url 'product_detail' 'product' p.id %}" class="product-card">
+        <a href="{% url 'product_detail' 'product' p.id %}" class="product-card-home">
             {% if p.image %}
-            <img class="product-img" src="{{ p.image.url }}" alt="{{ p.name }}">
+            <img class="product-img-home" src="{{ p.image.url }}" alt="{{ p.name }}">
             {% else %}
-            <div class="product-img" style="background: #eee;"></div>
+            <div class="product-img-home no-image"></div>
             {% endif %}
 
             {% if p.discount_price %}
-            <div class="discount-badge">Sale</div>
+            <div class="discount-badge-home">Sale</div>
             {% endif %}
-            <div class="product-name">{{ p.brand|default:"" }} {{ p.name }}</div>
-            <div class="product-price">₦{{ p.discount_price|default:p.price|floatformat:0 }}</div>
+            <div class="product-name-home">{{ p.brand|default:"" }} {{ p.name }}</div>
+            <div class="product-price-home">₦{{ p.discount_price|default:p.price|floatformat:0 }}</div>
             {% if p.discount_price %}
-            <div class="product-old-price">₦{{ p.price|floatformat:0 }}</div>
+            <div class="product-old-price-home">₦{{ p.price|floatformat:0 }}</div>
             {% endif %}
         </a>
         {% endfor %}
@@ -439,27 +258,27 @@
 {% endif %}
 
 {% if accessories %}
-<div style="margin-bottom: 30px;">
+<div class="home-section-spacer">
     <div class="section-title">
         <h3>Computer Accessories</h3>
         <a href="{% url 'category_view' 'computer-accessories' %}" class="see-all">See All ></a>
     </div>
     <div class="product-grid-scroll">
         {% for p in accessories %}
-        <a href="{% url 'product_detail' 'product' p.id %}" class="product-card">
+        <a href="{% url 'product_detail' 'product' p.id %}" class="product-card-home">
             {% if p.image %}
-            <img class="product-img" src="{{ p.image.url }}" alt="{{ p.name }}">
+            <img class="product-img-home" src="{{ p.image.url }}" alt="{{ p.name }}">
             {% else %}
-            <div class="product-img" style="background: #eee;"></div>
+            <div class="product-img-home no-image"></div>
             {% endif %}
 
             {% if p.discount_price %}
-            <div class="discount-badge">Sale</div>
+            <div class="discount-badge-home">Sale</div>
             {% endif %}
-            <div class="product-name">{{ p.brand|default:"" }} {{ p.name }}</div>
-            <div class="product-price">₦{{ p.discount_price|default:p.price|floatformat:0 }}</div>
+            <div class="product-name-home">{{ p.brand|default:"" }} {{ p.name }}</div>
+            <div class="product-price-home">₦{{ p.discount_price|default:p.price|floatformat:0 }}</div>
             {% if p.discount_price %}
-            <div class="product-old-price">₦{{ p.price|floatformat:0 }}</div>
+            <div class="product-old-price-home">₦{{ p.price|floatformat:0 }}</div>
             {% endif %}
         </a>
         {% endfor %}
@@ -468,27 +287,27 @@
 {% endif %}
 
 {% if phones %}
-<div style="margin-bottom: 30px;">
+<div class="home-section-spacer">
     <div class="section-title">
         <h3>Smartphones & More</h3>
         <a href="{% url 'category_view' 'phones' %}" class="see-all">See All ></a>
     </div>
     <div class="product-grid-scroll">
         {% for p in phones %}
-        <a href="{% url 'product_detail' 'product' p.id %}" class="product-card">
+        <a href="{% url 'product_detail' 'product' p.id %}" class="product-card-home">
             {% if p.image %}
-            <img class="product-img" src="{{ p.image.url }}" alt="{{ p.name }}">
+            <img class="product-img-home" src="{{ p.image.url }}" alt="{{ p.name }}">
             {% else %}
-            <div class="product-img" style="background: #eee;"></div>
+            <div class="product-img-home no-image"></div>
             {% endif %}
 
             {% if p.discount_price %}
-            <div class="discount-badge">Sale</div>
+            <div class="discount-badge-home">Sale</div>
             {% endif %}
-            <div class="product-name">{{ p.brand|default:"" }} {{ p.name }}</div>
-            <div class="product-price">₦{{ p.discount_price|default:p.price|floatformat:0 }}</div>
+            <div class="product-name-home">{{ p.brand|default:"" }} {{ p.name }}</div>
+            <div class="product-price-home">₦{{ p.discount_price|default:p.price|floatformat:0 }}</div>
             {% if p.discount_price %}
-            <div class="product-old-price">₦{{ p.price|floatformat:0 }}</div>
+            <div class="product-old-price-home">₦{{ p.price|floatformat:0 }}</div>
             {% endif %}
         </a>
         {% endfor %}

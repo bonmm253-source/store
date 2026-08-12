@@ -77,3 +77,6 @@ envVarGroups:
         value: "True"
       - key: GOOGLE_CLIENT_ID
       - key: GOOGLE_CLIENT_SECRET
+      - key: PAYSTACK_PUBLIC_KEY
+      - key: PAYSTACK_LIVE_MODE
+        value: "False"

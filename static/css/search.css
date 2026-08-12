@@ -1,0 +1,33 @@
+/* Search Results Styles */
+.search-results-card {
+    padding: 20px;
+}
+
+.search-results-title {
+    font-size: 18px;
+    font-weight: 500;
+    border-bottom: 1px solid var(--jumia-border);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.no-search-results {
+    text-align: center;
+    padding: 40px;
+    color: var(--jumia-light-text);
+}
+
+.no-results-icon {
+    font-size: 48px;
+}
+
+.no-results-text {
+    margin-top: 10px;
+}
+
+/* Utility for card link */
+.product-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}

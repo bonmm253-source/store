@@ -15,50 +15,60 @@
         .footer { background: #f9f9f9; padding: 20px; text-align: center; font-size: 12px; color: #999; }
         .btn { display: inline-block; background: #673AB7; color: white; padding: 12px 25px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 20px; }
         .badge { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase; background: #E8F5E9; color: #2E7D32; }
+        .header-subtitle { margin: 10px 0 0; opacity: 0.8; }
+        .greeting { margin-top: 0; }
+        .order-meta { margin: 20px 0; }
+        .meta-label { color: #888; font-size: 14px; }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .address-box { background: #fdfdfd; border: 1px solid #f0f0f0; padding: 20px; border-radius: 8px; }
+        .address-title { margin: 0 0 10px 0; }
+        .address-text { margin: 0; font-size: 14px; color: #666; }
+        .address-subtext { margin: 5px 0 0; font-size: 14px; color: #666; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>MyStore</h1>
-            <p style="margin: 10px 0 0; opacity: 0.8;">Order Confirmation</p>
+            <p class="header-subtitle">Order Confirmation</p>
         </div>
         <div class="content">
-            <h2 style="margin-top: 0;">Hello, {{ user.username }}!</h2>
+            <h2 class="greeting">Hello, {{ user.username }}!</h2>
             <p>Thank you for your order. We've received your payment and our team is currently preparing your package for delivery.</p>
 
-            <div style="margin: 20px 0;">
-                <span style="color: #888; font-size: 14px;">Order ID:</span> <strong>#{{ order.id }}</strong><br>
-                <span style="color: #888; font-size: 14px;">Status:</span> <span class="badge">{{ order.status }}</span>
+            <div class="order-meta">
+                <span class="meta-label">Order ID:</span> <strong>#{{ order.id }}</strong><br>
+                <span class="meta-label">Status:</span> <span class="badge">{{ order.status }}</span>
             </div>
 
             <table class="order-summary">
                 <thead>
                     <tr>
                         <th>Item</th>
-                        <th style="text-align: center;">Qty</th>
-                        <th style="text-align: right;">Price</th>
+                        <th class="text-center">Qty</th>
+                        <th class="text-right">Price</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in items %}
                     <tr>
                         <td>{{ item.name }}</td>
-                        <td style="text-align: center;">{{ item.quantity }}</td>
-                        <td style="text-align: right;">₦{{ item.price|floatformat:2 }}</td>
+                        <td class="text-center">{{ item.quantity }}</td>
+                        <td class="text-right">₦{{ item.price|floatformat:2 }}</td>
                     </tr>
                     {% endfor %}
                     <tr class="total-row">
                         <td colspan="2">TOTAL</td>
-                        <td style="text-align: right;">₦{{ order.total|floatformat:2 }}</td>
+                        <td class="text-right">₦{{ order.total|floatformat:2 }}</td>
                     </tr>
                 </tbody>
             </table>
 
-            <div style="background: #fdfdfd; border: 1px solid #f0f0f0; padding: 20px; border-radius: 8px;">
-                <h4 style="margin: 0 0 10px 0;">Delivery Address</h4>
-                <p style="margin: 0; font-size: 14px; color: #666;">{{ order.delivery_address }}</p>
-                <p style="margin: 5px 0 0; font-size: 14px; color: #666;">Phone: {{ order.phone }}</p>
+            <div class="address-box">
+                <h4 class="address-title">Delivery Address</h4>
+                <p class="address-text">{{ order.delivery_address }}</p>
+                <p class="address-subtext">Phone: {{ order.phone }}</p>
             </div>
 
             <center>

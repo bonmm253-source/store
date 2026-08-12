@@ -1,0 +1,139 @@
+/* Catalog List Styles */
+.catalog-card {
+    background: var(--jumia-white);
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    overflow: hidden;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.catalog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--jumia-border);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.catalog-title {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.catalog-back-btn {
+    text-decoration: none;
+    padding: 8px 16px;
+    width: auto;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.catalog-item {
+    background: white;
+    border: 1px solid var(--jumia-border);
+    border-radius: 4px;
+    padding: 10px;
+    position: relative;
+}
+
+.catalog-link {
+    display: block;
+    transition: 0.2s;
+    text-decoration: none;
+    color: inherit;
+}
+
+.sale-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #f6ebd8;
+    color: var(--jumia-orange);
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 2px;
+}
+
+.catalog-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.catalog-no-img {
+    width: 100%;
+    height: 180px;
+    background: #eee;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.catalog-name {
+    color: var(--jumia-text);
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 5px;
+}
+
+.catalog-price {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--jumia-dark);
+}
+
+.catalog-controls {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.catalog-qty-btn {
+    background-color: var(--jumia-orange);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.catalog-qty-btn:hover {
+    background-color: #e68a00;
+}
+
+.catalog-qty-display {
+    min-width: 20px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.catalog-add-btn {
+    flex: 1;
+    padding: 8px 4px;
+    font-size: 13px;
+}
+
+.catalog-empty {
+    text-align: center;
+    padding: 40px;
+    color: var(--jumia-light-text);
+}

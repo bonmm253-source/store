@@ -4,115 +4,7 @@
 {% block title %}Login with Phone | MyStore{% endblock %}
 
 {% block head_extra %}
-<style>
-    .auth-page-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 80vh;
-        padding: 40px 20px;
-        background: #fafafa;
-    }
-
-    .premium-auth-card {
-        background: white;
-        width: 100%;
-        max-width: 440px;
-        border-radius: 20px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.05);
-        padding: 40px;
-        border: 1px solid #f0f0f0;
-    }
-
-    .auth-header {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    .auth-header h2 {
-        font-size: 24px;
-        font-weight: 800;
-        color: #1a1a1a;
-        margin-bottom: 8px;
-    }
-
-    .auth-header p {
-        color: #888;
-        font-size: 14px;
-    }
-
-    .form-group {
-        margin-bottom: 24px;
-    }
-
-    .form-group label {
-        display: block;
-        font-size: 13px;
-        font-weight: 700;
-        color: #444;
-        margin-bottom: 8px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .form-group input {
-        width: 100%;
-        padding: 14px 16px;
-        border: 1px solid #e0e0e0;
-        border-radius: 10px;
-        font-size: 15px;
-        background: #fdfdfd;
-        transition: 0.3s;
-    }
-
-    .form-group input:focus {
-        outline: none;
-        border-color: #673AB7;
-        background: white;
-        box-shadow: 0 0 0 4px rgba(103, 58, 183, 0.1);
-    }
-
-    .btn-premium {
-        width: 100%;
-        background: #1a1a1a;
-        color: white;
-        border: none;
-        padding: 16px;
-        border-radius: 10px;
-        font-size: 15px;
-        font-weight: 800;
-        cursor: pointer;
-        transition: 0.3s;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-top: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .btn-premium:hover {
-        background: #000;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-
-    .auth-footer {
-        text-align: center;
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 1px solid #f5f5f5;
-        font-size: 14px;
-        color: #666;
-    }
-
-    .auth-footer a {
-        color: #673AB7;
-        font-weight: 700;
-        text-decoration: none;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/user_auth.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -127,24 +19,24 @@
             {% csrf_token %}
 
             {% if form.non_field_errors %}
-            <div style="background: #FFF1F0; border: 1px solid #FFA39E; color: #CF1322; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 13px;">
+            <div class="error-box-auth">
                 {% for err in form.non_field_errors %}
-                <p style="margin: 0;">{{ err }}</p>
+                <p class="error-msg-margin-zero">{{ err }}</p>
                 {% endfor %}
             </div>
             {% endif %}
 
-            <div class="form-group">
+            <div class="form-group-auth">
                 <label for="{{ form.phone.id_for_label }}">Phone Number</label>
                 {{ form.phone }}
                 {% if form.phone.errors %}
-                <div style="color: #D32F2F; font-size: 12px; margin-top: 4px;">
+                <div class="error-text-small">
                     {% for err in form.phone.errors %}{{ err }}{% endfor %}
                 </div>
                 {% endif %}
             </div>
 
-            <button type="submit" class="btn-premium">
+            <button type="submit" class="btn-premium-auth">
                 <i class="fas fa-paper-plane"></i> Send Login Code
             </button>
 

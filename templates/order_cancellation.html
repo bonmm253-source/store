@@ -1,29 +1,33 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Order Cancellation | MyStore{% endblock %}
 
+{% block head_extra %}
+<link rel="stylesheet" href="{% static 'css/support.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="page-container" style="max-width: 800px; margin: 40px auto; padding: 20px;">
-    <h1 style="color: var(--jumia-dark); margin-bottom: 20px;">Order Cancellation</h1>
+<div class="support-page-container">
+    <h1 class="support-page-title">Order Cancellation</h1>
 
-    <div style="background: white; border-radius: 8px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+    <div class="support-section-card">
 
-        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-            <span class="material-icons-outlined" style="font-size: 40px; color: #f44336;">cancel</span>
+        <div class="support-header-flex">
+            <span class="material-icons-outlined support-header-icon">cancel</span>
             <h2 style="margin: 0;">How to Cancel Your Order</h2>
         </div>
 
-        <p style="color: var(--jumia-light-text); line-height: 1.6;">
+        <p class="support-text">
             We process orders rapidly to ensure fast delivery. You can cancel your order directly from your dashboard
             <strong>only before it has been shipped</strong>.
         </p>
 
-        <div
-            style="margin-top: 30px; background: #fff8f8; padding: 20px; border-left: 4px solid #f44336; border-radius: 4px;">
+        <div class="support-note-box">
             <h3 style="color: var(--jumia-text); margin-bottom: 10px;">Steps to Cancel</h3>
-            <ol style="margin-top: 10px; padding-left: 20px; color: var(--jumia-light-text); line-height: 1.8;">
+            <ol class="support-list">
                 <li>Log into your account and navigate to <a href="{% url 'dashboard' %}"
-                        style="color: var(--jumia-orange);">My Dashboard</a>.</li>
+                        class="support-link-orange">My Dashboard</a>.</li>
                 <li>Go to the <strong>Orders</strong> section and find the order you want to cancel.</li>
                 <li>If the status is still <em>Pending</em> or <em>Processing</em>, click the <strong>"Cancel
                         Order"</strong> button next to it.</li>
@@ -31,9 +35,9 @@
             </ol>
         </div>
 
-        <div style="margin-top: 30px;">
+        <div class="margin-top-30">
             <h3>What if my order is already shipped?</h3>
-            <p style="color: var(--jumia-light-text); line-height: 1.6; margin-top: 10px;">
+            <p class="support-text margin-top-10">
                 Once an order has been handed over to our delivery partners (Status: <em>Shipped</em>), it can no longer
                 be cancelled through the dashboard.
                 <br><br>

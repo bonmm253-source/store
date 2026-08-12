@@ -4,107 +4,29 @@
 {% block title %}Dashboard | MyStore{% endblock %}
 
 {% block head_extra %}
-<style>
-    .dashboard-layout {
-        display: flex;
-        gap: 20px;
-        align-items: flex-start;
-    }
-
-    .sidebar {
-        width: 250px;
-        background: white;
-        border-radius: 4px;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-    }
-
-    .sidebar a {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        padding: 15px 20px;
-        color: var(--jumia-text);
-        border-bottom: 1px solid var(--jumia-border);
-        transition: 0.2s;
-    }
-
-    .sidebar a:hover {
-        background: var(--jumia-gray);
-        color: var(--jumia-orange);
-    }
-
-    .dashboard-content {
-        flex: 1;
-        background: white;
-        border-radius: 4px;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-        padding: 20px;
-    }
-
-    .dash-header {
-        font-size: 18px;
-        font-weight: 500;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid var(--jumia-border);
-    }
-
-    .order-box {
-        border: 1px solid var(--jumia-border);
-        border-radius: 4px;
-        padding: 15px;
-        margin-bottom: 15px;
-    }
-
-    .order-header {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px;
-        font-size: 12px;
-        color: var(--jumia-light-text);
-    }
-
-    .order-status {
-        background: #e1f5fe;
-        color: #0288d1;
-        padding: 3px 8px;
-        border-radius: 20px;
-        font-size: 10px;
-        font-weight: bold;
-    }
-
-    @media (max-width: 768px) {
-        .dashboard-layout {
-            flex-direction: column;
-        }
-
-        .sidebar {
-            width: 100%;
-        }
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/account.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="dashboard-layout">
-    <div class="sidebar">
+    <div class="dashboard-sidebar">
         <a href="#orders"><span class="material-icons-outlined">inventory_2</span> My Orders</a>
         <a href="#wishlist"><span class="material-icons-outlined">favorite_border</span> Saved Items</a>
         <a href="#profile"><span class="material-icons-outlined">manage_accounts</span> Account Details</a>
-        <a href="{% url 'logout' %}" style="color: #d32f2f;"><span class="material-icons-outlined">logout</span>
+        <a href="{% url 'logout' %}" class="logout-link"><span class="material-icons-outlined">logout</span>
             Logout</a>
     </div>
 
     <div class="dashboard-content">
         {% if messages %}
         {% for message in messages %}
-        <div style="background: {% if message.tags == 'success' %}#E8F5E9{% elif message.tags == 'error' %}#FFEBEE{% else %}#E3F2FD{% endif %}; border-left: 4px solid {% if message.tags == 'success' %}#4CAF50{% elif message.tags == 'error' %}#F44336{% else %}#2196F3{% endif %}; padding: 15px; margin-bottom: 20px; border-radius: 4px; color: {% if message.tags == 'success' %}#2E7D32{% elif message.tags == 'error' %}#C62828{% else %}#1565C0{% endif %}; font-size: 14px; font-weight: 500;">
+        <div class="msg-alert {% if message.tags == 'success' %}msg-success{% elif message.tags == 'error' %}msg-error{% else %}msg-info{% endif %}">
             {{ message }}
         </div>
         {% endfor %}
         {% endif %}
 
-        <div class="dash-header">My Orders</div>
+        <div class="dash-header" id="orders">My Orders</div>
 
         {% for order in orders %}
         <div class="order-box">
@@ -113,129 +35,111 @@
                 <span>{{ order.created_at|date:"M d, Y" }}</span>
             </div>
 
-            <div style="font-size: 13px; font-weight: 500; margin-bottom: 10px;">Total: ₦{{ order.total }}</div>
-            <div style="margin-bottom: 15px;"><span class="order-status">{{ order.status }}</span></div>
+            <div class="order-total-dash">Total: ₦{{ order.total }}</div>
+            <div class="order-status-dash-wrap"><span class="order-status">{{ order.status }}</span></div>
 
-            <div style="font-size: 11px; color: var(--jumia-light-text);">
+            <div class="order-address-dash">
                 Shipped to: {{ order.delivery_address }}
             </div>
         </div>
         {% empty %}
-        <div style="text-align: center; padding: 30px; color: var(--jumia-light-text);">
-            <span class="material-icons-outlined" style="font-size: 48px;">receipt_long</span>
-            <p style="margin-top: 10px;">You have placed no orders yet.</p>
+        <div class="empty-dash-state">
+            <span class="material-icons-outlined empty-dash-icon">receipt_long</span>
+            <p class="empty-dash-text">You have placed no orders yet.</p>
         </div>
         {% endfor %}
 
         <div class="dash-header" style="margin-top: 40px;" id="wishlist">Saved Items</div>
         {% if wishlist.shoes.all or wishlist.watches.all %}
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+        <div class="wishlist-grid">
             {% for shoe in wishlist.shoes.all %}
-            <a href="{% url 'product_detail' 'shoe' shoe.id %}"
-                style="border: 1px solid var(--jumia-border); padding: 10px; border-radius: 4px; text-decoration: none; color: inherit; text-align: center; display: block; position: relative;">
+            <a href="{% url 'product_detail' 'shoe' shoe.id %}" class="wishlist-card">
                 {% if shoe.discount_price %}
-                <div
-                    style="position: absolute; top: 5px; right: 5px; background: #f6ebd8; color: var(--jumia-orange); padding: 2px 4px; font-size: 10px; font-weight: bold; border-radius: 2px;">
-                    SALE</div>
+                <div class="wishlist-sale-badge">SALE</div>
                 {% endif %}
                 {% if shoe.image %}
-                <img src="{{ shoe.image.url }}"
-                    style="width: 100%; height: 120px; object-fit: cover; margin-bottom: 10px; border-radius: 4px;">
+                <img src="{{ shoe.image.url }}" class="wishlist-img">
                 {% else %}
-                <div style="width: 100%; height: 120px; background: #eee; margin-bottom: 10px; border-radius: 4px;">
-                </div>
+                <div class="wishlist-img-placeholder"></div>
                 {% endif %}
-                <div
-                    style="font-size: 11px; margin-bottom: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                    {{ shoe.name }}</div>
-                <div style="font-weight: bold; color: var(--jumia-orange);">₦{{ shoe.discount_price|default:shoe.price
-                    }}</div>
+                <div class="wishlist-name">{{ shoe.name }}</div>
+                <div class="wishlist-price">₦{{ shoe.discount_price|default:shoe.price }}</div>
                 {% if shoe.discount_price %}
-                <div style="font-size: 9px; color: var(--jumia-light-text); text-decoration: line-through;">₦{{
-                    shoe.price }}</div>
+                <div class="wishlist-old-price">₦{{ shoe.price }}</div>
                 {% endif %}
             </a>
             {% endfor %}
             <!-- Watches in Wishlist -->
             {% for watch in wishlist.watches.all %}
-            <a href="{% url 'product_detail' 'watch' watch.id %}"
-                style="border: 1px solid var(--jumia-border); padding: 10px; border-radius: 4px; text-decoration: none; color: inherit; text-align: center; display: block; position: relative;">
+            <a href="{% url 'product_detail' 'watch' watch.id %}" class="wishlist-card">
                 {% if watch.discount_price %}
-                <div
-                    style="position: absolute; top: 5px; right: 5px; background: #f6ebd8; color: var(--jumia-orange); padding: 2px 4px; font-size: 10px; font-weight: bold; border-radius: 2px;">
-                    SALE</div>
+                <div class="wishlist-sale-badge">SALE</div>
                 {% endif %}
                 {% if watch.image %}
-                <img src="{{ watch.image.url }}"
-                    style="width: 100%; height: 120px; object-fit: cover; margin-bottom: 10px; border-radius: 4px;">
+                <img src="{{ watch.image.url }}" class="wishlist-img">
                 {% else %}
-                <div style="width: 100%; height: 120px; background: #eee; margin-bottom: 10px; border-radius: 4px;">
-                </div>
+                <div class="wishlist-img-placeholder"></div>
                 {% endif %}
-                <div
-                    style="font-size: 13px; margin-bottom: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                    {{ watch.name }}</div>
-                <div style="font-weight: bold; color: var(--jumia-orange);">₦{{ watch.discount_price|default:watch.price
-                    }}</div>
+                <div class="wishlist-name">{{ watch.name }}</div>
+                <div class="wishlist-price">₦{{ watch.discount_price|default:watch.price }}</div>
                 {% if watch.discount_price %}
-                <div style="font-size: 11px; color: var(--jumia-light-text); text-decoration: line-through;">₦{{
-                    watch.price }}</div>
+                <div class="wishlist-old-price">₦{{ watch.price }}</div>
                 {% endif %}
             </a>
             {% endfor %}
         </div>
         {% else %}
-        <div style="text-align: center; padding: 30px; color: var(--jumia-light-text);">
-            <span class="material-icons-outlined" style="font-size: 48px;">favorite_border</span>
-            <p style="margin-top: 10px;">You haven't saved any items yet.</p>
+        <div class="empty-dash-state">
+            <span class="material-icons-outlined empty-dash-icon">favorite_border</span>
+            <p class="empty-dash-text">You haven't saved any items yet.</p>
         </div>
         {% endif %}
 
         <div class="dash-header" style="margin-top: 40px;" id="profile">Account Details</div>
-        <form method="post" action="{% url 'update_dashboard_settings' %}" style="display: grid; gap: 20px;">
+        <form method="post" action="{% url 'update_dashboard_settings' %}" class="profile-form-wrap">
             {% csrf_token %}
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                <div>
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">Username</label>
+            <div class="profile-form-row">
+                <div class="form-group-dash">
+                    <label>Username</label>
                     {{ profile_form.username }}
                     {% if profile_form.username.errors %}
-                    <div style="color: #d32f2f; font-size: 12px; margin-top: 6px;">{{ profile_form.username.errors.0 }}</div>
+                    <div class="msg-error-text">{{ profile_form.username.errors.0 }}</div>
                     {% endif %}
                 </div>
-                <div>
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">Email</label>
+                <div class="form-group-dash">
+                    <label>Email</label>
                     {{ profile_form.email }}
                     {% if profile_form.email.errors %}
-                    <div style="color: #d32f2f; font-size: 12px; margin-top: 6px;">{{ profile_form.email.errors.0 }}</div>
+                    <div class="msg-error-text">{{ profile_form.email.errors.0 }}</div>
                     {% endif %}
                 </div>
-                <div>
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">Phone</label>
+                <div class="form-group-dash">
+                    <label>Phone</label>
                     {{ profile_form.phone }}
                     {% if profile_form.phone.errors %}
-                    <div style="color: #d32f2f; font-size: 12px; margin-top: 6px;">{{ profile_form.phone.errors.0 }}</div>
+                    <div class="msg-error-text">{{ profile_form.phone.errors.0 }}</div>
                     {% endif %}
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                <div>
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">New Password</label>
+            <div class="profile-form-row">
+                <div class="form-group-dash">
+                    <label>New Password</label>
                     {{ profile_form.new_password }}
                     {% if profile_form.new_password.errors %}
-                    <div style="color: #d32f2f; font-size: 12px; margin-top: 6px;">{{ profile_form.new_password.errors.0 }}</div>
+                    <div class="msg-error-text">{{ profile_form.new_password.errors.0 }}</div>
                     {% endif %}
                 </div>
-                <div>
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">Confirm Password</label>
+                <div class="form-group-dash">
+                    <label>Confirm Password</label>
                     {{ profile_form.confirm_password }}
                     {% if profile_form.confirm_password.errors %}
-                    <div style="color: #d32f2f; font-size: 12px; margin-top: 6px;">{{ profile_form.confirm_password.errors.0 }}</div>
+                    <div class="msg-error-text">{{ profile_form.confirm_password.errors.0 }}</div>
                     {% endif %}
                 </div>
             </div>
 
-            <button type="submit" style="width: max-content; padding: 12px 24px; background: #673AB7; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer;">Save Settings</button>
+            <button type="submit" class="btn-save-settings">Save Settings</button>
         </form>
     </div>
 </div>

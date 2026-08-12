@@ -12,14 +12,11 @@
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:title" content="{% block og_title %}MyStore | Premium Shoe & Watch Store{% endblock %}">
     <meta property="og:description" content="{% block og_description %}Shop the best collection of premium sneakers and wristwatches at MyStore.{% endblock %}">
-    <meta property="og:image" content="{% static 'images/image-avatar.png' %}">
 
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     <!-- PWA -->
     <link rel="manifest" href="{% static 'manifest.json' %}">
     <meta name="theme-color" content="#673AB7">
-    <link rel="icon" type="image/png" href="{% static 'images/favicon-32x32.png' %}" />
-    <link rel="apple-touch-icon" href="{% static 'images/image-avatar.png' %}">
     <!-- Material Icons & FontAwesome -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -30,42 +27,42 @@
 
 <body>
     <!-- Mobile Navigation Drawer Overlay -->
-    <div id="drawer-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; display: none; opacity: 0; transition: opacity 0.3s;"></div>
+    <div id="drawer-overlay" class="drawer-overlay"></div>
 
     <!-- Mobile Navigation Drawer -->
-    <div id="mobile-drawer" style="position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: white; z-index: 10001; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; box-shadow: 5px 0 15px rgba(0,0,0,0.1);">
-        <div style="background: var(--jumia-orange); color: white; padding: 25px 20px; display: flex; justify-content: space-between; align-items: center;">
-            <div style="font-weight: 800; font-size: 20px;">My<span>Store</span></div>
-            <span id="close-drawer" class="material-icons-outlined" style="cursor: pointer;">close</span>
+    <div id="mobile-drawer" class="mobile-drawer">
+        <div class="drawer-header">
+            <div class="drawer-logo">My<span>Store</span></div>
+            <span id="close-drawer" class="material-icons-outlined drawer-close">close</span>
         </div>
-        <div style="flex: 1; overflow-y: auto; padding: 10px 0;">
-            <div style="padding: 15px 20px; font-weight: 700; font-size: 13px; color: #888; text-transform: uppercase; letter-spacing: 1px;">Categories</div>
-            <a href="{% url 'home' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">home</span> Home</a>
-            <a href="{% url 'all_categories' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: var(--jumia-orange); font-weight: 700;"><span class="material-icons-outlined">apps</span> All Categories</a>
-            <a href="{% url 'men' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">male Itmes</span> Men's Items</a>
-            <a href="{% url 'women' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">female Itmes</span> Women's Items</a>
-            <a href="{% url 'wristcollection' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">watch</span> Wrist Watches</a>
-            <a href="{% url 'category_view' 'home-appliances' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">kitchen</span> Home Appliances</a>
-            <a href="{% url 'category_view' 'computer-accessories' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">mouse</span> Computer Accessories</a>
-            <a href="{% url 'category_view' 'phones' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">smartphone</span> Phones</a>
-            <a href="{% url 'collection' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">stars</span> Collections</a>
+        <div class="drawer-content">
+            <div class="drawer-section-label">Categories</div>
+            <a href="{% url 'home' %}" class="drawer-link"><span class="material-icons-outlined drawer-link-icon">home</span> Home</a>
+            <a href="{% url 'all_categories' %}" class="drawer-link active"><span class="material-icons-outlined">apps</span> All Categories</a>
+            <a href="{% url 'men' %}" class="drawer-link"><span class="material-icons-outlined drawer-link-icon">male Itmes</span> Men's Items</a>
+            <a href="{% url 'women' %}" class="drawer-link"><span class="material-icons-outlined drawer-link-icon">female Itmes</span> Women's Items</a>
+            <a href="{% url 'wristcollection' %}" class="drawer-link"><span class="material-icons-outlined drawer-link-icon">watch</span> Wrist Watches</a>
+            <a href="{% url 'category_view' 'home-appliances' %}" class="drawer-link"><span class="material-icons-outlined drawer-link-icon">kitchen</span> Home Appliances</a>
+            <a href="{% url 'category_view' 'computer-accessories' %}" class="drawer-link"><span class="material-icons-outlined drawer-link-icon">mouse</span> Computer Accessories</a>
+            <a href="{% url 'category_view' 'phones' %}" class="drawer-link"><span class="material-icons-outlined drawer-link-icon">smartphone</span> Phones</a>
+            <a href="{% url 'collection' %}" class="drawer-link"><span class="material-icons-outlined drawer-link-icon">stars</span> Collections</a>
 
-            <hr style="border: none; border-top: 1px solid #f0f0f0; margin: 10px 0;">
-            <div style="padding: 15px 20px; font-weight: 700; font-size: 13px; color: #888; text-transform: uppercase; letter-spacing: 1px;">Account</div>
+            <hr class="drawer-hr">
+            <div class="drawer-section-label">Account</div>
             {% if user.is_authenticated %}
-                <a href="{% url 'dashboard' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">person</span> My Account</a>
-                <a href="{% url 'orders' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">shopping_bag</span> My Orders</a>
-                <a href="{% url 'logout' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #ff4d4f; font-weight: 600;"><span class="material-icons-outlined">logout</span> Logout</a>
+                <a href="{% url 'dashboard' %}" class="drawer-link"><span class="material-icons-outlined drawer-link-icon">person</span> My Account</a>
+                <a href="{% url 'orders' %}" class="drawer-link"><span class="material-icons-outlined drawer-link-icon">shopping_bag</span> My Orders</a>
+                <a href="{% url 'logout' %}" class="drawer-link drawer-logout"><span class="material-icons-outlined">logout</span> Logout</a>
             {% else %}
-                <a href="{% url 'login' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">login</span> Sign In</a>
-                <a href="{% url 'register' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">person_add</span> Create Account</a>
+                <a href="{% url 'login' %}" class="drawer-link"><span class="material-icons-outlined drawer-link-icon">login</span> Sign In</a>
+                <a href="{% url 'register' %}" class="drawer-link"><span class="material-icons-outlined drawer-link-icon">person_add</span> Create Account</a>
             {% endif %}
 
-            <hr style="border: none; border-top: 1px solid #f0f0f0; margin: 10px 0;">
-            <div style="padding: 15px 20px; font-weight: 700; font-size: 13px; color: #888; text-transform: uppercase; letter-spacing: 1px;">Support</div>
-            <a href="{% url 'help_center' %}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: #333; font-weight: 500;"><span class="material-icons-outlined">help_outline</span> Help Center</a>
+            <hr class="drawer-hr">
+            <div class="drawer-section-label">Support</div>
+            <a href="{% url 'help_center' %}" class="drawer-link"><span class="material-icons-outlined drawer-link-icon">help_outline</span> Help Center</a>
         </div>
-        <div style="padding: 20px; background: #fafafa; border-top: 1px solid #f0f0f0; text-align: center; font-size: 12px; color: #999;">
+        <div class="drawer-footer">
             &copy; 2026 MyStore. High Quality Only.
         </div>
     </div>
@@ -84,7 +81,7 @@
                 <a href="{% url 'home' %}">My<span>Store</span></a>
             </div>
 
-            <form class="search-form" action="{% url 'search' %}" method="get" style="position: relative;">
+            <form class="search-form" action="{% url 'search' %}" method="get">
                 <svg class="search-icon" viewBox="0 0 24 24">
                     <path
                         d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
@@ -94,7 +91,7 @@
                 <button type="submit">SEARCH</button>
 
                 <!-- Live Search Results Container -->
-                <div id="search-results" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-top: none; border-radius: 0 0 8px 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); z-index: 1000; max-height: 400px; overflow-y: auto;">
+                <div id="search-results" class="search-results-container">
                 </div>
             </form>
 
@@ -104,13 +101,13 @@
                     <div class="action-btn">
                         <span class="material-icons-outlined">category</span>
                         <span>Categories</span>
-                        <span class="material-icons-outlined" style="font-size: 16px;">expand_more</span>
+                        <span class="material-icons-outlined expand-icon">expand_more</span>
                     </div>
                     <div class="dropdown-menu">
-                        <div style="padding: 10px 20px;">
-                            <h4 style="font-size: 14px; color: var(--jumia-light-text); margin-bottom: 5px;">Shop Categories</h4>
+                        <div class="dropdown-menu-header">
+                            <h4 class="dropdown-menu-title">Shop Categories</h4>
                         </div>
-                        <a href="{% url 'all_categories' %}" style="font-weight: bold; color: var(--jumia-orange);">All Categories</a>
+                        <a href="{% url 'all_categories' %}" class="dropdown-all-categories">All Categories</a>
                         <a href="{% url 'category_view' 'home-appliances' %}">Home Appliances</a>
                         <a href="{% url 'category_view' 'computer-accessories' %}">Computer Accessories</a>
                         <a href="{% url 'category_view' 'phones' %}">Phones</a>
@@ -126,8 +123,8 @@
                 <div class="dropdown-wrapper">
                     <div class="action-btn">
                         <span class="material-icons-outlined">person</span>
-                        <span>{% if user.is_authenticated %}Hi, {{ user.username }}{% if user.is_staff %} <small class="badge bg-primary" style="font-size: 10px; margin-left: 5px; padding: 2px 6px; border-radius: 4px;">Admin</small>{% endif %}{% else %}Account{% endif %}</span>
-                        <span class="material-icons-outlined" style="font-size: 16px;">expand_more</span>
+                        <span>{% if user.is_authenticated %}Hi, {{ user.username }}{% if user.is_staff %} <small class="admin-badge">Admin</small>{% endif %}{% else %}Account{% endif %}</span>
+                        <span class="material-icons-outlined expand-icon">expand_more</span>
                     </div>
                     <div class="dropdown-menu">
                         {% if user.is_authenticated %}
@@ -136,14 +133,14 @@
                         <a href="{% url 'dashboard' %}">Saved Items</a>
                         {% if user.is_staff %}
                         <hr>
-                        <a href="{% url 'admin_dashboard' %}" style="color: var(--jumia-primary); font-weight: bold;">📊 Admin Dashboard</a>
-                        <a href="/admin/" style="color: #673AB7; font-weight: 500;">⚙️ System Admin (Django)</a>
+                        <a href="{% url 'admin_dashboard' %}" class="admin-nav-link">📊 Admin Dashboard</a>
+                        <a href="/admin/" class="system-admin-link">⚙️ System Admin (Django)</a>
                         {% endif %}
                         <hr>
                         <a href="{% url 'logout' %}">Logout</a>
                         {% else %}
-                        <div style="padding: 10px 20px;">
-                            <a href="{% url 'login' %}" class="btn-primary" style="margin-bottom: 10px;">SIGN IN</a>
+                        <div class="dropdown-menu-header">
+                            <a href="{% url 'login' %}" class="btn-primary dropdown-signin-btn">SIGN IN</a>
                         </div>
                         <hr>
                         <a href="{% url 'register' %}">Create an Account</a>
@@ -157,7 +154,7 @@
                     <a href="{% url 'dashboard' %}" class="action-btn">
                         <span class="material-icons-outlined">help_outline</span>
                         <span>Help</span>
-                        <span class="material-icons-outlined" style="font-size: 16px;">expand_more</span>
+                        <span class="material-icons-outlined expand-icon">expand_more</span>
                     </a>
                     <div class="dropdown-menu">
                         <a href="{% url 'help_center' %}">Help Center</a>
@@ -176,7 +173,7 @@
         </div>
     </header>
 
-    <div id="notification-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; width: 300px;"></div>
+    <div id="notification-container" class="notification-container"></div>
 
     {% if messages %}
     <div class="messages">
@@ -193,22 +190,22 @@
     </main>
 
     <!-- Back to Top Button -->
-    <button id="back-to-top" style="position: fixed; bottom: 30px; left: 30px; width: 45px; height: 45px; border-radius: 50%; background: var(--jumia-orange); color: white; border: none; cursor: pointer; display: none; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); align-items: center; justify-content: center;">
+    <button id="back-to-top" class="back-to-top">
         <span class="material-icons-outlined">arrow_upward</span>
     </button>
 
     <footer class="site-footer">
         <!-- Newsletter Section -->
-        <div style="background: rgba(255,255,255,0.05); padding: 40px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 40px;">
-            <div style="max-width: var(--max-width); margin: auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 30px;">
-                <div style="flex: 1; min-width: 300px;">
-                    <h4 style="color: white; font-size: 18px; margin-bottom: 10px; text-transform: none;">New to MyStore?</h4>
-                    <p style="color: #ccc; font-size: 14px; margin: 0;">Subscribe to our newsletter to get updates on our latest offers!</p>
+        <div class="newsletter-section">
+            <div class="newsletter-container">
+                <div class="newsletter-info">
+                    <h4>New to MyStore?</h4>
+                    <p>Subscribe to our newsletter to get updates on our latest offers!</p>
                 </div>
-                <form id="newsletter-form" style="flex: 1; min-width: 300px; display: flex; gap: 10px;">
+                <form id="newsletter-form" class="newsletter-form">
                     {% csrf_token %}
-                    <input type="email" name="email" id="newsletter-email" placeholder="Enter E-mail Address" required style="flex: 1; padding: 14px; border-radius: 4px; border: none; font-size: 14px;">
-                    <button type="submit" style="background: var(--jumia-orange); color: white; border: none; padding: 0 30px; border-radius: 4px; font-weight: 700; cursor: pointer; transition: 0.3s;" onmouseover="this.style.background='#e07b14'" onmouseout="this.style.background='var(--jumia-orange)'">SUBMIT</button>
+                    <input type="email" name="email" id="newsletter-email" placeholder="Enter E-mail Address" required class="newsletter-input">
+                    <button type="submit" class="newsletter-submit">SUBMIT</button>
                 </form>
             </div>
         </div>
@@ -348,22 +345,12 @@
         function showNotification(title, message, url) {
             const container = document.getElementById('notification-container');
             const toast = document.createElement('div');
-            toast.style.cssText = `
-                background: white;
-                color: #333;
-                padding: 15px;
-                border-radius: 8px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-                margin-bottom: 10px;
-                border-left: 5px solid #673AB7;
-                cursor: pointer;
-                animation: slideIn 0.3s ease-out;
-            `;
+            toast.className = 'toast-notification';
             toast.innerHTML = `
-                <div style="font-weight: bold; margin-bottom: 5px; display: flex; justify-content: space-between;">
-                    ${title} <span onclick="this.parentElement.parentElement.remove()" style="color: #999;">&times;</span>
+                <div class="toast-header">
+                    ${title} <span onclick="this.parentElement.parentElement.remove()" class="toast-close">&times;</span>
                 </div>
-                <div style="font-size: 13px;">${message}</div>
+                <div class="toast-body">${message}</div>
             `;
             toast.onclick = (e) => {
                 if(e.target.tagName !== 'SPAN') window.location.href = url;
@@ -403,20 +390,20 @@
                                 let html = '';
                                 data.results.forEach(item => {
                                     html += `
-                                        <a href="${item.url}" style="display: flex; align-items: center; gap: 15px; padding: 12px 15px; text-decoration: none; border-bottom: 1px solid #f5f5f5; transition: 0.2s;" onmouseover="this.style.background='#f9f9f9'" onmouseout="this.style.background='white'">
-                                            <img src="${item.image}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
-                                            <div style="flex: 1;">
-                                                <div style="font-size: 14px; font-weight: 600; color: #333;">${item.name}</div>
-                                                <div style="font-size: 12px; color: #888;">${item.category}</div>
+                                        <a href="${item.url}" class="search-result-item">
+                                            <img src="${item.image}" class="search-result-img">
+                                            <div class="search-result-info">
+                                                <div class="search-result-name">${item.name}</div>
+                                                <div class="search-result-category">${item.category}</div>
                                             </div>
-                                            <div style="font-size: 14px; font-weight: 700; color: #673AB7;">₦${item.price.toLocaleString()}</div>
+                                            <div class="search-result-price">₦${item.price.toLocaleString()}</div>
                                         </a>
                                     `;
                                 });
                                 resultsContainer.innerHTML = html;
                                 resultsContainer.style.display = 'block';
                             } else {
-                                resultsContainer.innerHTML = '<div style="padding: 15px; color: #999; font-size: 14px; text-align: center;">No products found</div>';
+                                resultsContainer.innerHTML = '<div class="search-no-results">No products found</div>';
                                 resultsContainer.style.display = 'block';
                             }
                         });
@@ -485,12 +472,6 @@
         // Run on every page load
         document.addEventListener("DOMContentLoaded", updateCartCount);
     </script>
-    <style>
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-    </style>
     {% block scripts %}{% endblock %}
 </body>
 

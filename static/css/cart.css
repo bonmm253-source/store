@@ -1,0 +1,268 @@
+.cart-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.cart-left {
+    flex: 1;
+    min-width: 300px;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cart-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--jumia-border, #f1f1f1);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.cart-item {
+    display: flex;
+    padding: 20px;
+    border-bottom: 1px solid var(--jumia-border, #f1f1f1);
+    gap: 15px;
+    transition: background 0.2s;
+}
+
+.cart-item:hover {
+    background-color: #fafafa;
+}
+
+.item-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.empty-img-placeholder {
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-img-icon {
+    color: #ccc;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.item-name {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.item-brand {
+    font-size: 11px;
+    color: #75757a;
+    margin-bottom: 15px;
+}
+
+.item-price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #313133;
+}
+
+.item-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.remove-icon {
+    font-size: 18px;
+}
+
+.item-price-col {
+    text-align: right;
+}
+
+.item-qty-container {
+    color: #75757a;
+    font-size: 12px;
+}
+
+.item-qty-text {
+    color: var(--jumia-light-text);
+    font-size: 12px;
+}
+
+.cart-empty-container {
+    padding: 60px 20px;
+    text-align: center;
+    color: #75757a;
+}
+
+.cart-empty-icon {
+    font-size: 80px;
+    color: #e1e1e1;
+}
+
+.cart-empty-title {
+    margin-top: 15px;
+    color: #313133;
+}
+
+.btn-start-shopping {
+    display: inline-block;
+    width: auto;
+    margin-top: 20px;
+    padding: 12px 30px;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.upsell-title {
+    text-align: left;
+    color: #313133;
+    margin-bottom: 10px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.upsell-name {
+    font-weight: 500;
+}
+
+.upsell-price {
+    color: var(--jumia-orange);
+}
+
+.cart-right {
+    width: 350px;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    position: sticky;
+    top: 20px;
+}
+
+.summary-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #75757a;
+    border-bottom: 1px solid #f1f1f1;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+.summary-row-small {
+    font-size: 12px;
+    color: #75757a;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: bold;
+    border-top: 1px solid #f1f1f1;
+    padding-top: 15px;
+    margin-bottom: 20px;
+}
+
+.btn-checkout {
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    border-radius: 4px;
+    padding: 15px;
+}
+
+.remove-btn:hover {
+    color: #e07b1b;
+}
+
+/* Progress Bar for Free Shipping */
+.shipping-progress {
+    background: #f1f1f1;
+    border-radius: 10px;
+    height: 8px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background: #2e7d32;
+    height: 100%;
+    transition: width 0.5s ease;
+}
+
+.shipping-info {
+    background: #e8f5e9;
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 11px;
+    color: #2e7d32;
+    display: flex;
+    flex-direction: column;
+}
+
+.shipping-unlocked {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: bold;
+}
+
+.shipping-progress-title {
+    font-weight: bold;
+}
+
+.shipping-progress-text {
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+/* Upsell Grid */
+.upsell-section {
+    margin-top: 30px;
+    padding: 20px;
+}
+
+.upsell-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.upsell-card {
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: inherit;
+    font-size: 13px;
+    text-align: center;
+    transition: 0.2s;
+}
+
+.upsell-card:hover {
+    border-color: var(--jumia-orange);
+}
+
+.upsell-img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    margin-bottom: 8px;
+}

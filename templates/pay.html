@@ -3,145 +3,134 @@
 
 {% block title %}Checkout | MyStore{% endblock %}
 
+{% block head_extra %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="card" style="max-width: 800px; margin: auto;">
-    <div class="card-header" style="background: var(--jumia-orange); color: white; display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="color: white; margin: 0;">Checkout</h2>
-        <div style="display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 600;">
-            <span class="material-icons-outlined" style="font-size: 16px;">lock</span>
+<div class="card checkout-card">
+    <div class="card-header checkout-header">
+        <h2>Checkout</h2>
+        <div class="secure-badge">
+            <span class="material-icons-outlined secure-badge-icon">lock</span>
             SECURE CHECKOUT
         </div>
     </div>
-    <form id="checkout-form" action="{% url 'submit_order' %}" method="POST"
-        style="padding: 30px; box-shadow: none; border: none; margin: 0; max-width: 100%;">
+    <form id="checkout-form" action="{% url 'submit_order' %}" method="POST" class="checkout-form">
         {% csrf_token %}
 
-        <h3
-            style="margin-bottom: 20px; font-size: 18px; border-bottom: 1px solid var(--jumia-border); padding-bottom: 10px;">
-            1. Shipping Details</h3>
+        <h3 class="section-title-checkout">1. Shipping Details</h3>
 
         <div class="form-group">
             <label>Recipient Name</label>
-            <input type="text" name="name" value="{{ user.get_full_name|default:user.username }}" required
-                style="border-radius: 4px;">
+            <input type="text" name="name" value="{{ user.get_full_name|default:user.username }}" required class="form-input-standard">
         </div>
 
         <div class="form-group">
             <label>Delivery Address</label>
-            <textarea name="delivery_address" required
-                style="width: 100%; border-radius: 4px; border: 1px solid var(--jumia-border); padding: 12px; font-family: inherit; font-size: 14px;"
-                rows="3" placeholder="Street Address, City, State..."></textarea>
+            <textarea name="delivery_address" required class="form-input-textarea" rows="3" placeholder="Street Address, City, State..."></textarea>
         </div>
 
         <div class="form-group">
             <label>Phone Number</label>
-            <input type="tel" name="phone" required style="border-radius: 4px;" placeholder="+1 234 567 8900">
+            <input type="tel" name="phone" required class="form-input-standard" placeholder="+1 234 567 8900">
         </div>
 
-        <h3
-            style="margin: 30px 0 20px; font-size: 18px; border-bottom: 1px solid var(--jumia-border); padding-bottom: 10px;">
-            2. Order Summary</h3>
+        <h3 class="section-title-checkout margin-top">2. Order Summary</h3>
 
-        <div id="order-summary-container" style="background: var(--jumia-gray); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <div id="order-summary-container" class="order-summary-container">
             <div id="summary-items">
-                <!-- Items will be rendered here by JavaScript -->
-                <p style="text-align: center; color: #888;">Loading items...</p>
+                <p class="summary-items-placeholder">Loading items...</p>
             </div>
             
-            <div style="border-top: 2px dashed #ccc; margin: 15px 0; padding-top: 15px;">
-                <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; color: var(--jumia-dark);">
+            <div class="total-divider">
+                <div class="total-amount-row">
                     <span>Total Amount</span>
                     <span id="final-total">₦0</span>
                 </div>
             </div>
         </div>
 
-        <div style="display: flex; gap: 20px; margin-top: 20px; flex-wrap: wrap;">
-            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--jumia-dark); font-weight: 600;">
+        <div class="payment-methods-wrap">
+            <label class="payment-method-label">
                 <input type="radio" name="payment_method" value="Bank Transfer" checked onchange="togglePayment(this.value)"> 
                 <span>🏦 Bank Transfer</span>
             </label>
-            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--jumia-dark); font-weight: 600;">
+            <label class="payment-method-label">
                 <input type="radio" name="payment_method" value="Card Payment" onchange="togglePayment(this.value)"> 
-                <span style="display: flex; align-items: center; gap: 4px;">💳 Card Payment <span class="material-icons-outlined" style="font-size: 14px; color: #28a745;">lock</span></span>
+                <span>💳 Card Payment <span class="material-icons-outlined lock-icon-small">lock</span></span>
             </label>
-            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--jumia-dark); font-weight: 600;">
+            <label class="payment-method-label">
                 <input type="radio" name="payment_method" value="Pay on Delivery" onchange="togglePayment(this.value)"> 
                 <span>🤝 Pay on Delivery</span>
             </label>
         </div>
 
         <div id="bank-details-section">
-            <h3
-                style="margin: 30px 0 20px; font-size: 18px; border-bottom: 1px solid var(--jumia-border); padding-bottom: 10px;">
-                3. Payment Details (Bank Transfer)</h3>
+            <h3 class="section-title-checkout margin-top">3. Payment Details (Bank Transfer)</h3>
             
-            <div style="background: #fff; border: 1px solid var(--jumia-border); padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 5px solid var(--jumia-orange);">
-                <p style="margin-bottom: 15px; font-size: 14px; color: #555;">Please make payment to the account below to complete your order:</p>
+            <div class="bank-details-box">
+                <p class="bank-details-info">Please make payment to the account below to complete your order:</p>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 15px;">
+                <div class="bank-grid">
                     <div>
-                        <strong style="display: block; color: #888; text-transform: uppercase; font-size: 12px; margin-bottom: 4px;">Bank Name</strong>
-                        <span style="font-weight: 600; color: var(--jumia-dark);">UBA</span>
+                        <strong class="bank-grid-item-label">Bank Name</strong>
+                        <span class="bank-grid-item-value">UBA</span>
                     </div>
                     <div>
-                        <strong style="display: block; color: #888; text-transform: uppercase; font-size: 12px; margin-bottom: 4px;">Account Number</strong>
-                        <span style="font-weight: 600; color: var(--jumia-dark);">2054037193</span>
+                        <strong class="bank-grid-item-label">Account Number</strong>
+                        <span class="bank-grid-item-value">2054037193</span>
                     </div>
-                    <div style="grid-column: span 2;">
-                        <strong style="display: block; color: #888; text-transform: uppercase; font-size: 12px; margin-bottom: 4px;">Account Name</strong>
-                        <span style="font-weight: 600; color: var(--jumia-dark);">MYSTORE</span>
+                    <div class="bank-grid-full">
+                        <strong class="bank-grid-item-label">Account Name</strong>
+                        <span class="bank-grid-item-value">MYSTORE</span>
                     </div>
                 </div>
 
-                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--jumia-dark);">Confirm Account Number Paid To</label>
-                    <input type="text" name="confirmed_account_number" id="confirmed_account_number" placeholder="Enter the account number you sent money to" required
-                        style="width: 100%; padding: 12px; border: 1px solid var(--jumia-border); border-radius: 4px; font-size: 14px;">
+                <div class="account-confirm-wrap">
+                    <label class="confirm-input-label">Confirm Account Number Paid To</label>
+                    <input type="text" name="confirmed_account_number" id="confirmed_account_number" placeholder="Enter the account number you sent money to" required class="form-input-standard full-width">
                 </div>
             </div>
         </div>
 
         <div id="card-details-section" style="display: none;">
-            <h3 style="margin: 30px 0 20px; font-size: 18px; border-bottom: 1px solid var(--jumia-border); padding-bottom: 10px;">
-                5. Secure Card Payment</h3>
-            <div style="background: #fbfbfb; border: 1px solid var(--jumia-border); padding: 25px; border-radius: 8px; margin-bottom: 30px; text-align: center;">
-                <p style="font-size: 14px; color: #666; margin-bottom: 20px;">You will be redirected to <strong>Paystack</strong> to securely complete your payment.</p>
-                <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 15px;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/1200px-Visa_Inc._logo.svg.png" alt="Visa" style="height: 20px;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1200px-Mastercard-logo.svg.png" alt="Mastercard" style="height: 25px;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Verve_Logo.svg/1200px-Verve_Logo.svg.png" alt="Verve" style="height: 20px;">
+            <h3 class="section-title-checkout margin-top">5. Secure Card Payment</h3>
+            <div class="card-payment-box">
+                <p class="card-payment-text">You will be redirected to <strong>Paystack</strong> to securely complete your payment.</p>
+                <div class="card-logos-row">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/1200px-Visa_Inc._logo.svg.png" alt="Visa" class="card-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1200px-Mastercard-logo.svg.png" alt="Mastercard" class="card-logo-mastercard">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Verve_Logo.svg/1200px-Verve_Logo.svg.png" alt="Verve" class="card-logo">
                 </div>
-                <div style="color: #28a745; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 5px;">
-                    <span class="material-icons-outlined" style="font-size: 16px;">lock</span>
+                <div class="paystack-badge">
+                    <span class="material-icons-outlined secure-badge-icon">lock</span>
                     Secured by Paystack
                 </div>
             </div>
         </div>
 
         <div id="pod-details-section" style="display: none;">
-            <h3
-                style="margin: 30px 0 20px; font-size: 18px; border-bottom: 1px solid var(--jumia-border); padding-bottom: 10px;">
-                4. Pay on Delivery</h3>
-            <div style="background: #e7f3ff; border: 1px solid #b3d7ff; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 5px solid #007bff;">
-                <p style="margin: 0; font-size: 15px; color: #004085; font-weight: 600;">📦 You can also pay upon receiving your items!</p>
-                <p style="margin: 8px 0 0; font-size: 13px; color: #004085; opacity: 0.8;">Simply select this option and have your cash or card ready when the delivery rider arrives.</p>
+            <h3 class="section-title-checkout margin-top">4. Pay on Delivery</h3>
+            <div class="pod-box">
+                <p class="pod-title">📦 You can also pay upon receiving your items!</p>
+                <p class="pod-text">Simply select this option and have your cash or card ready when the delivery rider arrives.</p>
             </div>
         </div>
 
-        <div style="margin: 20px 0; padding: 15px; background: #f8f9fa; border: 1px solid #eee; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
-            <div style="background: #fff; padding: 10px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                <span class="material-icons-outlined" style="color: #28a745; font-size: 24px; vertical-align: middle;">verified_user</span>
+        <div class="security-info-box">
+            <div class="security-icon-circle">
+                <span class="material-icons-outlined security-icon-check">verified_user</span>
             </div>
             <div>
-                <strong style="display: block; font-size: 14px; color: var(--jumia-dark);">100% Payment Security</strong>
-                <p style="margin: 3px 0 0; font-size: 12px; color: #666; line-height: 1.4;">Your data is protected by industry-standard 256-bit SSL encryption. We never store your full card details.</p>
+                <strong class="security-title">100% Payment Security</strong>
+                <p class="security-text">Your data is protected by industry-standard 256-bit SSL encryption. We never store your full card details.</p>
             </div>
         </div>
 
         <input type="hidden" name="cart_json" id="cart_json_input">
-        <div style="display: flex; justify-content: center; margin-top: 40px; padding-bottom: 20px;">
-            <button type="submit" class="btn-primary" style="font-size: 16px; height: 54px; width: auto; min-width: 300px; padding: 0 40px; border-radius: 50px; box-shadow: 0 10px 20px rgba(246, 139, 30, 0.25); text-transform: uppercase; letter-spacing: 1px;">
+        <div class="submit-order-wrap">
+            <button type="submit" class="btn-primary btn-submit-order">
                 I HAVE PAID - SUBMIT ORDER
             </button>
         </div>
@@ -238,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     if (cart.length === 0) {
-        summaryContainer.innerHTML = '<p style="text-align: center; color: #888; padding: 20px;">Your cart is empty.</p>';
+        summaryContainer.innerHTML = '<p class="summary-items-placeholder">Your cart is empty.</p>';
         submitBtn.disabled = true;
         submitBtn.style.opacity = '0.5';
         submitBtn.style.cursor = 'not-allowed';
@@ -259,22 +248,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const imgSrc = item.watchImage || item.shoeImage || "{% static 'images/1024609.png' %}";
         
         const itemRow = document.createElement('div');
-        itemRow.style.display = 'flex';
-        itemRow.style.alignItems = 'center';
-        itemRow.style.gap = '15px';
-        itemRow.style.marginBottom = '15px';
-        itemRow.style.padding = '10px';
-        itemRow.style.background = '#fff';
-        itemRow.style.borderRadius = '8px';
-        itemRow.style.border = '1px solid #eee';
+        itemRow.className = 'summary-item-row';
         
         itemRow.innerHTML = `
-            <img src="${imgSrc}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;">
-            <div style="flex: 1;">
-                <div style="font-weight: 600; color: #333; font-size: 14px;">${name}</div>
-                <div style="color: #888; font-size: 12px;">Qty: ${qty}</div>
+            <img src="${imgSrc}" class="summary-item-img">
+            <div class="summary-item-details">
+                <div class="summary-item-name">${name}</div>
+                <div class="summary-item-qty">Qty: ${qty}</div>
             </div>
-            <div style="font-weight: 700; color: var(--jumia-dark); font-size: 15px;">
+            <div class="summary-item-price">
                 ₦${subtotal.toLocaleString()}
             </div>
         `;
@@ -289,9 +271,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const podSection = document.getElementById('pod-details-section');
         const cardSection = document.getElementById('card-details-section');
         const bankInput = document.getElementById('confirmed_account_number');
-        const cardNum = document.getElementById('card_number');
-        const expiry = document.getElementById('expiry_date');
-        const cvv = document.getElementById('cvv');
         const submitBtn = form.querySelector('button[type="submit"]');
 
         // Hide all first
@@ -299,9 +278,6 @@ document.addEventListener('DOMContentLoaded', function() {
         podSection.style.display = 'none';
         cardSection.style.display = 'none';
         bankInput.required = false;
-        cardNum.required = false;
-        expiry.required = false;
-        cvv.required = false;
 
         if (method === 'Bank Transfer') {
             bankSection.style.display = 'block';

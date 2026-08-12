@@ -1,0 +1,413 @@
+/* Admin Dashboard Styles */
+
+.admin-dashboard-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.dashboard-header {
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.dashboard-header-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+}
+
+.dashboard-header-subtitle {
+    color: #666;
+    font-size: 13px;
+}
+
+.dashboard-header-btn {
+    padding: 10px 20px;
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    color: #666;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dashboard-header-btn:hover {
+    background: #f0f0f0;
+}
+
+/* Low Stock Alerts */
+.stock-warning-alert {
+    background: #FFF9C4;
+    border: 1px solid #FBC02D;
+    padding: 15px 24px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.stock-warning-icon {
+    color: #F57F17;
+    font-size: 20px;
+}
+
+.stock-warning-content {
+    flex: 1;
+}
+
+.stock-warning-strong {
+    color: #F57F17;
+}
+
+.stock-warning-badge {
+    font-size: 13px;
+    background: rgba(0,0,0,0.05);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 5px;
+}
+
+.stock-warning-link {
+    color: #F57F17;
+    font-weight: 700;
+    font-size: 13px;
+    text-decoration: underline;
+}
+
+/* Charts Section */
+.charts-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.chart-card {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.02);
+}
+
+.chart-title {
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* Main KPIs */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.kpi-card {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.02);
+    transition: 0.3s;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+}
+
+.kpi-icon-container {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.kpi-label {
+    color: #888;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.kpi-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1a1a1a;
+}
+
+.kpi-footer {
+    margin-top: 12px;
+    font-size: 10px;
+}
+
+/* Color variations for KPIs */
+.kpi-goods .kpi-icon-container { background: #EDE7F6; color: #673AB7; }
+.kpi-goods .kpi-footer { color: #4CAF50; }
+
+.kpi-cost .kpi-icon-container { background: #E0F2F1; color: #00BFA5; }
+.kpi-cost .kpi-footer { color: #00BFA5; }
+
+.kpi-revenue .kpi-icon-container { background: #FFF3E0; color: #FF9800; }
+.kpi-revenue .kpi-footer { color: #FF9800; }
+
+.kpi-sales .kpi-icon-container { background: #E8F5E9; color: #2E7D32; }
+.kpi-sales .kpi-footer { color: #2E7D32; }
+.kpi-sales .kpi-label { font-size: 13px; }
+.kpi-sales .kpi-value { font-size: 24px; }
+
+.kpi-out-stock .kpi-icon-container { background: #FFEBEE; color: #C62828; }
+.kpi-out-stock .kpi-footer { color: #C62828; }
+.kpi-out-stock .kpi-label { font-size: 13px; }
+.kpi-out-stock .kpi-value { font-size: 24px; }
+
+.kpi-customers .kpi-icon-container { background: #E3F2FD; color: #1976D2; }
+.kpi-customers .kpi-footer { color: #1976D2; }
+
+.kpi-profit {
+    color: white;
+    box-shadow: 0 10px 20px rgba(103, 58, 183, 0.2);
+}
+
+.kpi-profit .kpi-icon-container { background: rgba(255,255,255,0.2); color: white; }
+.kpi-profit .kpi-label { color: rgba(255,255,255,0.6); }
+.kpi-profit .kpi-value { color: white; }
+.kpi-profit .kpi-footer { color: rgba(255,255,255,0.8); }
+
+/* Transactions & Messages Grid */
+.dashboard-secondary-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 32px;
+    margin-top: 40px;
+}
+
+.recent-orders-card, .recent-inquiries-card, .expenses-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.02);
+    overflow: hidden;
+}
+
+.card-header-flex {
+    padding: 24px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header-flex h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.badge-outline {
+    font-size: 10px;
+    font-weight: 600;
+    background: #EDE7F6;
+    color: #673AB7;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.transactions-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.transactions-table thead tr {
+    background: #fafafa;
+}
+
+.transactions-table th {
+    padding: 16px 24px;
+    font-size: 11px;
+    color: #888;
+    font-weight: 600;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.transactions-table td {
+    padding: 16px 24px;
+    font-size: 12px;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.transactions-table tr {
+    transition: 0.2s;
+}
+
+.transactions-table tr:hover {
+    background: #fcfcfc;
+}
+
+.status-badge {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.status-success { background: #E8F5E9; color: #2E7D32; }
+.status-danger { background: #FFEBEE; color: #C62828; }
+.status-warning { background: #FFF3E0; color: #E65100; }
+
+.inquiry-list, .expense-list {
+    padding: 24px;
+    flex-grow: 1;
+}
+
+.inquiry-item, .expense-item {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.inquiry-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.inquiry-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.inquiry-date {
+    font-size: 10px;
+    color: #888;
+}
+
+.inquiry-subject {
+    font-size: 11px;
+    color: #673AB7;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.inquiry-message {
+    font-size: 11px;
+    color: #666;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.expense-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.expense-desc {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.expense-meta {
+    font-size: 10px;
+    color: #888;
+}
+
+.expense-amount {
+    font-weight: 700;
+    color: #D32F2F;
+    font-size: 12px;
+}
+
+.view-all-btn {
+    display: block;
+    text-align: center;
+    padding: 12px;
+    background: #fafafa;
+    color: #666;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 13px;
+    text-decoration: none;
+    border: 1px solid #eee;
+    transition: 0.2s;
+}
+
+.view-all-btn:hover {
+    background: #f5f5f5;
+}
+
+.btn-purple-light {
+    color: #673AB7;
+    background: #f5f5f5;
+}
+
+.btn-purple-light:hover {
+    background: #EDE7F6;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .admin-dashboard-container {
+        padding: 0 15px;
+        margin: 20px auto;
+    }
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .dashboard-header-title {
+        font-size: 20px;
+    }
+    .dashboard-header-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    .kpi-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+    }
+    .kpi-card {
+        padding: 16px;
+    }
+    .kpi-label {
+        font-size: 11px;
+    }
+    .kpi-value {
+        font-size: 18px;
+    }
+    .dashboard-secondary-grid {
+        grid-template-columns: 1fr;
+    }
+    .transactions-table {
+        font-size: 12px;
+    }
+    .transactions-table th,
+    .transactions-table td {
+        padding: 10px 12px;
+    }
+}

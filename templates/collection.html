@@ -3,26 +3,36 @@
 
 {% block title %}All Collections | MyStore{% endblock %}
 
+{% block head_extra %}
+<link rel="stylesheet" href="{% static 'css/store_layouts.css' %}">
+{% endblock %}
+
 {% block content %}
-<section class="collection">
-  <div class="collection-wrap">
-    <div class="product-grid">
+<div class="category-detail-container">
+    <div class="category-detail-header">
+        <h1 class="category-detail-title">Our Collections</h1>
+        <span class="products-found-count">{{ shoes.count }} Products Found</span>
+    </div>
+
+    <div class="product-grid product-grid-layout">
       {% for shoe in shoes %}
         <div class="product-card">
           {% if shoe.image %}
-            <img src="{{ shoe.image.url }}" alt="{{ shoe.name }}">
+            <img src="{{ shoe.image.url }}" alt="{{ shoe.name }}" class="product-img">
           {% else %}
-            <div class="no-image" style="height: 200px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 12px;">No image available</div>
+            <div class="no-image-placeholder">No image</div>
           {% endif %}
-          <div class="brand">{{ shoe.brand }}</div>
-          <div class="name">{{ shoe.name }}</div>
-          <div class="price-row">
-            {% if shoe.discount_price %}
-              <span class="old-price" style="text-decoration: line-through; color: #888; font-size: 0.8em; margin-right: 8px;">₦{{ shoe.price|floatformat:0 }}</span>
-              <span class="current-price" style="color: #e47911; font-weight: bold;">₦{{ shoe.discount_price|floatformat:0 }}</span>
-            {% else %}
-              <span class="current-price">₦{{ shoe.price|floatformat:0 }}</span>
-            {% endif %}
+          <div class="product-info-wrap">
+              <div class="brand">{{ shoe.brand }}</div>
+              <div class="name">{{ shoe.name }}</div>
+              <div class="price-row">
+                {% if shoe.discount_price %}
+                  <span class="old-price">₦{{ shoe.price|floatformat:0 }}</span>
+                  <span class="discount-price">₦{{ shoe.discount_price|floatformat:0 }}</span>
+                {% else %}
+                  <span class="current-price">₦{{ shoe.price|floatformat:0 }}</span>
+                {% endif %}
+              </div>
           </div>
           
           <div class="quantity-controls">
@@ -41,14 +51,15 @@
           </button>
         </div>
       {% empty %}
-        <p>No products found in this collection.</p>
+        <div class="category-empty-state">
+            <span class="material-icons-outlined empty-state-icon">inventory_2</span>
+            <h3 class="empty-state-text">No products found in this collection.</h3>
+        </div>
       {% endfor %}
     </div>
-  </div>
-</section>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script src="{% static 'cart.js' %}?v=1.1" defer></script>
 {% endblock %}
-
